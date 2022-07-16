@@ -102,8 +102,8 @@ class _HomeScreenState extends State {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.only(left: 5),
-          margin: const EdgeInsets.only(top: 45, left: 25, right: 25),
+          padding: EdgeInsets.only(left: screenWidth!*0.01),
+          margin: EdgeInsets.only(top: screenWidth!*0.1, left: screenWidth!*0.06, right: screenWidth!*0.06),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -116,16 +116,16 @@ class _HomeScreenState extends State {
               ),
             ],
           ),
-          height: 50,
+          height: screenWidth!*0.12,
           child: Stack(
-            children: const [
-              Align(
+            children:  [
+              const Align(
                 alignment: Alignment.centerLeft,
                 child: Icon(Icons.search,),
               ),
 
-              SizedBox(width: 150,),
-              Align(
+              SizedBox(width: screenWidth!*0.36,),
+              const Align(
                 alignment: Alignment.center,
                 child: Text("Berber bul",),
               )
@@ -136,7 +136,7 @@ class _HomeScreenState extends State {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              margin: const EdgeInsets.only(top: 20, left: 20, right: 10),
+              margin: EdgeInsets.only(top: screenWidth!*0.05, left: screenWidth!*0.05, right: screenWidth!*0.025),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -151,32 +151,41 @@ class _HomeScreenState extends State {
               ),
               height: 200,
               width: 171,
-              padding: EdgeInsets.only(bottom: 20),
+              padding: EdgeInsets.only(bottom: screenWidth!*0.05),
               child: Stack(
-                children: const [
-                  Align(
-                    alignment: Alignment.center,
-                    child: Icon(
-                      Icons.ac_unit,
-                      color: primaryColor,
-                      size: 50,
-                    ),
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+
+                      Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(bottom: screenWidth!*0.12),
+                        child: Icon(
+                          Icons.ac_unit,
+                          color: primaryColor,
+                          size: screenWidth!*0.12,
+                        ),
+                      ),
+
+                    ],
                   ),
-                  Align(
+                  Container(
                     alignment: Alignment.bottomCenter,
                     child: Text(
                       "Hizli Randevu",
                       style: TextStyle(
                         color: primaryColor,
-                        fontSize: 25,
+                        fontSize: screenWidth!*0.06,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   )
                 ],
               )
             ),
             Container(
-                margin: const EdgeInsets.only(top: 20, left: 10, right: 20),
+                margin: EdgeInsets.only(top: screenWidth!*0.05, right: screenWidth!*0.05,  left: screenWidth!*0.025),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -191,26 +200,34 @@ class _HomeScreenState extends State {
                 ),
                 height: 200,
                 width: 171,
-                padding: EdgeInsets.only(bottom: 20),
+                padding: EdgeInsets.only(bottom: screenWidth!*0.05),
                 child: Stack(
-                  children: const [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Icon(
-                        Icons.ac_unit,
-                        color: primaryColor,
-                        size: 50,
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
 
+                        Container(
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.only(bottom: screenWidth!*0.12),
+                          child: Icon(
+                            Icons.ac_unit,
+                            color: secondaryColor,
+                            size: screenWidth!*0.12,
+                          ),
+                        ),
+
+                      ],
+                    ),
+                    Container(
+                      alignment: Alignment.bottomCenter,
                       child: Text(
                         "Yeni Randevu",
                         style: TextStyle(
-                          color: primaryColor,
-                          fontSize: 25,
+                          color: secondaryColor,
+                          fontSize: screenWidth!*0.06,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     )
                   ],

@@ -44,25 +44,25 @@ class _HomeScreenState extends State {
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(50),
-                  bottomRight: Radius.circular(50)),
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(screenWidth!*0.12),
+                  bottomRight: Radius.circular(screenWidth!*0.12)),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.5),
                   spreadRadius: 5,
                   blurRadius: 10,
-                  offset: Offset(0, 1), // changes position of shadow
+                  offset: Offset(0, screenWidth!*0.0024271845), // changes position of shadow
                 ),
               ],
             ),
-            height: 56,
+            height: screenWidth!*0.136,
             width: screenWidth! * 5 / 6,
             child: Padding(
-              padding: const EdgeInsets.only(left: 25),
+              padding: EdgeInsets.only(left: screenWidth!*0.06),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children:  const [
                   Text('Merhaba, Derda!',
                       style: TextStyle(
                         color: primaryColor,
@@ -78,10 +78,10 @@ class _HomeScreenState extends State {
       elevation: 0,
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 8),
+          padding: EdgeInsets.only(right: screenWidth!*0.02),
           child: IconButton(
               onPressed: () {},
-              icon: const Icon(Icons.account_circle_outlined, size: 40),
+              icon:  Icon(Icons.account_circle_outlined, size: screenWidth!*0.097),
               color: primaryColor),
         )
       ],

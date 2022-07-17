@@ -27,7 +27,14 @@ class ListItem {
           width: itemWidth,
           decoration: BoxDecoration(
             color: itemBgColor??Colors.white,
-            border: Border.all(),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            boxShadow: [BoxShadow(
+              color: fontColor.withOpacity(0.5),
+              blurRadius: 5,
+              spreadRadius: 1,
+              blurStyle: BlurStyle.outer,
+              offset: Offset.fromDirection(2.0),
+            )]
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

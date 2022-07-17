@@ -4,7 +4,11 @@ import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/navbar.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 
+import '../widgets/appbar.dart';
+import '../widgets/home_screen_btn.dart';
+
 class HomeScreen extends StatefulWidget {
+
   @override
   State<StatefulWidget> createState() {
     return _HomeScreenState();
@@ -12,9 +16,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State {
+  late String title;
+
   @override
   void initState() {
     super.initState();
+    title="Merhaba, Derda!";
   }
 
   @override
@@ -22,74 +29,11 @@ class _HomeScreenState extends State {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: buildAppBar(),
+      appBar: Appbar(title).build(context),
       body: Column(
         children: [mapsBody(), buttonsBody(), lastBaberBody()],
       ),
       bottomNavigationBar: Navbar(0, context),
-    );
-  }
-
-  buildAppBar() {
-    return AppBar(
-      /*title: const Text("Burada Randevu Yaziyor"),
-        titleTextStyle: const TextStyle(color: primaryColor),*/
-      backgroundColor: secondaryColor,
-      automaticallyImplyLeading: false,
-      centerTitle: false,
-      titleSpacing: 0.0,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(screenWidth! * 0.12),
-                  bottomRight: Radius.circular(screenWidth! * 0.12)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 10,
-                  offset: Offset(
-                      0,
-                      screenWidth! *
-                          0.0024271845), // changes position of shadow
-                ),
-              ],
-            ),
-            height: screenWidth! * 0.17,
-            width: screenWidth! * 5 / 6,
-            child: Padding(
-              padding: EdgeInsets.only(left: screenWidth! * 0.06),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
-                  Text('Merhaba, Derda!',
-                      style: TextStyle(
-                        color: primaryColor,
-                        fontFamily: 'Montserrat',
-                      )),
-                ],
-              ),
-            ),
-          ),
-          // Your widgets here
-        ],
-      ),
-      elevation: 0,
-      actions: [
-        Padding(
-          padding: EdgeInsets.only(right: screenWidth! * 0.02),
-          child: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.account_circle_outlined,
-                  size: screenWidth! * 0.097),
-              color: primaryColor),
-        )
-      ],
     );
   }
 
@@ -107,148 +51,155 @@ class _HomeScreenState extends State {
     return Column(
       children: [
         Container(
-            padding: EdgeInsets.only(left: screenWidth! * 0.01),
-            margin: EdgeInsets.only(
-                top: screenWidth! * 0.1,
-                left: screenWidth! * 0.06,
-                right: screenWidth! * 0.06),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  spreadRadius: 0.5,
-                  blurRadius: 0,
-                  offset: const Offset(0, 1), // changes position of shadow
-                ),
-              ],
-            ),
-            height: screenWidth! * 0.12,
-            child: Stack(
-              children: [
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Icon(
-                    Icons.search,
+          padding: EdgeInsets.only(left: screenWidth! * 0.01),
+          margin: EdgeInsets.only(
+              top: screenWidth! * 0.1,
+              left: screenWidth! * 0.06,
+              right: screenWidth! * 0.06),
+          child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
+              ),
+              onPressed: () {  },
+              child: Stack(
+                children: const [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Icon(
+                      Icons.search,
+                      color: fontColor,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: screenWidth! * 0.36,
-                ),
-                const Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Berber bul",
-                  ),
-                )
-              ],
-            )),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Berber bul",
+                      style: TextStyle(color: fontColor),
+                    ),
+                  )
+                ],
+              )),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+            HomeScreenBtn().build(
+                btnHeigth : screenWidth! * 0.48,
+                btnWidth : screenWidth! * 0.41,
+                btnBottomPadding : screenWidth! * 0.05,
+                btnBgColor : Colors.white,
+                btnIcon : "assets/images/BarberIconBig.png",
+                btnIconHeigth : screenWidth! * 0.213,
+                btnIconWidth : screenWidth! * 0.278,
+                btnIconLeftPadding : screenWidth! * 0.04,
+                btnTxt : "Hizli Randevu",
+                btnTxtFontSize : screenWidth! * 0.06,
+                btnLeftMargin : screenWidth! * 0.05,
+                btnRightMargin : screenWidth! * 0.025,
+                btnTopMargin : screenWidth! * 0.05,
+                btnBottomMargin : null),
+            /*Container(
                 margin: EdgeInsets.only(
                     top: screenWidth! * 0.05,
                     left: screenWidth! * 0.05,
                     right: screenWidth! * 0.025),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.5),
-                      spreadRadius: 0.5,
-                      blurRadius: 0,
-                      offset: const Offset(0, 1), // changes position of shadow
-                    ),
-                  ],
-                ),
                 height: screenWidth! * 0.48,
                 width: screenWidth! * 0.41,
                 padding: EdgeInsets.only(bottom: screenWidth! * 0.05),
-                child: Stack(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding:
-                              EdgeInsets.only(left: screenWidth! * 0.02975),
-                          alignment: Alignment.center,
-                          margin: EdgeInsets.only(bottom: screenWidth! * 0.12),
-                          child: Image.asset(
-                            "assets/images/BarberIconBig.png",
-                            color: primaryColor,
-                            height: screenWidth! * 0.213,
-                            width: screenWidth! * 0.278,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      alignment: Alignment.bottomCenter,
-                      child: Text(
-                        "Hizli Randevu",
-                        style: TextStyle(
+                child: ElevatedButton(
+
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
+                  ),
+                  onPressed: () {  },
+                  child: Stack(
+                    children: [
+                      Container(
+
+                        margin: EdgeInsets.only(top: 25, left: screenWidth! * 0.04),
+                        child: Image.asset(
+                          "assets/images/BarberIconBig.png",
                           color: primaryColor,
-                          fontSize: screenWidth! * 0.06,
+                          height: screenWidth! * 0.213,
+                          width: screenWidth! * 0.278,
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                    )
-                  ],
-                )),
-            Container(
+                      Container(
+                        alignment: Alignment.bottomCenter,
+                        child: Text(
+                          "Hizli Randevu",
+                          style: TextStyle(
+                            color: primaryColor,
+                            fontSize: screenWidth! * 0.06,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                )),*/
+            HomeScreenBtn().build(
+                btnHeigth : screenWidth! * 0.48,
+                btnWidth : screenWidth! * 0.41,
+                btnBottomPadding : screenWidth! * 0.05,
+                btnBgColor : Colors.white,
+                btnIcon : "assets/images/CalendarIcon.png",
+                btnIconHeigth : screenWidth! * 0.213,
+                btnIconWidth : screenWidth! * 0.20,
+                btnIconColor: secondaryColor,
+                btnIconLeftPadding : screenWidth!*0.078,
+                btnTxt : "Yeni Randevu",
+                btnTxtFontSize : screenWidth! * 0.06,
+                btnTxtColor: secondaryColor,
+                btnLeftMargin : screenWidth! * 0.025,
+                btnRightMargin : screenWidth! * 0.05,
+                btnTopMargin : screenWidth! * 0.05,
+                btnBottomMargin : null),
+            /*Container(
                 margin: EdgeInsets.only(
                     top: screenWidth! * 0.05,
                     right: screenWidth! * 0.05,
                     left: screenWidth! * 0.025),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.5),
-                      spreadRadius: 0.5,
-                      blurRadius: 0,
-                      offset: const Offset(0, 1), // changes position of shadow
-                    ),
-                  ],
-                ),
                 height: screenWidth! * 0.48,
                 width: screenWidth! * 0.41,
                 padding: EdgeInsets.only(bottom: screenWidth! * 0.05),
-                child: Stack(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          alignment: Alignment.center,
-                          margin: EdgeInsets.only(bottom: screenWidth! * 0.12),
-                          child: Image.asset(
-                            "assets/images/CalendarIcon.png",
-                            color: secondaryColor,
-                            height: screenWidth! * 0.213,
-                            width: screenWidth! * 0.20,
+                child: ElevatedButton(
+
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
+                  ),
+                  onPressed: () {  },
+                  child: Stack(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.only(bottom: screenWidth! * 0.12),
+                            child: Image.asset(
+                              "assets/images/CalendarIcon.png",
+                              color: secondaryColor,
+                              height: screenWidth! * 0.213,
+                              width: screenWidth! * 0.20,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      alignment: Alignment.bottomCenter,
-                      child: Text(
-                        "Yeni Randevu",
-                        style: TextStyle(
-                          color: secondaryColor,
-                          fontSize: screenWidth! * 0.06,
-                        ),
-                        textAlign: TextAlign.center,
+                        ],
                       ),
-                    )
-                  ],
-                )),
+                      Container(
+                        alignment: Alignment.bottomCenter,
+                        child: Text(
+                          "Yeni Randevu",
+                          style: TextStyle(
+                            color: secondaryColor,
+                            fontSize: screenWidth! * 0.06,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                )),*/
           ],
         ),
 

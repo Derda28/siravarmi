@@ -36,6 +36,7 @@ dependencies:
   syncfusion_flutter_maps:
   location:
   font_awesome_flutter:
+  flutter_svg:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -1,14 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:siravarmi/screens/appointment_screen.dart';
 import 'package:siravarmi/screens/home_screen.dart';
+import 'package:siravarmi/screens/notification_screen.dart';
+import 'package:siravarmi/screens/settings_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 
 
-class Navbar extends StatelessWidget{
+class Navbar extends StatefulWidget{
 
   int index;
   BuildContext context2;
-  Navbar(this.index, this.context2);
+  Navbar(this.index, this.context2, {Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _NavbarState(index, context2);
+  }
+
+
+
+}
+
+class _NavbarState extends State{
+
+  late int index;
+  late BuildContext context2;
+  _NavbarState(this.index, this.context2);
 
 
   @override
@@ -23,10 +40,10 @@ class Navbar extends StatelessWidget{
           width: screenWidth!/4,
           height: 50,
           child: ElevatedButton(
-              onPressed: buttonPressed(0),
+              onPressed: () =>buttonPressed(0),
               style: ButtonStyle(
-                backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
-                overlayColor: index!=0 ? MaterialStateColor.resolveWith((states) => fontColor.withOpacity(0.5)):MaterialStateColor.resolveWith((states) => Colors.white),
+                  backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
+                  overlayColor: index!=0 ? MaterialStateColor.resolveWith((states) => fontColor.withOpacity(0.5)):MaterialStateColor.resolveWith((states) => Colors.white),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(0),
@@ -48,7 +65,7 @@ class Navbar extends StatelessWidget{
           width: screenWidth!/4,
           height: 50,
           child: ElevatedButton(
-              onPressed: buttonPressed(1),
+              onPressed: () =>buttonPressed(1),
               style: ButtonStyle(
                   backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
                   overlayColor: index!=1 ? MaterialStateColor.resolveWith((states) => fontColor.withOpacity(0.5)):MaterialStateColor.resolveWith((states) => Colors.white),
@@ -73,7 +90,7 @@ class Navbar extends StatelessWidget{
           width: screenWidth!/4,
           height: 50,
           child: ElevatedButton(
-              onPressed: buttonPressed(2),
+              onPressed: () =>buttonPressed(2),
               style: ButtonStyle(
                   backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
                   overlayColor: index!=2 ? MaterialStateColor.resolveWith((states) => fontColor.withOpacity(0.5)):MaterialStateColor.resolveWith((states) => Colors.white),
@@ -98,7 +115,7 @@ class Navbar extends StatelessWidget{
           width: screenWidth!/4,
           height: 50,
           child: ElevatedButton(
-              onPressed: buttonPressed(3),
+              onPressed: () =>buttonPressed(3),
               style: ButtonStyle(
                   backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
                   overlayColor: index!=3 ? MaterialStateColor.resolveWith((states) => fontColor.withOpacity(0.5)):MaterialStateColor.resolveWith((states) => Colors.white),
@@ -124,6 +141,7 @@ class Navbar extends StatelessWidget{
   }
 
   buttonPressed(int whichOne) {
+    print("GirdiAMK");
     if(whichOne!=index){
       switch(whichOne){
         case 0:
@@ -134,10 +152,15 @@ class Navbar extends StatelessWidget{
           Navigator.pushReplacement(context2, MaterialPageRoute(
               builder: (BuildContext context) => AppointmentScreen()));
           break;
-
+        case 2:
+          Navigator.pushReplacement(context2, MaterialPageRoute(
+              builder: (BuildContext context) => NotificationScreen()));
+          break;
+        case 3:
+          Navigator.pushReplacement(context2, MaterialPageRoute(
+              builder: (BuildContext context) => SettingsScreen()));
+          break;
       }
     }
   }
-
-
 }

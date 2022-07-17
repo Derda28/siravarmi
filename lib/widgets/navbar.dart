@@ -1,13 +1,15 @@
-
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:siravarmi/screens/appointment_screen.dart';
+import 'package:siravarmi/screens/home_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 
 
 class Navbar extends StatelessWidget{
 
   int index;
-  Navbar(this.index);
+  BuildContext context2;
+  Navbar(this.index, this.context2);
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class Navbar extends StatelessWidget{
           width: screenWidth!/4,
           height: 50,
           child: ElevatedButton(
-              onPressed: (){},
+              onPressed: buttonPressed(0),
               style: ButtonStyle(
                 backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
                 overlayColor: index!=0 ? MaterialStateColor.resolveWith((states) => fontColor.withOpacity(0.5)):MaterialStateColor.resolveWith((states) => Colors.white),
@@ -46,7 +48,7 @@ class Navbar extends StatelessWidget{
           width: screenWidth!/4,
           height: 50,
           child: ElevatedButton(
-              onPressed: (){},
+              onPressed: buttonPressed(1),
               style: ButtonStyle(
                   backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
                   overlayColor: index!=1 ? MaterialStateColor.resolveWith((states) => fontColor.withOpacity(0.5)):MaterialStateColor.resolveWith((states) => Colors.white),
@@ -71,7 +73,7 @@ class Navbar extends StatelessWidget{
           width: screenWidth!/4,
           height: 50,
           child: ElevatedButton(
-              onPressed: (){},
+              onPressed: buttonPressed(2),
               style: ButtonStyle(
                   backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
                   overlayColor: index!=2 ? MaterialStateColor.resolveWith((states) => fontColor.withOpacity(0.5)):MaterialStateColor.resolveWith((states) => Colors.white),
@@ -96,7 +98,7 @@ class Navbar extends StatelessWidget{
           width: screenWidth!/4,
           height: 50,
           child: ElevatedButton(
-              onPressed: (){},
+              onPressed: buttonPressed(3),
               style: ButtonStyle(
                   backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
                   overlayColor: index!=3 ? MaterialStateColor.resolveWith((states) => fontColor.withOpacity(0.5)):MaterialStateColor.resolveWith((states) => Colors.white),
@@ -121,6 +123,21 @@ class Navbar extends StatelessWidget{
     );
   }
 
+  buttonPressed(int whichOne) {
+    if(whichOne!=index){
+      switch(whichOne){
+        case 0:
+          Navigator.pushReplacement(context2, MaterialPageRoute(
+              builder: (BuildContext context) => HomeScreen()));
+          break;
+        case 1:
+          Navigator.pushReplacement(context2, MaterialPageRoute(
+              builder: (BuildContext context) => AppointmentScreen()));
+          break;
+
+      }
+    }
+  }
 
 
 }

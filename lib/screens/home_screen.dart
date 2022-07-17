@@ -26,7 +26,7 @@ class _HomeScreenState extends State {
       body: Column(
         children: [mapsBody(), buttonsBody(), lastBaberBody()],
       ),
-      bottomNavigationBar: Navbar(0),
+      bottomNavigationBar: Navbar(0, context),
     );
   }
 

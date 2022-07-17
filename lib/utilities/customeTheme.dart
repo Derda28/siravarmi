@@ -9,7 +9,7 @@ const Color secondaryColor = Color(0xFFFF1235);*/
 
 final customTheme = ThemeData(
   appBarTheme: const AppBarTheme(
-    color: Colors.white,
+    color: primaryColor,
   ),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     elevation : 20,

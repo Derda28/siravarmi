@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/navbar.dart';
 
+import '../widgets/appbar.dart';
+
 class SettingsScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -15,7 +17,7 @@ class _SettingScreenState extends State {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: buildAppBar(),
+      appBar: Appbar("Menü").build(context),
       body: Column(
         children: [avatarBody()],
       ),
@@ -23,7 +25,7 @@ class _SettingScreenState extends State {
     );
   }
 
-  buildAppBar() {
+  /*buildAppBar() {
     return AppBar(
       backgroundColor: secondaryColor,
       automaticallyImplyLeading: false,
@@ -79,7 +81,7 @@ class _SettingScreenState extends State {
         )
       ],
     );
-  }
+  }*/
 
   avatarBody() {
     return Stack(

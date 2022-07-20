@@ -37,6 +37,11 @@ dependencies:
   location:
   font_awesome_flutter:
   flutter_svg:
+  sliding_up_panel:
+  cached_network_image:
+  flutter_tags:
+  shared_preferences:
+  syncfusion_flutter_sliders:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -72,5 +77,10 @@ flutter:
         - asset: assets/fonts/Montserrat-SemiBoldItalic.ttf
           style: italic
 
+    - family: Montserrat-Medium
+      fonts:
+        - asset: assets/fonts/Montserrat-Medium.ttf
+
   assets:
     - assets/images/
+    - BarberListExample.json

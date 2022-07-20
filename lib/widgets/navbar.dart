@@ -4,6 +4,7 @@ import 'package:siravarmi/screens/home_screen.dart';
 import 'package:siravarmi/screens/notification_screen.dart';
 import 'package:siravarmi/screens/settings_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
+import 'package:siravarmi/utilities/custom_screen_route.dart';
 
 
 class Navbar extends StatefulWidget{
@@ -145,20 +146,20 @@ class _NavbarState extends State{
     if(whichOne!=index){
       switch(whichOne){
         case 0:
-          Navigator.pushReplacement(context2, MaterialPageRoute(
-              builder: (BuildContext context) => HomeScreen()));
+          Navigator.pushReplacement(context2, CustomScreenRoute(
+              child: HomeScreen()));
           break;
         case 1:
-          Navigator.pushReplacement(context2, MaterialPageRoute(
-              builder: (BuildContext context) => AppointmentScreen()));
+          Navigator.pushReplacement(context2, CustomScreenRoute(
+               child: AppointmentScreen()));
           break;
         case 2:
-          Navigator.pushReplacement(context2, MaterialPageRoute(
-              builder: (BuildContext context) => NotificationScreen()));
+          Navigator.pushReplacement(context2, CustomScreenRoute(
+              child: NotificationScreen()));
           break;
         case 3:
-          Navigator.pushReplacement(context2, MaterialPageRoute(
-              builder: (BuildContext context) => SettingsScreen()));
+          Navigator.pushReplacement(context2, CustomScreenRoute(
+              child: SettingsScreen()));
           break;
       }
     }

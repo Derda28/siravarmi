@@ -8,7 +8,6 @@ class Appbar extends AppBar{
 
 
   PreferredSizeWidget build(BuildContext context) {
-    print("Appbara girdi!---------------");
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     return AppBar(
@@ -62,7 +61,7 @@ class Appbar extends AppBar{
               onPressed: () {},
               icon: Icon(Icons.account_circle_outlined,
                   size: screenWidth! * 0.097),
-              color: primaryColor),
+              color: Colors.white),
         )
       ],
     );

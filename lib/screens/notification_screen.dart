@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siravarmi/widgets/filter_btn.dart';
 
 import '../utilities/consts.dart';
 import '../widgets/appbar.dart';
@@ -15,6 +16,8 @@ class NotificationScreen extends StatefulWidget{
 }
 
 class _NotificationState extends State{
+
+  
   @override
   Widget build(BuildContext context) {
 
@@ -27,6 +30,8 @@ class _NotificationState extends State{
     );
   }
 
-  buildBody() {}
+  buildBody() {
+
+  }
 
 }

@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/barberList_screen.dart';
 import '../utilities/consts.dart';
 
 class HomeScreenBtn {
   Widget build(
-      {required double btnHeigth,
+      { required BuildContext btnClick,
+        required double btnHeigth,
         required double btnWidth,
         double? btnBottomPadding,
         double? btnLeftMargin,
@@ -19,6 +21,7 @@ class HomeScreenBtn {
         Color? btnIconColor,
         double? btnIconLeftPadding,
         double? btnIconRightPadding,
+        String? btnOverlayColor,
         required String btnTxt,
         required double btnTxtFontSize,
         Color? btnTxtColor
@@ -36,8 +39,17 @@ class HomeScreenBtn {
 
           style: ButtonStyle(
             backgroundColor: MaterialStateColor.resolveWith((states) => btnBgColor),
+            overlayColor: MaterialStateColor.resolveWith((states) {
+              if(btnOverlayColor == "mavi"){
+                return secondaryColor.withOpacity(0.3);
+              }else{
+                return primaryColor.withOpacity(0.3);
+              }
+            }),
+            animationDuration: Duration(milliseconds: 100),
+
           ),
-          onPressed: () {  },
+          onPressed: () => Navigator.push(btnClick, MaterialPageRoute(builder: (context) => BarberListScreen())),
           child: Stack(
             children: [
               Container(

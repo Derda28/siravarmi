@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/navbar.dart';
+import 'package:siravarmi/widgets/search_btn.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 
 import '../widgets/appbar.dart';
 import '../widgets/home_screen_btn.dart';
+import 'barberList_screen.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -50,7 +52,8 @@ class _HomeScreenState extends State {
   buttonsBody() {
     return Column(
       children: [
-        Container(
+        SearchBtn().build(height: screenWidth!*50/screenWidth!, btnClick: context, whichScreen: "list"),
+        /*Container(
           padding: EdgeInsets.only(left: screenWidth! * 0.01),
           margin: EdgeInsets.only(
               top: screenWidth! * 0.1,
@@ -79,7 +82,7 @@ class _HomeScreenState extends State {
                   )
                 ],
               )),
-        ),
+        ),*/
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -96,8 +99,11 @@ class _HomeScreenState extends State {
                 btnTxtFontSize : screenWidth! * 0.06,
                 btnLeftMargin : screenWidth! * 0.05,
                 btnRightMargin : screenWidth! * 0.025,
+                btnOverlayColor: "mavi",
                 btnTopMargin : screenWidth! * 0.05,
-                btnBottomMargin : null),
+                btnBottomMargin : null,
+                btnClick: context,
+            ),
             /*Container(
                 margin: EdgeInsets.only(
                     top: screenWidth! * 0.05,
@@ -139,6 +145,7 @@ class _HomeScreenState extends State {
                   ),
                 )),*/
             HomeScreenBtn().build(
+                btnClick: context,
                 btnHeigth : screenWidth! * 0.48,
                 btnWidth : screenWidth! * 0.41,
                 btnBottomPadding : screenWidth! * 0.05,

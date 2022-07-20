@@ -22,5 +22,16 @@ final customTheme = ThemeData(
       color: primaryColor,
     )
   ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+      overlayColor: MaterialStateProperty.resolveWith<Color?>(
+            (Set<MaterialState> states) {
+          if (states.contains(MaterialState.pressed))
+            return Colors.redAccent; //<-- SEE HERE
+          return null; // Defer to the widget's default.
+        },
+      ),
+    )
+  ),
   scaffoldBackgroundColor: bgColor,
 );

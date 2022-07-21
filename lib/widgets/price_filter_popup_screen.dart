@@ -17,7 +17,6 @@ class _PriceFilterPopupState extends State {
 
   @override
   Widget build(BuildContext context) {
-    print("build is entered");
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(20.0),

@@ -61,7 +61,7 @@ class _AppointmentState extends State{
             minPrice: 50,
             assessmentTxt: "3,9 (+199)",
             date: "Yarin",
-            time: "15:30")
+            time: "15:30", profileURL: 'http://dummyimage.com/217x156.png/ff4444/ffffff',)
 
     );
   }

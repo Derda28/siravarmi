@@ -1,3 +1,4 @@
+
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -14,5 +15,9 @@ double? screenWidth;
 double designWidth = 412.0;
 const String primaryFontFamily = "Montserrat";
 const String secondaryFontFamily = "Montserrat-Medium";
+
+double getSize(double sizeNumber){
+  return screenWidth!*(sizeNumber/designWidth);
+}
 
 

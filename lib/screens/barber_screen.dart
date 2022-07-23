@@ -1,28 +1,54 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:siravarmi/widgets/search_btn.dart';
+import 'package:siravarmi/widgets/selected_service_popup_screen.dart';
+import 'package:siravarmi/widgets/slidingUpPanels/barber_slidingUpPanel.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import '../models/barber_model.dart';
+import '../routes/hero_dialog_route.dart';
 import '../utilities/consts.dart';
+import '../utilities/custom_rect_tween.dart';
 
 class BarberScreen extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return _BarberState();
-  }
-}
-
-class _BarberState extends State {
-  double profileHeigt = 300;
   String profileURL =
       "https://static.booksy.com/static/live/covers/barbers.jpg";
   String barberName = "Salon AS";
   String assessmentTxt = "3.1 (+200)";
   String adressInfo =
       "İstanbul Beykoz İstanbul Beykoz İstanbul Beykoz İstanbul Beykoz İstanbul Beykozİstanbul Beykoz İstanbul Beykoz İstanbul Beykoz ";
+
+  BarberScreen(BarberModel barberModel, {Key? key}) : super(key: key) {
+    barberName = barberModel.title;
+    profileURL = barberModel.profileURL;
+    assessmentTxt = barberModel.assessment;
+    adressInfo = barberModel.address;
+  }
+
+  @override
+  State<BarberScreen> createState() => _BarberScreenState();
+}
+
+class _BarberScreenState extends State<BarberScreen> {
+  double profileHeigt = 300;
+
   String phoneNumber = "0 (850) 442 15 22";
+
   String shopTime = "08.00 - 17.00";
 
   PageController pageController = PageController(initialPage: 0);
+
+  final panelController = PanelController();
+
+  late final ScrollController  controller;
+
+  final double right1=211, right2=115, right3=0, left1=0, left2 = 111, left3=205;
+
+  double left = 0, right = 211;
+
+  Color serviceColor = Colors.white, infosColor = primaryColor, commentsColor = primaryColor;
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +59,10 @@ class _BarberState extends State {
         appBar: AppBar(
           title: Text("Sira Var Mi"),
         ),
-        body: frontBody());
+        body: frontBody(context));
   }
 
-  frontBody() {
+  frontBody(BuildContext context) {
     return Stack(
       children: [
         Container(
@@ -52,7 +78,7 @@ class _BarberState extends State {
           ),
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: NetworkImage(profileURL), fit: BoxFit.cover)),
+                  image: NetworkImage(widget.profileURL), fit: BoxFit.cover)),
           height: profileHeigt,
           width: screenWidth,
         ),
@@ -66,7 +92,7 @@ class _BarberState extends State {
           child: SizedBox(
             width: screenWidth! * (220 / 412),
             child: Text(
-              barberName,
+              widget.barberName,
               style: TextStyle(
                 fontSize: screenWidth! * (35 / 412),
               ),
@@ -109,7 +135,7 @@ class _BarberState extends State {
                       top: screenWidth! * (12 / 412),
                       left: screenWidth! * (3 / 412)),
                   child: Text(
-                    assessmentTxt,
+                    widget.assessmentTxt,
                     style: TextStyle(
                       fontSize: screenWidth! * (13 / 412),
                       color: primaryColor,
@@ -135,96 +161,106 @@ class _BarberState extends State {
                 borderRadius: BorderRadius.all(
                     Radius.circular(screenWidth! * (25 / 412))),
                 border: Border.all(color: Colors.transparent)),
-            child: Row(
+            child: Stack(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                      color: pageController.initialPage == 0
-                          ? secondaryColor
-                          : Colors.white),
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          color: Colors.transparent,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(screenWidth! * (18 / 412))),
-                        )),
-                    child: Text(
-                      "HİZMETLER",
-                      style: TextStyle(
-                          color: primaryColor,
-                          fontSize: screenWidth! * (13 / 412)),
+                Positioned(
+                  left: left,
+                  right: right,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color:  secondaryColor,
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(screenWidth! * (25 / 412))),
                     ),
-                    onPressed: () {
-                      setState(() {
-                        pageController.animateToPage(0,
-                            duration: Duration(milliseconds: 100),
-                            curve: Curves.ease);
-                      });
-                    },
+                    height: 48,
                   ),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                      color: pageController.initialPage == 1
-                          ? secondaryColor
-                          : Colors.white),
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(
-                        color: Colors.transparent,
-                      ),
-                      shape: RoundedRectangleBorder(
+                Row(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          color:  Colors.transparent,
                         borderRadius: BorderRadius.all(
-                            Radius.circular(screenWidth! * (18 / 412))),
+                            Radius.circular(screenWidth! * (25 / 412))),
+                      ),
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            side: BorderSide(
+                              color: Colors.transparent,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(screenWidth! * (18 / 412))),
+                            )),
+                        child: Text(
+                          "HİZMETLER",
+                          style: TextStyle(
+                              color: serviceColor,
+                              fontSize: screenWidth! * (13 / 412)),
+                        ),
+                        onPressed: () {
+                          pageController.animateToPage(0,
+                              duration: Duration(milliseconds: 100),
+                              curve: Curves.ease);
+                          _toggleFirst();
+                        },
                       ),
                     ),
-                    child: Text(
-                      "BİLGİLER",
-                      style: TextStyle(
-                          color: primaryColor,
-                          fontSize: screenWidth! * (13 / 412)),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        pageController.animateToPage(1,
-                            duration: Duration(milliseconds: 100),
-                            curve: Curves.ease);
-                      });
-                    },
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      color: pageController.initialPage == 2
-                          ? secondaryColor
-                          : Colors.white),
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          color: Colors.transparent,
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.transparent),
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            color: Colors.transparent,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(screenWidth! * (18 / 412))),
+                          ),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(screenWidth! * (18 / 412))),
-                        )),
-                    child: Text(
-                      "YORUMLAR",
-                      style: TextStyle(
-                          color: primaryColor,
-                          fontSize: screenWidth! * (13 / 412)),
+                        child: Text(
+                          "BİLGİLER",
+                          style: TextStyle(
+                              color: infosColor,
+                              fontSize: screenWidth! * (13 / 412)),
+                        ),
+                        onPressed: () {
+                          pageController.animateToPage(1,
+                              duration: Duration(milliseconds: 100),
+                              curve: Curves.ease);
+                          _toggleSecond();
+                        },
+                      ),
                     ),
-                    onPressed: () {
-                      setState(() {
-                        pageController.animateToPage(2,
-                            duration: Duration(milliseconds: 100),
-                            curve: Curves.ease);
-                      });
-                    },
-                  ),
-                )
+                    Container(
+                      decoration: BoxDecoration(
+                          color:  Colors.transparent),
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            side: BorderSide(
+                              color: Colors.transparent,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(screenWidth! * (18 / 412))),
+                            )),
+                        child: Text(
+                          "YORUMLAR",
+                          style: TextStyle(
+                              color: commentsColor,
+                              fontSize: screenWidth! * (13 / 412)),
+                        ),
+                        onPressed: () {
+                          pageController.animateToPage(2,
+                              duration: Duration(milliseconds: 100),
+                              curve: Curves.ease);
+                          _toggleThird();
+                        },
+                      ),
+                    )
+                  ],
+                ),
               ],
             ),
           ),
@@ -292,7 +328,7 @@ class _BarberState extends State {
                             top: screenWidth! * (2 / 412),
                             left: screenWidth! * (10 / 412)),
                         child: Text(
-                          adressInfo,
+                          widget.adressInfo,
                           maxLines: 4,
                           style: TextStyle(fontSize: screenWidth! * (14 / 412)),
                         ),
@@ -542,18 +578,25 @@ class _BarberState extends State {
               top: screenWidth! * ((screenHeight! - 130) / 412)),
           child: Row(
             children: [
-              Container(
-                  margin: EdgeInsets.only(left: screenWidth! * (22 / 412)),
-                  child: TextButton(
-                    child: Text(
-                        style: TextStyle(
-                            color: secondaryColor,
-                            fontSize: screenWidth! * (16 / 412)),
-                        "x Hizmet Seçili"),
-                    onPressed: () {
-                      // BURAYA FONKSİYON EKLENİCEK
-                    },
-                  )),
+              Hero(
+                tag: _heroselectedService,
+                createRectTween: (begin, end) {
+                  return CustomRectTween(begin: begin!, end: end!);
+                },
+                child: Container(
+                    color: primaryColor,
+                    margin: EdgeInsets.only(left: screenWidth! * (22 / 412)),
+                    child: TextButton(
+                      child: Text(
+                          style: TextStyle(
+                              color: secondaryColor,
+                              fontSize: screenWidth! * (16 / 412)),
+                          "x Hizmet Seçili"),
+                      onPressed: () {
+                        selectedServiceBtnClicked(context);
+                      },
+                    )),
+              ),
               Container(
                 margin: EdgeInsets.only(left: screenWidth! * (104 / 412)),
                 child: TextButton(
@@ -564,16 +607,101 @@ class _BarberState extends State {
                           fontSize: screenWidth! * (16 / 412)),
                     ),
                     onPressed: () {
-                      // BURAYA FONKSİYON EKLENİCEK
+                      appointmentBtnClicked();
                     }),
               )
             ],
+          ),
+        ),
+        SlidingUpPanel(
+          backdropEnabled: true,
+          minHeight: 0,
+          maxHeight: 250,
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black38,
+              spreadRadius: 5,
+              blurRadius: 10,
+            )
+          ],
+          controller: panelController,
+          padding: EdgeInsets.only(left: 20,right: 20,top: 20),
+          panelBuilder: (builder) => BarberSlidingUpPanel(),
+          footer: Padding(
+            padding: EdgeInsets.only(left: 180),
+            child: ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateColor.resolveWith((states) => primaryColor),
+                  overlayColor: MaterialStateColor.resolveWith((states) => secondaryColor.withOpacity(0.2))
+              ),
+              onPressed: (){},
+              child: Text(
+                "Randevu olustur",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: secondaryFontFamily,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           ),
         )
       ],
     );
   }
+
+  void appointmentBtnClicked() {
+    if(panelController.isPanelClosed){
+      panelController.open();
+    }
+  }
+
+  Future<void> selectedServiceBtnClicked(BuildContext context) async {
+    final result = await Navigator.push(context,HeroDialogRoute(builder: (context){
+      return SelectedServicePopupScreen();
+    }));
+  }
+
+  void _toggleFirst() {
+    Timer.periodic(Duration(milliseconds: 5), (timer) {
+      left=left1;
+      right=right1;
+      serviceColor = Colors.white;
+      infosColor = primaryColor;
+      commentsColor = primaryColor;
+      timer.cancel();
+      setState(() {});
+    });
+  }
+
+  void _toggleSecond() {
+    Timer.periodic(Duration(milliseconds: 5), (timer) {
+      left=left2;
+      right=right2;
+      serviceColor = primaryColor;
+      infosColor = Colors.white;
+      commentsColor = primaryColor;
+      timer.cancel();
+      setState(() {});
+    });
+  }
+
+  void _toggleThird() {
+    Timer.periodic(Duration(milliseconds: 5), (timer) {
+      left=left3;
+      right=right3;
+      serviceColor = primaryColor;
+      infosColor = primaryColor;
+      commentsColor = Colors.white;
+      timer.cancel();
+      setState(() {});
+    });
+  }
 }
+
+final String _heroselectedService = "selected-service-hero";
+
 
 class Entry {
   late final String title;

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:siravarmi/routes/hero_dialog_route.dart';
+import 'package:siravarmi/screens/select_address_popup_screen.dart';
 
 import '../utilities/consts.dart';
 
@@ -6,8 +8,18 @@ class FilterBtn extends StatelessWidget {
 
   String title,subtitle;
   IconData icon;
+  String whichBtn;
+  String? selectedCity;
+  Future<void>? whatsOnCLick;
 
-  FilterBtn({Key? key, required this.title, required this.subtitle, required this.icon}) : super(key: key);
+  FilterBtn({Key? key,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.whichBtn,
+    this.selectedCity,
+    this.whatsOnCLick
+  }) : super(key: key);
 
 
   @override
@@ -23,7 +35,7 @@ class FilterBtn extends StatelessWidget {
         padding: MaterialStateProperty.resolveWith((states) => EdgeInsets.only(left: 0)),
       ),
 
-      onPressed: (){},
+      onPressed: (){btnClicked(context);},
       child: Stack(
         children: [
           Column(
@@ -68,5 +80,20 @@ class FilterBtn extends StatelessWidget {
 
     );
   }
+
+  void btnClicked(BuildContext context) {
+    switch(whichBtn){
+      case 'cities':
+
+        break;
+      case 'districts':
+        whatsOnCLick!;
+        break;
+    }
+  }
+
+
+
+
 
 }

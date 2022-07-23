@@ -2,13 +2,14 @@ import 'package:adobe_xd/pinned.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:siravarmi/models/barber_model.dart';
 import 'package:siravarmi/screens/barber_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 
 class ListItem extends StatelessWidget{
   double itemHeigth, itemWidth, profileHeigth, profileWidth;
   Color? itemBgColor;
-  String? profileURL;
+  String profileURL;
   String title, location, assessmentTxt, date, time;
   int minPrice;
 
@@ -18,7 +19,7 @@ class ListItem extends StatelessWidget{
     this.itemBgColor,
     required this.profileHeigth,
     required this.profileWidth,
-    this.profileURL,
+    required this.profileURL,
     required this.title,
     required this.location,
     required this.minPrice,
@@ -44,7 +45,7 @@ class ListItem extends StatelessWidget{
                 ),
                 overlayColor: MaterialStateColor.resolveWith((states) => primaryColor.withOpacity(0.2))
             ),
-            onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: (context)=>BarberScreen()));},
+            onPressed: (){ itemClicked(context);},
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -58,7 +59,7 @@ class ListItem extends StatelessWidget{
                       decoration: BoxDecoration(
                         color: Colors.white,
                         image: DecorationImage(
-                          image: NetworkImage(profileURL??""),
+                          image: NetworkImage(profileURL),
                           fit: BoxFit.fitWidth,
                         ),
                         borderRadius:
@@ -175,6 +176,12 @@ class ListItem extends StatelessWidget{
         ),
       ],
     );
+  }
+
+  void itemClicked(BuildContext context) {
+    BarberModel barber = BarberModel(title: title,address: location, assessment: assessmentTxt, profileURL: profileURL);
+
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>BarberScreen(barber)));
   }
 
 

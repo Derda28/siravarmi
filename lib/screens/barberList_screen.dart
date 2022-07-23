@@ -15,9 +15,12 @@ import 'package:siravarmi/widgets/slidingUpPanels/barber_list_sliding_up_panel.d
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../widgets/list_item.dart';
+import '../widgets/search_textinput.dart';
 import 'barber_screen.dart';
 
 class BarberListScreen extends StatefulWidget {
+  const BarberListScreen({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _BarberListState();
@@ -54,41 +57,7 @@ class _BarberListState extends State {
   }
 
   buildSearchBtn() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-            height: 50,
-            width: screenWidth! * 350 / designWidth,
-            margin: EdgeInsets.only(top: 15),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Stack(children: [
-              Container(
-                  padding: EdgeInsets.only(left: 13, top: 13),
-                  child: Icon(
-                    Icons.search_rounded,
-                    color: fontColor,
-                  )),
-              Container(
-                padding: EdgeInsets.only(left: 50, bottom: 10,right: 50),
-                child: TextField(
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                      hintText: 'Arama yap',
-                      hintStyle: TextStyle(
-                        color: fontColor,
-                        fontSize: 12,
-                      )),
-                  style:
-                      TextStyle(fontSize: 14, fontFamily: secondaryFontFamily),
-                ),
-              ),
-            ]))
-      ],
-    );
+    return SearchTextinput();
   }
 
   String _heroAddTodo = 'add-todo-hero';

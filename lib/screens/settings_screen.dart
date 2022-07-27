@@ -1,4 +1,6 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/navbar.dart';
 
@@ -12,12 +14,22 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State {
+  String profileUrl =
+      "https://icdn.ensonhaber.com/crop/250x141-85/resimler/diger/esh_54955.jpg";
+  String customerName = "Mustafa Savaş";
+  double textFont = getSize(18);
+  double iconFont = getSize(22);
+  double containerHSize = getSize(80);
+  double containerWSize = getSize(166);
+  double elevationSize = getSize(4);
+  double borderSize = getSize(10);
+
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: Appbar("Menü").build(context),
+      appBar: Appbar(label:"Menü", labelHome: "", fromHome: false),
       body: Column(
         children: [avatarBody()],
       ),
@@ -25,94 +37,34 @@ class _SettingScreenState extends State {
     );
   }
 
-  /*buildAppBar() {
-    return AppBar(
-      backgroundColor: secondaryColor,
-      automaticallyImplyLeading: false,
-      centerTitle: false,
-      titleSpacing: 0.0,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(screenWidth! * 0.12),
-                  bottomRight: Radius.circular(screenWidth! * 0.12)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 10,
-                  offset: Offset(0, screenWidth! * 0.0024271845),
-                ),
-              ],
-            ),
-            height: screenWidth! * 0.136,
-            width: screenWidth! * 5 / 6,
-            child: Padding(
-              padding: EdgeInsets.only(left: screenWidth! * 0.06),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
-                  Text("Menü",
-                      style: TextStyle(
-                        color: primaryColor,
-                        fontFamily: "Montserrat",
-                        fontSize: 30,
-                      )),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-      elevation: 0,
-      actions: [
-        Padding(
-          padding: EdgeInsets.only(right: screenWidth! * 0.02),
-          child: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.account_circle_outlined,
-                  size: screenWidth! * 0.097),
-              color: primaryColor),
-        )
-      ],
-    );
-  }*/
-
   avatarBody() {
     return Stack(
       children: [
         Container(
           decoration: BoxDecoration(
+            border: Border.all(),
             image: DecorationImage(
-              image: NetworkImage(
-                  "https://icdn.ensonhaber.com/crop/250x141-85/resimler/diger/esh_54955.jpg"),
+              image: NetworkImage(profileUrl),
               fit: BoxFit.cover,
-
             ),
-            borderRadius:
-            BorderRadius.all(Radius.circular(screenWidth! * 0.12),
-
+            borderRadius: BorderRadius.all(
+              Radius.circular(getSize(50)),
             ),
           ),
-          height: 85,
-          width: 85,
-          margin: EdgeInsets.only(
-              top: screenWidth! * 0.10, left: screenWidth! * 0.10),
+          height: getSize(85),
+          width: getSize(85),
+          margin: EdgeInsets.only(top: getSize(40), left: getSize(40)),
         ),
         Container(
           margin: EdgeInsets.only(
-              top: screenWidth! * 0.16, left: screenWidth! * 0.25),
+              top: getSize(66), left: getSize(140), right: getSize(40)),
           alignment: Alignment.center,
-          child: Text(
-            "Musafa Savaş",
+          child: AutoSizeText(
+            maxLines: 1,
+            customerName,
             style: TextStyle(
               color: primaryColor,
-              fontSize: screenWidth! * 0.07,
+              fontSize: getSize(28),
             ),
           ),
         ),
@@ -120,247 +72,266 @@ class _SettingScreenState extends State {
           child: Column(
             children: <Widget>[
               Divider(
-                height: screenWidth! * 0.71,
+                height: getSize(293),
                 color: Colors.black,
-                thickness: 1,
-                indent: screenWidth! * 0.1,
-                endIndent: screenWidth! * 0.1,
+                thickness: getSize(1),
+                indent: getSize(40),
+                endIndent: getSize(40),
               )
             ],
           ),
         ),
-        Container(
-            margin: EdgeInsets.only(top: screenWidth!*0.440,left: screenWidth!*0.54),
-            decoration: BoxDecoration(
-
-              color: Colors.white,
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  spreadRadius: 1,
-                  blurRadius: 4,
-                  offset: const Offset(0,1),
-                ),
-              ],
-            ),
-
-            height: screenWidth!*0.18,
-            width: screenWidth!*0.35,
-
+        SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.only(top: getSize(146), left: getSize(30)),
+            height: getSize(592),
+            width: getSize(354),
             child: Stack(
-              children:  [
+              children: [
                 Container(
-                  padding: EdgeInsets.only(left: screenWidth!*0.007),
-                  alignment: Alignment.centerLeft,
-                  child: Icon(
-                    Icons.settings,
-                    color: Colors.grey,
-                    size: screenWidth!*0.07,
-                  ),
+                  height: containerHSize,
+                  width: containerWSize,
+                  margin: EdgeInsets.only(top: getSize(40)),
+                  child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          primary: Colors.black38,
+                          side: BorderSide(
+                              color: Colors.black38, width: getSize(2)),
+                          shadowColor: Colors.black,
+                          elevation: elevationSize,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(borderSize))),
+                          backgroundColor: Colors.white),
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(Icons.favorite,
+                              color: fontColor, size: iconFont),
+                          Text(
+                            "Favoriler",
+                            style:
+                            TextStyle(color: fontColor, fontSize: textFont),
+                          ),
+                        ],
+                      )),
                 ),
-
-                SizedBox(width: screenWidth!*0.36,),
                 Container(
-                  padding: EdgeInsets.only(left: screenWidth!*0.03),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Ayarlar",
-                    style: TextStyle(
-                      fontSize: screenWidth!*0.06,
-                      color: fontColor,
-                    ),
-                  ),
+                  height: containerHSize,
+                  width: containerWSize,
+                  margin: EdgeInsets.only(top: getSize(40), left: getSize(187)),
+                  child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          primary: Colors.black38,
+                          side: BorderSide(
+                              color: Colors.black38, width: getSize(2)),
+                          shadowColor: Colors.white,
+                          elevation: elevationSize,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(borderSize))),
+                          backgroundColor: Colors.white),
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(Icons.settings,
+                              color: fontColor, size: iconFont),
+                          Text(
+                            "Ayarlar",
+                            style:
+                            TextStyle(color: fontColor, fontSize: textFont),
+                          ),
+                        ],
+                      )),
+                ),
+                Container(
+                  height: containerHSize,
+                  width: containerWSize,
+                  margin: EdgeInsets.only(top: getSize(150)),
+                  child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          primary: Colors.black38,
+                          side: BorderSide(
+                              color: Colors.black38, width: getSize(2)),
+                          shadowColor: Colors.white,
+                          elevation: elevationSize,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(borderSize))),
+                          backgroundColor: Colors.white),
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(Icons.account_circle_outlined,
+                              color: fontColor, size: iconFont),
+                          Text(
+                            " Hesap \n Bilgileri",
+                            style:
+                            TextStyle(color: fontColor, fontSize: textFont),
+                          ),
+                        ],
+                      )),
+                ),
+                Container(
+                  height: containerHSize,
+                  width: containerWSize,
+                  margin:
+                  EdgeInsets.only(top: getSize(150), left: getSize(187)),
+                  child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          primary: Colors.black38,
+                          side: BorderSide(
+                              color: Colors.black38, width: getSize(2)),
+                          shadowColor: Colors.white,
+                          elevation: elevationSize,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(borderSize))),
+                          backgroundColor: Colors.white),
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Image(
+                              width: iconFont,
+                              height: iconFont,
+                              color: fontColor,
+                              image:
+                              AssetImage("assets/images/BarberIcon2.png")),
+                          Text(
+                            "Berberler",
+                            style:
+                            TextStyle(color: fontColor, fontSize: textFont),
+                          ),
+                        ],
+                      )),
+                ),
+                Container(
+                  height: containerHSize,
+                  width: containerWSize,
+                  margin: EdgeInsets.only(top: getSize(260)),
+                  child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          primary: Colors.black38,
+                          side: BorderSide(
+                              color: Colors.black38, width: getSize(2)),
+                          shadowColor: Colors.white,
+                          elevation: elevationSize,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(borderSize))),
+                          backgroundColor: Colors.white),
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(Icons.text_snippet_outlined,
+                              color: fontColor, size: iconFont),
+                          Text(
+                            "Hakkımızda",
+                            style:
+                            TextStyle(color: fontColor, fontSize: textFont),
+                          ),
+                        ],
+                      )),
+                ),
+                Container(
+                  height: containerHSize,
+                  width: containerWSize,
+                  margin:
+                  EdgeInsets.only(top: getSize(260), left: getSize(187)),
+                  child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          primary: Colors.black38,
+                          side: BorderSide(
+                              color: Colors.black38, width: getSize(2)),
+                          shadowColor: Colors.white,
+                          elevation: elevationSize,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(borderSize))),
+                          backgroundColor: Colors.white),
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(Icons.format_align_center,
+                              color: fontColor, size: iconFont),
+                          Text(
+                            " Kullanım\n Koşulları",
+                            style:
+                            TextStyle(color: fontColor, fontSize: textFont),
+                          ),
+                        ],
+                      )),
+                ),
+                Container(
+                  height: containerHSize,
+                  width: containerWSize,
+                  margin: EdgeInsets.only(top: getSize(370)),
+                  child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          primary: Colors.black38,
+                          side: BorderSide(
+                              color: Colors.black38, width: getSize(2)),
+                          shadowColor: Colors.white,
+                          elevation: elevationSize,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(borderSize))),
+                          backgroundColor: Colors.white),
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(Icons.security,
+                              color: fontColor, size: iconFont),
+                          Text(
+                            "Gizlilik",
+                            style:
+                            TextStyle(color: fontColor, fontSize: textFont),
+                          ),
+                        ],
+                      )),
+                ),
+                Container(
+                  height: containerHSize,
+                  width: containerWSize,
+                  margin:
+                  EdgeInsets.only(top: getSize(370), left: getSize(187)),
+                  child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          primary: Colors.black38,
+                          side: BorderSide(
+                              color: Colors.black38, width: getSize(2)),
+                          shadowColor: Colors.white,
+                          elevation: elevationSize,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(borderSize))),
+                          backgroundColor: Colors.white),
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(Icons.exit_to_app,
+                              color: Colors.red, size: iconFont),
+                          Text(
+                            "Çıkış",
+                            style: TextStyle(
+                                color: Colors.red, fontSize: textFont),
+                          ),
+                        ],
+                      )),
                 )
               ],
-            )
-
-        ),
-        Container(
-            margin: EdgeInsets.only(top: screenWidth!*0.440, left: screenWidth!*0.11),
-            decoration: BoxDecoration(
-
-              color: Colors.white,
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  spreadRadius: 1,
-                  blurRadius: 4,
-                  offset: const Offset(0,1),
-                ),
-              ],
             ),
-
-            height: screenWidth!*0.18,
-            width: screenWidth!*0.35,
-            child: Stack(
-              children:  [
-                Container(
-                  padding: EdgeInsets.only(left: screenWidth!*0.007),
-                  alignment: Alignment.centerLeft,
-                  child: Icon(
-                    Icons.settings,
-                    color: Colors.grey,
-                    size: screenWidth!*0.07,
-                  ),
-                ),
-
-                SizedBox(width: screenWidth!*0.36,),
-                Container(
-                  padding: EdgeInsets.only(left: screenWidth!*0.03),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Ayarlar",
-                    style: TextStyle(
-                      fontSize: screenWidth!*0.06,
-                      color: fontColor,
-                    ),
-                  ),
-                )
-              ],
-            )
-        ),
-        Container(
-            margin: EdgeInsets.only(top: screenWidth!*0.7, left: screenWidth!*0.11),
-            decoration: BoxDecoration(
-
-              color: Colors.white,
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  spreadRadius: 1,
-                  blurRadius: 4,
-                  offset: const Offset(0,1),
-                ),
-              ],
-            ),
-
-            height: screenWidth!*0.18,
-            width: screenWidth!*0.35,
-
-            child: Stack(
-              children:  [
-                Container(
-                  padding: EdgeInsets.only(left: screenWidth!*0.007),
-                  alignment: Alignment.centerLeft,
-                  child: Icon(
-                    Icons.settings,
-                    color: Colors.grey,
-                    size: screenWidth!*0.07,
-                  ),
-                ),
-
-                SizedBox(width: screenWidth!*0.36,),
-                Container(
-                  padding: EdgeInsets.only(left: screenWidth!*0.03),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Ayarlar",
-                    style: TextStyle(
-                      fontSize: screenWidth!*0.06,
-                      color: fontColor,
-                    ),
-                  ),
-                )
-              ],
-            )
-        ),
-        Container(
-            margin: EdgeInsets.only(top: screenWidth!*0.7, left: screenWidth!*0.54),
-            decoration: BoxDecoration(
-
-              color: Colors.white,
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  spreadRadius: 1,
-                  blurRadius: 4,
-                  offset: const Offset(0,1),
-                ),
-              ],
-            ),
-
-            height: screenWidth!*0.18,
-            width: screenWidth!*0.35,
-
-            child: Stack(
-              children:  [
-                Container(
-                  padding: EdgeInsets.only(left: screenWidth!*0.007),
-                  alignment: Alignment.centerLeft,
-                  child: Icon(
-                    Icons.settings,
-                    color: Colors.grey,
-                    size: screenWidth!*0.07,
-                  ),
-                ),
-
-                SizedBox(width: screenWidth!*0.36,),
-                Container(
-                  padding: EdgeInsets.only(left: screenWidth!*0.03),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Ayarlar",
-                    style: TextStyle(
-                      fontSize: screenWidth!*0.06,
-                      color: fontColor,
-                    ),
-                  ),
-                )
-              ],
-            )
-        ),
-        Container(
-            margin: EdgeInsets.only(top: screenWidth!*0.96, left: screenWidth!*0.11),
-            decoration: BoxDecoration(
-
-              color: Colors.white,
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  spreadRadius: 1,
-                  blurRadius: 4,
-                  offset: const Offset(0,1),
-                ),
-              ],
-            ),
-
-            height: screenWidth!*0.18,
-            width: screenWidth!*0.35,
-            child: Stack(
-              children:  [
-                Container(
-                  padding: EdgeInsets.only(left: screenWidth!*0.007),
-                  alignment: Alignment.centerLeft,
-                  child: Icon(
-                    Icons.settings,
-                    color: Colors.grey,
-                    size: screenWidth!*0.07,
-                  ),
-                ),
-
-                SizedBox(width: screenWidth!*0.36,),
-                Container(
-                  padding: EdgeInsets.only(left: screenWidth!*0.03),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Ayarlar",
-                    style: TextStyle(
-                      fontSize: screenWidth!*0.06,
-                      color: fontColor,
-                    ),
-                  ),
-                )
-              ],
-            )
-        ),
-
+          ),
+        )
       ],
     );
   }
-
 }

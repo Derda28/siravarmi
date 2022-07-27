@@ -3,6 +3,8 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 
+import '../models/user_model.dart';
+
 //aa1a45
 //FF1235FF
 
@@ -15,6 +17,9 @@ double? screenWidth;
 double designWidth = 412.0;
 const String primaryFontFamily = "Montserrat";
 const String secondaryFontFamily = "Montserrat-Medium";
+
+bool isLoggedIn = false;
+UserModel user = UserModel();
 
 double getSize(double sizeNumber){
   return screenWidth!*(sizeNumber/designWidth);

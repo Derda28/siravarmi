@@ -24,14 +24,22 @@ class _NotificationState extends State{
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: Appbar(" ").build(context),
-      body: buildBody(),
+      appBar: Appbar(label: " ", labelHome: "", fromHome: false,),
+      body: Column(
+        children: [
+          buildBody(),
+        ]
+      ),
       bottomNavigationBar: Navbar(2,context),
     );
   }
 
   buildBody() {
-
+    return Column(
+      children: [
+        Text("Test"),
+      ],
+    );
   }
 
 }

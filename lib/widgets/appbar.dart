@@ -1,17 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:siravarmi/screens/login_screen.dart';
 
 import '../utilities/consts.dart';
 
-class Appbar extends AppBar{
-  String label;
-  Appbar(this.label,{Key? key}) : super(key: key);
+class Appbar extends StatefulWidget implements PreferredSizeWidget{
+  String? label;
+  String? labelHome;
+  bool fromHome;
+  Appbar({this.label , this.labelHome, required this.fromHome, Key? key}) : super(key: key);
 
+  @override
+  State<Appbar> createState() => _AppbarState();
 
-  PreferredSizeWidget build(BuildContext context) {
+  @override
+  Size get preferredSize {
+    return Size(getSize(screenWidth!), getSize(54));
+  }
+}
+
+class _AppbarState extends State<Appbar> {
+
+  @override
+  void initState() {
+    updateTitle();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     return AppBar(
-      backgroundColor: secondaryColor,
+      backgroundColor: primaryColor,
       automaticallyImplyLeading: false,
       centerTitle: false,
       titleSpacing: 0.0,
@@ -41,7 +61,7 @@ class Appbar extends AppBar{
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(label,
+                  Text(widget.fromHome ? widget.labelHome! :widget.label!,
                       style: TextStyle(
                         color: primaryColor,
                         fontFamily: primaryFontFamily,
@@ -58,7 +78,7 @@ class Appbar extends AppBar{
         Padding(
           padding: EdgeInsets.only(right: screenWidth! * 0.02),
           child: IconButton(
-              onPressed: () {},
+              onPressed: () {profileIsClicked(context);},
               icon: Icon(Icons.account_circle_outlined,
                   size: screenWidth! * 0.097),
               color: Colors.white),
@@ -67,4 +87,26 @@ class Appbar extends AppBar{
     );
   }
 
+  Future<void> profileIsClicked(BuildContext context) async {
+    if(!isLoggedIn){
+      bool logInSuccess = await Navigator
+          .push(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
+
+      if(logInSuccess){
+        updateTitle();
+      }
+    }else{
+
+    }
+  }
+
+  updateTitle() {
+    setState((){
+      if(isLoggedIn){
+        widget.labelHome = "Merhaba "+user.name!;
+      }else{
+        widget.labelHome = "Giris Yapin.";
+      }
+    });
+  }
 }

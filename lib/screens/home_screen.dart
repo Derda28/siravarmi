@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:siravarmi/cloud_functions/dbHelperHttp.dart';
+import 'package:siravarmi/cloud_functions/db_helper_mysql1.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/navbar.dart';
 import 'package:siravarmi/widgets/search_btn.dart';
@@ -18,12 +20,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State {
-  late String title;
+
 
   @override
   void initState() {
     super.initState();
-    title="Merhaba, Derda!";
   }
 
   @override
@@ -31,7 +32,7 @@ class _HomeScreenState extends State {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: Appbar(title).build(context),
+      appBar: Appbar(fromHome: true, labelHome: "", label: ""),
       body: Column(
         children: [mapsBody(), buttonsBody(), lastBaberBody()],
       ),
@@ -236,6 +237,7 @@ class _HomeScreenState extends State {
       ],
     );
   }
+
 
 
 }

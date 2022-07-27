@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart';
 import 'package:siravarmi/widgets/search_btn.dart';
 import 'package:siravarmi/widgets/selected_service_popup_screen.dart';
 import 'package:siravarmi/widgets/slidingUpPanels/barber_slidingUpPanel.dart';
@@ -34,7 +36,7 @@ class BarberScreen extends StatefulWidget {
 class _BarberScreenState extends State<BarberScreen> {
   double profileHeigt = 300;
 
-  String phoneNumber = "0 (850) 442 15 22";
+  final String phoneNumber = "0 (850) 442 15 22";
 
   String shopTime = "08.00 - 17.00";
 
@@ -66,56 +68,60 @@ class _BarberScreenState extends State<BarberScreen> {
     return Stack(
       children: [
         Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: NetworkImage(widget.profileURL), fit: BoxFit.cover)),
+          height: profileHeigt,
+          width: screenWidth,
           child: IconButton(
             icon: Icon(Icons.favorite_border),
             onPressed: () {
               // BURAYA FONKSİYON EKLENİCEK
             },
             padding: EdgeInsets.only(
-                left: screenWidth! * (378 / 412),
-                bottom: screenWidth! * (265 / 412)),
-            iconSize: screenWidth! * (30 / 412),
+                left: getSize(378),
+                bottom: getSize(265)),
+            iconSize: getSize(30),
           ),
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: NetworkImage(widget.profileURL), fit: BoxFit.cover)),
-          height: profileHeigt,
-          width: screenWidth,
         ),
         Container(
           decoration: BoxDecoration(
             color: bgColor,
             borderRadius: BorderRadius.only(
-                topRight: Radius.circular(screenWidth! * (100 / 412)),
-                topLeft: Radius.circular(screenWidth! * (100 / 412))),
+                topRight: Radius.circular(getSize(100)),
+                topLeft: Radius.circular(getSize(100))),
           ),
+          alignment: Alignment.center,
+          margin: EdgeInsets.only(
+              top: getSize(265),bottom: getSize(470),left: getSize(60),right: getSize(60)),
           child: SizedBox(
-            width: screenWidth! * (220 / 412),
             child: Text(
+              textAlign: TextAlign.center,
+              softWrap: false,
+              overflow: TextOverflow.fade,
+              maxLines: 1,
               widget.barberName,
               style: TextStyle(
-                fontSize: screenWidth! * (35 / 412),
+                color: primaryColor,
+                fontSize: getSize(34),
               ),
             ),
           ),
-          margin: EdgeInsets.only(
-              top: screenWidth! * (275 / 412), left: screenWidth! * (66 / 412)),
-          padding: EdgeInsets.only(left: screenWidth! * (60 / 412)),
         ),
         Padding(
           padding: EdgeInsets.only(
-              top: screenWidth! * (265 / 412),
-              left: screenWidth! * (323 / 412)),
+              top: getSize(265),
+              left: getSize(326)),
           child: Container(
             child: Row(
               children: [
                 SizedBox(
-                  height: screenWidth! * (20 / 412),
-                  width: screenWidth! * (20 / 412),
+                  height: getSize(20),
+                  width: getSize(20),
                   child: Padding(
                     padding: EdgeInsets.only(
-                        left: screenWidth! * (5 / 412),
-                        top: screenWidth! * (5 / 412)),
+                        left: getSize(4),
+                        top: getSize(6)),
                     child: SvgPicture.string(
                       '<svg viewBox="194.0 149.0 35.0 35.0" ><path transform="translate(194.0, 149.0)" d="M 16.55211448669434 2.820034503936768 C 16.85749244689941 1.911513090133667 18.14250755310059 1.911513090133667 18.4478874206543 2.820034503936768 L 21.65240097045898 12.35370826721191 C 21.78610229492188 12.75147819519043 22.1539249420166 13.02346038818359 22.57341384887695 13.03473949432373 L 32.28314971923828 13.2957706451416 C 33.21295166015625 13.32076740264893 33.60798263549805 14.49047565460205 32.88371658325195 15.07407760620117 L 25.09336853027344 21.35141181945801 C 24.78136444091797 21.60282135009766 24.6495532989502 22.01619529724121 24.75843238830566 22.40180778503418 L 27.53403663635254 32.23200225830078 C 27.79165267944336 33.14437866210938 26.75349426269531 33.86965179443359 25.98543548583984 33.31387710571289 L 18.08622741699219 27.59795761108398 C 17.73640060424805 27.34482002258301 17.26360130310059 27.34482002258301 16.91377258300781 27.59795761108398 L 9.014564514160156 33.31387710571289 C 8.246504783630371 33.86965179443359 7.208349227905273 33.14437866210938 7.465964317321777 32.23200225830078 L 10.24156761169434 22.40180778503418 C 10.35044765472412 22.01619529724121 10.21863651275635 21.60282135009766 9.906631469726562 21.35141181945801 L 2.116285085678101 15.0740795135498 C 1.392019271850586 14.49047660827637 1.787049174308777 13.32076835632324 2.716848611831665 13.29577255249023 L 12.42658805847168 13.03474140167236 C 12.84607601165771 13.02346420288086 13.21389961242676 12.75148105621338 13.34760093688965 12.35371112823486 Z" fill="#002964" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>',
                       allowDrawingOutsideViewBox: true,
@@ -127,17 +133,16 @@ class _BarberScreenState extends State<BarberScreen> {
                         Pin(size: screenWidth!*15/designWidth, start: 1.0),*/
                 Container(
                   padding: EdgeInsets.only(
-                      top: screenWidth! * (1.0 / 412),
-                      right: screenWidth! * (4.0 / 412)),
+                      top: getSize(1.0),
+                      right: getSize(4.0)),
                   height: screenWidth! * 20 / designWidth,
                   width: screenWidth! * 66 / designWidth,
                   margin: EdgeInsets.only(
-                      top: screenWidth! * (12 / 412),
-                      left: screenWidth! * (3 / 412)),
+                      top: getSize(12)),
                   child: Text(
                     widget.assessmentTxt,
                     style: TextStyle(
-                      fontSize: screenWidth! * (13 / 412),
+                      fontSize: getSize(10),
                       color: primaryColor,
                     ),
                     textHeightBehavior:
@@ -152,14 +157,14 @@ class _BarberScreenState extends State<BarberScreen> {
         ),
         Padding(
           padding: EdgeInsets.only(
-              top: screenWidth! * (335 / 412),
-              left: screenWidth! * (45 / 412),
-              right: screenWidth! * (45 / 412)),
+              top: getSize(335),
+              left: getSize(45),
+              right: getSize(45)),
           child: Container(
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(
-                    Radius.circular(screenWidth! * (25 / 412))),
+                    Radius.circular(getSize(25))),
                 border: Border.all(color: Colors.transparent)),
             child: Stack(
               children: [
@@ -170,18 +175,18 @@ class _BarberScreenState extends State<BarberScreen> {
                     decoration: BoxDecoration(
                       color:  secondaryColor,
                       borderRadius: BorderRadius.all(
-                          Radius.circular(screenWidth! * (25 / 412))),
+                          Radius.circular(getSize(25))),
                     ),
-                    height: 48,
+                    height: getSize(48),
                   ),
                 ),
                 Row(
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                          color:  Colors.transparent,
+                        color:  Colors.transparent,
                         borderRadius: BorderRadius.all(
-                            Radius.circular(screenWidth! * (25 / 412))),
+                            Radius.circular(getSize(25))),
                       ),
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
@@ -190,13 +195,13 @@ class _BarberScreenState extends State<BarberScreen> {
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(
-                                  Radius.circular(screenWidth! * (18 / 412))),
+                                  Radius.circular(getSize(18))),
                             )),
                         child: Text(
                           "HİZMETLER",
                           style: TextStyle(
                               color: serviceColor,
-                              fontSize: screenWidth! * (13 / 412)),
+                              fontSize: getSize(13)),
                         ),
                         onPressed: () {
                           pageController.animateToPage(0,
@@ -216,14 +221,14 @@ class _BarberScreenState extends State<BarberScreen> {
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(
-                                Radius.circular(screenWidth! * (18 / 412))),
+                                Radius.circular(getSize(18))),
                           ),
                         ),
                         child: Text(
                           "BİLGİLER",
                           style: TextStyle(
                               color: infosColor,
-                              fontSize: screenWidth! * (13 / 412)),
+                              fontSize: getSize(13)),
                         ),
                         onPressed: () {
                           pageController.animateToPage(1,
@@ -243,13 +248,13 @@ class _BarberScreenState extends State<BarberScreen> {
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(
-                                  Radius.circular(screenWidth! * (18 / 412))),
+                                  Radius.circular(getSize(18))),
                             )),
                         child: Text(
                           "YORUMLAR",
                           style: TextStyle(
                               color: commentsColor,
-                              fontSize: screenWidth! * (13 / 412)),
+                              fontSize: getSize(13)),
                         ),
                         onPressed: () {
                           pageController.animateToPage(2,
@@ -267,20 +272,22 @@ class _BarberScreenState extends State<BarberScreen> {
         ),
         Padding(
           padding: EdgeInsets.only(
-              top: screenWidth! * (410 / 412),
-              left: screenWidth! * (40 / 412),
-              right: screenWidth! * (40 / 412),
-              bottom: screenWidth! * (60 / 412)),
+              top: getSize(410),
+              left: getSize(40),
+              right: getSize(40),
+              bottom: getSize(60)),
           child: PageView(
             physics: NeverScrollableScrollPhysics(),
             controller: pageController,
             children: [
               Container(
+                height: getSize(50),
+                width: getSize(50),
                 child: ListView.builder(
                   itemCount: data.length,
                   itemBuilder: (BuildContext context, int index) => Card(
                     color: Colors.white,
-                    margin: EdgeInsets.only(bottom: screenWidth! * (15 / 412)),
+                    margin: EdgeInsets.only(bottom: getSize(15)),
                     child: Container(
                       padding: EdgeInsets.only(),
                       decoration: BoxDecoration(border: Border.all()),
@@ -290,98 +297,102 @@ class _BarberScreenState extends State<BarberScreen> {
                     ),
                   ),
                 ),
-                height: screenWidth! * (50 / 412),
-                width: screenWidth! * (50 / 412),
               ),
               Container(
+
+                height: getSize(50),
+                width: getSize(50),
 
                 child: SingleChildScrollView(
                   child: Stack(
                     children: [
                       Container(
-                        height: 24,
-                        width: 332,
+                        height: getSize(24),
+                        width: getSize(332),
                         decoration:
                         BoxDecoration(color: bgColor),
                         child: Text(
                           "Adres Bilgisi",
-                          style: TextStyle(fontSize: 18, color: primaryColor),
+                          style: TextStyle(fontSize: getSize(18), color: primaryColor),
                         ),
                         alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.only(left: 5),
+                        padding: EdgeInsets.only(left: getSize(5)),
                       ),
                       Container(
                           decoration: BoxDecoration(
                               color: Colors.white),
-                          padding: EdgeInsets.only(bottom: 153),
-                          margin: EdgeInsets.only(top: 24),
+                          padding: EdgeInsets.only(bottom: getSize(153)),
+                          margin: EdgeInsets.only(top: getSize(24)),
                           child: SizedBox(
                             child: Icon(Icons.map,
-                                size: screenWidth! * (30 / 412)),
-                            height: 40,
-                            width: 42,
+                                size: getSize(30)),
+                            height: getSize(40),
+                            width: getSize(42),
                           )),
                       Container(
                         decoration: BoxDecoration(
                             color: Colors.white),
                         padding: EdgeInsets.only(
-                            top: screenWidth! * (2 / 412),
-                            left: screenWidth! * (10 / 412)),
+                            top: getSize(2),
+                            left: getSize(10)),
+                        margin: EdgeInsets.only(top: getSize(24), left: getSize(42)),
+                        width: getSize(292),
+                        height: getSize(195),
                         child: Text(
                           widget.adressInfo,
                           maxLines: 4,
-                          style: TextStyle(fontSize: screenWidth! * (14 / 412)),
+                          style: TextStyle(fontSize: getSize(14)),
                         ),
-                        margin: EdgeInsets.only(top: 24, left: 42),
-                        width: 292,
-                        height: 195,
                       ),
                       Container(
-                        height: 40,
-                        width: 250,
-                        margin: EdgeInsets.only(top: 112, left: 41),
+                        height: getSize(40),
+                        width: getSize(250),
+                        margin: EdgeInsets.only(top: getSize(112), left: getSize(41)),
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                               backgroundColor: Colors.lightGreen,
                               side: BorderSide(color: Colors.transparent)),
                           child: Text(
                             "Haritada Göster",
-                            style: TextStyle(fontSize: 16, color: Colors.white),
+                            style: TextStyle(fontSize: getSize(16), color: Colors.white),
                           ),
                           onPressed: () {},
                         ),
                       ),
                       Container(
-                        height: 40,
-                        width: 250,
-                        margin: EdgeInsets.only(top: 165, left: 41),
+                        height: getSize(40),
+                        width: getSize(250),
+                        margin: EdgeInsets.only(top: getSize(165), left: getSize(41)),
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                               backgroundColor: Colors.lightBlueAccent,
                               side: BorderSide(color: Colors.transparent)),
                           child: Text(
                             phoneNumber,
-                            style: TextStyle(fontSize: 16, color: Colors.white),
+                            style: TextStyle(fontSize: getSize(16), color: Colors.white),
                           ),
-                          onPressed: () {},
+                          onPressed: () async {
+                            FlutterPhoneDirectCaller.callNumber(phoneNumber);
+                          },
                         ),
                       ),
+
                       Container(
-                        height: 24,
+                        height: getSize(24),
                         alignment: Alignment.centerLeft,
                         decoration:
                         BoxDecoration(color: bgColor),
                         child: Text(
                           "Çalışma Saatleri",
-                          style: TextStyle(fontSize: 18, color: primaryColor),
+                          style: TextStyle(fontSize: getSize(18), color: primaryColor),
                         ),
-                        margin: EdgeInsets.only(top: 219),
-                        padding: EdgeInsets.only(left: 5),
+                        margin: EdgeInsets.only(top: getSize(219)),
+                        padding: EdgeInsets.only(left: getSize(5)),
                       ),
                       Stack(
                         children: [
                           Container(
-                            margin: EdgeInsets.only(top: 243),
+                            margin: EdgeInsets.only(top: getSize(243)),
                             alignment: Alignment.centerLeft,
                             decoration: BoxDecoration(
                               border: Border.all(
@@ -390,23 +401,23 @@ class _BarberScreenState extends State<BarberScreen> {
                             ),
                             child: Text(
                               "Pazartesi:",
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: getSize(16)),
                             ),
-                            height: 30,
-                            width: 332,
+                            height: getSize(30),
+                            width: getSize(332),
                           ),
                           Container(
-                            margin: EdgeInsets.only(top: 243, left: 232),
+                            margin: EdgeInsets.only(top: getSize(243), left: getSize(232)),
                             alignment: Alignment.center,
 
                             child: Text(
                               shopTime,
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(fontSize: getSize(14)),
                             ),
-                            height: 30,
-                            width: 120,
+                            height: getSize(30),
+                            width: getSize(120),
                           ),Container(
-                            margin: EdgeInsets.only(top: 273),
+                            margin: EdgeInsets.only(top: getSize(273)),
                             alignment: Alignment.centerLeft,
                             decoration: BoxDecoration(
                                 border: Border.all(
@@ -414,24 +425,24 @@ class _BarberScreenState extends State<BarberScreen> {
                                 )),
                             child: Text(
                               "Salı:",
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: getSize(16)),
                             ),
-                            height: 30,
-                            width: 332,
+                            height: getSize(30),
+                            width: getSize(332),
                           ),
                           Container(
-                            margin: EdgeInsets.only(top: 273, left: 232),
+                            margin: EdgeInsets.only(top: getSize(273), left: getSize(232)),
                             alignment: Alignment.center,
 
                             child: Text(
                               shopTime,
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(fontSize: getSize(14)),
                             ),
-                            height: 30,
-                            width: 120,
+                            height: getSize(30),
+                            width: getSize(120),
                           ),
                           Container(
-                            margin: EdgeInsets.only(top: 303),
+                            margin: EdgeInsets.only(top: getSize(303)),
                             alignment: Alignment.centerLeft,
                             decoration: BoxDecoration(
                                 border: Border.all(
@@ -439,24 +450,24 @@ class _BarberScreenState extends State<BarberScreen> {
                             ),
                             child: Text(
                               "Çarşamba:",
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: getSize(16)),
                             ),
-                            height: 30,
-                            width: 332,
+                            height: getSize(30),
+                            width: getSize(332),
                           ),
                           Container(
-                            margin: EdgeInsets.only(top: 303, left: 232),
+                            margin: EdgeInsets.only(top: getSize(303), left: getSize(232)),
                             alignment: Alignment.center,
 
                             child: Text(
                               shopTime,
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(fontSize: getSize(14)),
                             ),
-                            height: 30,
-                            width: 120,
+                            height: getSize(30),
+                            width: getSize(120),
                           ),
                           Container(
-                            margin: EdgeInsets.only(top: 333),
+                            margin: EdgeInsets.only(top: getSize(333)),
                             alignment: Alignment.centerLeft,
                             decoration: BoxDecoration(
                                 border: Border.all(
@@ -464,24 +475,24 @@ class _BarberScreenState extends State<BarberScreen> {
                                 )),
                             child: Text(
                               "Perşembe:",
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: getSize(16)),
                             ),
-                            height: 30,
-                            width: 332,
+                            height: getSize(30),
+                            width: getSize(332),
                           ),
                           Container(
-                            margin: EdgeInsets.only(top: 333, left: 232),
+                            margin: EdgeInsets.only(top: getSize(333), left: getSize(232)),
                             alignment: Alignment.center,
 
                             child: Text(
                               shopTime,
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(fontSize: getSize(14)),
                             ),
-                            height: 30,
-                            width: 120,
+                            height: getSize(30),
+                            width: getSize(120),
                           ),
                           Container(
-                            margin: EdgeInsets.only(top: 363),
+                            margin: EdgeInsets.only(top: getSize(363)),
                             alignment: Alignment.centerLeft,
                             decoration: BoxDecoration(
                                 border: Border.all(
@@ -489,24 +500,24 @@ class _BarberScreenState extends State<BarberScreen> {
                                 )),
                             child: Text(
                               "Cuma:",
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: getSize(16)),
                             ),
-                            height: 30,
-                            width: 332,
+                            height: getSize(30),
+                            width: getSize(332),
                           ),
                           Container(
-                            margin: EdgeInsets.only(top: 363, left: 232),
+                            margin: EdgeInsets.only(top: getSize(363), left: getSize(232)),
                             alignment: Alignment.center,
 
                             child: Text(
                               shopTime,
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(fontSize: getSize(14)),
                             ),
-                            height: 30,
-                            width: 120,
+                            height: getSize(30),
+                            width: getSize(120),
                           ),
                           Container(
-                            margin: EdgeInsets.only(top: 393),
+                            margin: EdgeInsets.only(top: getSize(393)),
                             alignment: Alignment.centerLeft,
                             decoration: BoxDecoration(
                                 border: Border.all(
@@ -514,24 +525,24 @@ class _BarberScreenState extends State<BarberScreen> {
                                 )),
                             child: Text(
                               "Cumartesi:",
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: getSize(16)),
                             ),
-                            height: 30,
-                            width: 332,
+                            height: getSize(30),
+                            width: getSize(332),
                           ),
                           Container(
-                            margin: EdgeInsets.only(top: 393, left: 232),
+                            margin: EdgeInsets.only(top: getSize(393), left: getSize(232)),
                             alignment: Alignment.center,
 
                             child: Text(
                               shopTime,
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(fontSize: getSize(14)),
                             ),
-                            height: 30,
-                            width: 120,
+                            height: getSize(30),
+                            width: getSize(120),
                           ),
                           Container(
-                            margin: EdgeInsets.only(top: 423),
+                            margin: EdgeInsets.only(top: getSize(423)),
                             alignment: Alignment.centerLeft,
                             decoration: BoxDecoration(
                                 border: Border.all(
@@ -539,33 +550,31 @@ class _BarberScreenState extends State<BarberScreen> {
                                 )),
                             child: Text(
                               "Pazar:",
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: getSize(16)),
                             ),
-                            height: 30,
-                            width: 332,
+                            height: getSize(30),
+                            width: getSize(332),
                           ),
                           Container(
-                            margin: EdgeInsets.only(top: 423, left: 232),
+                            margin: EdgeInsets.only(top: getSize(423), left: getSize(232)),
                             alignment: Alignment.center,
 
                             child: Text(
                               shopTime,
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(fontSize: getSize(14)),
                             ),
-                            height: 30,
-                            width: 120,
+                            height: getSize(30),
+                            width: getSize(120),
                           )
                         ],
                       )
                     ],
                   ),
                 ),
-                height: screenWidth! * (50 / 412),
-                width: screenWidth! * (50 / 412),
               ),
               Container(
-                height: screenWidth! * (50 / 412),
-                width: screenWidth! * (50 / 412),
+                height: getSize(50),
+                width: getSize(50),
               )
             ],
           ),
@@ -573,9 +582,9 @@ class _BarberScreenState extends State<BarberScreen> {
         Container(
           color: primaryColor,
           width: screenWidth,
-          height: 50,
+          height: getSize(50),
           margin: EdgeInsets.only(
-              top: screenWidth! * ((screenHeight! - 130) / 412)),
+              top: getSize(screenHeight! - 130)),
           child: Row(
             children: [
               Hero(
@@ -585,12 +594,12 @@ class _BarberScreenState extends State<BarberScreen> {
                 },
                 child: Container(
                     color: primaryColor,
-                    margin: EdgeInsets.only(left: screenWidth! * (22 / 412)),
+                    margin: EdgeInsets.only(left: getSize(22)),
                     child: TextButton(
                       child: Text(
                           style: TextStyle(
                               color: secondaryColor,
-                              fontSize: screenWidth! * (16 / 412)),
+                              fontSize: getSize(16)),
                           "x Hizmet Seçili"),
                       onPressed: () {
                         selectedServiceBtnClicked(context);
@@ -598,13 +607,13 @@ class _BarberScreenState extends State<BarberScreen> {
                     )),
               ),
               Container(
-                margin: EdgeInsets.only(left: screenWidth! * (104 / 412)),
+                margin: EdgeInsets.only(left: getSize(104)),
                 child: TextButton(
                     child: Text(
                       "Randevu Al >",
                       style: TextStyle(
                           color: secondaryColor,
-                          fontSize: screenWidth! * (16 / 412)),
+                          fontSize: getSize(16)),
                     ),
                     onPressed: () {
                       appointmentBtnClicked();
@@ -616,20 +625,20 @@ class _BarberScreenState extends State<BarberScreen> {
         SlidingUpPanel(
           backdropEnabled: true,
           minHeight: 0,
-          maxHeight: 250,
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+          maxHeight: getSize(250),
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(getSize(15)), topRight: Radius.circular(getSize(15))),
           boxShadow: [
             BoxShadow(
               color: Colors.black38,
-              spreadRadius: 5,
-              blurRadius: 10,
+              spreadRadius: getSize(5),
+              blurRadius: getSize(10),
             )
           ],
           controller: panelController,
-          padding: EdgeInsets.only(left: 20,right: 20,top: 20),
+          padding: EdgeInsets.only(left: getSize(20),right: getSize(20),top: getSize(20)),
           panelBuilder: (builder) => BarberSlidingUpPanel(),
           footer: Padding(
-            padding: EdgeInsets.only(left: 180),
+            padding: EdgeInsets.only(left: getSize(180)),
             child: ElevatedButton(
               style: ButtonStyle(
                   backgroundColor: MaterialStateColor.resolveWith((states) => primaryColor),
@@ -639,7 +648,7 @@ class _BarberScreenState extends State<BarberScreen> {
               child: Text(
                 "Randevu olustur",
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: getSize(18),
                   fontFamily: secondaryFontFamily,
                   color: Colors.white,
                 ),
@@ -698,10 +707,10 @@ class _BarberScreenState extends State<BarberScreen> {
       setState(() {});
     });
   }
+
 }
 
 final String _heroselectedService = "selected-service-hero";
-
 
 class Entry {
   late final String title;

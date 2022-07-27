@@ -19,8 +19,6 @@ class AppointmentScreen extends StatefulWidget{
 
 class _AppointmentState extends State{
 
-  double _panelHeightOpen = 150;
-  double _panelHeightClosed = 10.0;
   final panelController = PanelController();
 
   @override
@@ -31,26 +29,23 @@ class _AppointmentState extends State{
 
   @override
   Widget build(BuildContext context) {
-    _panelHeightOpen = screenHeight! * .80;
 
 
     return Scaffold(
-      appBar: Appbar("Randevular").build(context),
+      appBar: Appbar(label: "Randevular", labelHome: "", fromHome: false,),
       body: Stack(
         children: [
-          buildBody(),buildSUP(),
+           buildComing(), buildLast(), buildSUP(),
         ],
       ),
       bottomNavigationBar: Navbar(1,context),
     );
   }
 
-  buildNavbar(){
+  buildComing() {
+    return Container();
 
-  }
-
-  buildBody() {
-    return Padding(
+    /*Padding(
         padding: EdgeInsets.only(top: 10),
         child: AppointmentListItem(
             itemHeigth: 60,
@@ -65,9 +60,13 @@ class _AppointmentState extends State{
             date: "Yarin",
             time: "15:30", profileURL: 'http://dummyimage.com/217x156.png/ff4444/ffffff',
             panelController: panelController,)
-
-    );
+        );*/
   }
+
+  buildLast(){
+    return Container();
+  }
+
 
   buildSUP() {
     return SlidingUpPanel(

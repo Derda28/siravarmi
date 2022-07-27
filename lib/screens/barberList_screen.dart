@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:siravarmi/cloud_functions/dbHelperHttp.dart';
 import 'package:siravarmi/providers/extensions.dart';
 import 'package:siravarmi/providers/shared_prefs_provider.dart';
 import 'package:siravarmi/routes/hero_dialog_route.dart';
@@ -41,7 +42,7 @@ class _BarberListState extends State {
   @override
   void initState() {
     super.initState();
-    loadJson();
+    loadBarbers();
   }
 
   @override
@@ -120,25 +121,35 @@ class _BarberListState extends State {
                     itemWidth: 350,
                     profileHeigth: 50,
                     profileWidth: 50,
-                    profileURL: _items[index]["url"],
-                    title: _items[index]["title"],
+                    profileURL: _items[index]["profileUrl"],
+                    title: _items[index]["name"],
                     location: _items[index]["location"],
                     minPrice: int.parse(
-                        _items[index]["price"].toString().substring(1, 3)),
-                    assessmentTxt: "${_items[index]["assessment"]} (+199)",
-                    date: _items[index]["date"],
+                        _items[index]["minPrice"].toString()),
+                    assessmentTxt: "5 (+199)",
+                    date: "15/07/2022",
                     time: "15:30"),
               )),
     );
   }
 
-  Future<void> loadJson() async {
+  /*Future<void> loadJson() async {
     final String res =
         await rootBundle.loadString('assets/BarberListExample.json');
     final itemsData = json.decode(res);
 
     setState(() {
       _items = itemsData['data'];
+    });
+  }*/
+
+  Future<void> loadBarbers() async{
+    DbHelperHttp dbHelper = DbHelperHttp();
+    final itemsData = dbHelper.getBarberList();
+
+    _items = await itemsData;
+    setState((){
+      _items = _items;
     });
   }
 

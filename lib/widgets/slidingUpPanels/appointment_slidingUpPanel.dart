@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:siravarmi/routes/hero_dialog_route.dart';
 import 'package:siravarmi/utilities/consts.dart';
@@ -8,20 +9,35 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 final String _heroAssessment = "assessment-hero";
 
-class AppointmentSlidingUpPanel extends StatelessWidget {
-  String barberName = "Salon AS";
-  String assessmentTxt = "3.1 (+200)";
-  String workerName = "Mustafa";
-  String workDate = "16.07.2022";
-  String workTime = "22.00";
-
-  final panelController = PanelController();
+class AppointmentSlidingUpPanel extends StatefulWidget {
   final ScrollController scrollController;
 
   AppointmentSlidingUpPanel({required this.scrollController});
 
   @override
+  State<AppointmentSlidingUpPanel> createState() => _AppointmentSlidingUpPanelState();
+}
+
+class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
+  String barberName = "Salon AS";
+
+  String assessmentTxt = "3.1 (+200)";
+
+  String workerName = "Mustafa";
+
+  String workDate = "16.07.2022";
+
+  String workTime = "22.00";
+
+  Icon ratingBarIcon = Icon(Icons.star);
+
+  double ratingIconSize = getSize(55);
+
+  final panelController = PanelController();
+
+  @override
   Widget build(BuildContext context) {
+
     return Stack(
       children: [
         Container(
@@ -188,83 +204,48 @@ class AppointmentSlidingUpPanel extends StatelessWidget {
           ],
         ),
         Container(
+          height: getSize(30),
+          width: getSize(200),
           alignment: Alignment.center,
-          decoration: BoxDecoration(border: Border.all()),
           margin: EdgeInsets.only(
-              left: getSize(40),
-              top: getSize(520),
-              right: getSize(225),
-              bottom: getSize(100)),
+            left: getSize(30),
+            top: getSize(520),
+          ),
           child: Text(
             "Değerlendirme",
             style: TextStyle(
                 decoration: TextDecoration.underline,
                 decorationColor: Colors.grey,
-                fontSize: getSize(18),
+                fontSize: getSize(20),
                 color: Colors.grey),
           ),
         ),
-        Hero(
-          tag: _heroAssessment,
-          child: Row(
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: getSize(570), left: getSize(48.4)),
-                child: IconButton(
-                    padding: EdgeInsets.only(left: getSize(1)),
-                    icon: Icon(Icons.star_border_rounded),
-                    color: primaryColor,
-                    iconSize: getSize(60),
-                    onPressed: () {}),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: getSize(570)),
-                child: IconButton(
-                    padding: EdgeInsets.only(left: getSize(1)),
-                    icon: Icon(Icons.star_border_rounded),
-                    color: primaryColor,
-                    iconSize: getSize(60),
-                    onPressed: () {
-                      starIsClicked(1, context);
-                    }),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: getSize(570)),
-                child: IconButton(
-                    padding: EdgeInsets.only(left: getSize(1)),
-                    icon: Icon(Icons.star_border_rounded),
-                    color: primaryColor,
-                    iconSize: getSize(60),
-                    onPressed: () {}),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: getSize(570)),
-                child: IconButton(
-                    padding: EdgeInsets.only(left: getSize(1)),
-                    icon: Icon(Icons.star_border_rounded),
-                    color: primaryColor,
-                    iconSize: getSize(60),
-                    onPressed: () {}),
-              ),
-              Container(
-                margin:
-                EdgeInsets.only(top: getSize(570), right: getSize(48.4)),
-                child: IconButton(
-                    padding: EdgeInsets.only(left: getSize(1)),
-                    icon: Icon(Icons.star_border_rounded),
-                    color: primaryColor,
-                    iconSize: getSize(60),
-                    onPressed: () {}),
-              )
-            ],
+        Container(
+          margin: EdgeInsets.only(
+              top: getSize(550), left: getSize(30), right: getSize(30)),
+          alignment: Alignment.center,
+          child: RatingBar.builder(
+            minRating: 1,
+            maxRating: 5,
+            initialRating: 0,
+            itemSize: getSize(50),
+            direction: Axis.horizontal,
+            itemCount: 5,
+            itemPadding: EdgeInsets.symmetric(horizontal: getSize(4.0)),
+            itemBuilder: (context, _) =>
+                Icon(Icons.star, color: secondaryColor),
+            onRatingUpdate: (rating) {
+              starIsClicked(rating, context);
+            },
           ),
         )
       ],
     );
   }
 
-  void starIsClicked(int i, BuildContext context) {
-    Navigator.push(context,
-        HeroDialogRoute(builder: (context) => AssessmentPopUpScreen()));
+  Future<void> starIsClicked(double i, BuildContext context) async {
+    List? returnVar = await Navigator.push(context,
+        HeroDialogRoute(builder: (context) => AssessmentPopUpScreen(initialStars: i,)));
+
   }
 }

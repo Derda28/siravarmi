@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:siravarmi/utilities/consts.dart';
 
 class DbHelperHttp {
 
@@ -43,4 +44,11 @@ class DbHelperHttp {
     return data;
   }
 
+  Future<List<dynamic>> getAppointmentList(int userId) async {
+    var url = Uri.parse('https://testforsiravarmi.000webhostapp.com/getAppointmentsFromUser.php');
+    http.Response response = await http.post(url, body: {'userId':userId.toString()});
+
+    var data = jsonDecode(response.body);
+    return data;
+  }
 }

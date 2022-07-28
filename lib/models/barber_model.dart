@@ -1,13 +1,19 @@
 class BarberModel{
-  String title;
+  int id;
+  String name;
   String address;
-  String assessment;
+  int minPrice;
   String profileURL;
+  String? phoneNumber;
+  bool open;
   BarberModel({
-    required this.title,
+    required this.id,
+    required this.name,
     required this.address,
-    required this.assessment,
-    required this.profileURL
+    required this.minPrice,
+    required this.profileURL,
+    this.phoneNumber,
+    required this.open,
   });
 
 

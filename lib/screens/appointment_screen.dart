@@ -7,6 +7,7 @@ import 'package:siravarmi/widgets/list_item.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../cloud_functions/dbHelperHttp.dart';
+import '../models/appointment_model.dart';
 import '../widgets/appbar.dart';
 import '../widgets/navbar.dart';
 import '../widgets/slidingUpPanels/appointment_slidingUpPanel.dart';
@@ -24,7 +25,12 @@ class _AppointmentState extends State {
   final String lastAppointmentTxt = "Gecmis Randevular";
   final String commingAppointmentTxt = "Gelecek Randevular";
 
-  List appointments = [];
+  List<AppointmentModel> appointments = [];
+  List<AppointmentModel> commingAppointments = [];
+  List<AppointmentModel> lastAppointments = [];
+
+  bool isLastAppointment = true;
+  AppointmentModel? selectedAppointment;
 
   @override
   void initState() {
@@ -32,6 +38,12 @@ class _AppointmentState extends State {
     if(isLoggedIn){
       loadAppointments();
     }
+  }
+
+  @override
+  void dispose() {
+
+    super.dispose();
   }
 
   @override
@@ -74,6 +86,8 @@ class _AppointmentState extends State {
       /*body: _body(),*/
       panelBuilder: (sc) => AppointmentSlidingUpPanel(
         scrollController: sc,
+        isLastAppointment: isLastAppointment,
+        appointment: selectedAppointment
       ),
     );
   }
@@ -99,10 +113,10 @@ class _AppointmentState extends State {
 
   buildComingAppointment() {
     return SizedBox(
-      height: getSize(65 * 2),
+      height: getSize((65 * commingAppointments.length.toDouble())),
       child: ListView.builder(
         physics: NeverScrollableScrollPhysics(),
-        itemCount: 2,
+        itemCount: commingAppointments.length,
         itemBuilder: (context, index) {
           return Padding(
             padding: EdgeInsets.only(top: getSize(5)),
@@ -112,14 +126,20 @@ class _AppointmentState extends State {
               itemBgColor: Colors.white,
               profileHeigth: 50,
               profileWidth: 50,
-              title: "S.A.",
-              location: "Istanbul",
-              minPrice: 50,
-              assessmentTxt: "3,9 (+199)",
-              date: "Yarin",
-              time: "15:30",
+              title: commingAppointments[index].barberId.toString(),
+              location: commingAppointments[index].barberId.toString(),
+              minPrice: commingAppointments[index].totalPrice,
+              assessmentTxt: commingAppointments[index].assessmentId.toString(),
+              date: getDate(commingAppointments[index].dateTime),
+              time: getTime(commingAppointments[index].dateTime),
               profileURL: 'http://dummyimage.com/217x156.png/ff4444/ffffff',
-              panelController: panelController,
+              itemClicked: (){
+                setState((){
+                  isLastAppointment = false;
+                });
+                return itemClicked(index);
+              },
+              index: index,
             ),
           );
         },
@@ -148,10 +168,11 @@ class _AppointmentState extends State {
 
   buildLastAppointments() {
     return SizedBox(
-      height: getSize(65 * 15),
+      height: getSize(65 * lastAppointments.length.toDouble()),
       child: ListView.builder(
         physics: NeverScrollableScrollPhysics(),
-        itemCount: 15,
+        itemCount: lastAppointments.length,
+
         itemBuilder: (context, index) {
           return Padding(
             padding: EdgeInsets.only(top: getSize(5)),
@@ -161,14 +182,20 @@ class _AppointmentState extends State {
               itemBgColor: Colors.white,
               profileHeigth: 50,
               profileWidth: 50,
-              title: "S.A.",
-              location: "Istanbul",
-              minPrice: 50,
-              assessmentTxt: "3,9 (+199)",
-              date: "Yarin",
-              time: "15:30",
+              title: lastAppointments[index].barberId.toString(),
+              location: lastAppointments[index].barberId.toString(),
+              minPrice: lastAppointments[index].totalPrice,
+              assessmentTxt: lastAppointments[index].assessmentId.toString(),
+              date: getDate(lastAppointments[index].dateTime),
+              time: getTime(lastAppointments[index].dateTime),
               profileURL: 'http://dummyimage.com/217x156.png/ff4444/ffffff',
-              panelController: panelController,
+              itemClicked: (){
+                setState((){
+                  isLastAppointment = true;
+                });
+                return itemClicked(index);
+              },
+              index: index,
             ),
           );
         },
@@ -179,12 +206,68 @@ class _AppointmentState extends State {
   Future<void> loadAppointments() async{
     DbHelperHttp dbHelper = DbHelperHttp();
     final appointmentsData = dbHelper.getAppointmentList(user.id!);
+    var app = await appointmentsData;
 
-    appointments = await appointmentsData;
+    for(int i=0; i<app.length; i++){
+      appointments.add(AppointmentModel(
+          userId: int.parse(app[i]["userId"]),
+          dateTime: DateTime.parse(app[i]["dateTime"]),
+          assessmentId: int.parse(app[i]["assessmentId"]),
+          barberId: int.parse(app[i]["barberId"]),
+          employeeId: int.parse(app[i]["employeeId"]),
+          id: int.parse(app[i]["id"]),
+          totalPrice: int.parse(app[i]["totalPrice"]))
+      );
+    }
     setState((){
       appointments = appointments;
     });
-    print(appointments.length);
+
+    sortAppointments();
   }
 
+  sortAppointments(){
+    for (var value in appointments) {
+      if(value.dateTime.isAfter(DateTime.now())){
+        commingAppointments.add(value);
+      }else{
+        lastAppointments.add(value);
+      }
+    }
+  }
+
+
+
+  void itemClicked(int index) {
+    setState(() {
+      if(isLastAppointment){
+        selectedAppointment = AppointmentModel(
+            userId: lastAppointments[index].userId,
+            dateTime: lastAppointments[index].dateTime,
+            assessmentId: lastAppointments[index].assessmentId,
+            barberId: lastAppointments[index].barberId,
+            employeeId: lastAppointments[index].employeeId,
+            id: lastAppointments[index].id,
+            totalPrice: lastAppointments[index].totalPrice
+        );
+      }else{
+        selectedAppointment = AppointmentModel(
+            userId: commingAppointments[index].userId,
+            dateTime: commingAppointments[index].dateTime,
+            assessmentId: commingAppointments[index].assessmentId,
+            barberId: commingAppointments[index].barberId,
+            employeeId: commingAppointments[index].employeeId,
+            id: commingAppointments[index].id,
+            totalPrice: commingAppointments[index].totalPrice
+        );
+      }
+
+    });
+
+    if(panelController.isPanelClosed){
+      panelController.open();
+    }else{
+      panelController.close();
+    }
+  }
 }

@@ -7,28 +7,33 @@ import 'package:siravarmi/screens/barber_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class AppointmentListItem extends StatelessWidget{
+class AppointmentListItem extends StatelessWidget {
   double itemHeigth, itemWidth, profileHeigth, profileWidth;
   Color? itemBgColor;
   String profileURL;
   String title, location, assessmentTxt, date, time;
   int minPrice;
-  PanelController panelController;
+  void Function() itemClicked;
+  int index;
 
-  AppointmentListItem({Key? key,
-    required this.itemHeigth,
-    required this.itemWidth,
-    this.itemBgColor,
-    required this.profileHeigth,
-    required this.profileWidth,
-    required this.profileURL,
-    required this.title,
-    required this.location,
-    required this.minPrice,
-    required this.assessmentTxt,
-    required this.date,
-    required this.time,
-    required this.panelController}) : super(key: key);
+  AppointmentListItem(
+      {Key? key,
+      required this.itemHeigth,
+      required this.itemWidth,
+      this.itemBgColor,
+      required this.profileHeigth,
+      required this.profileWidth,
+      required this.profileURL,
+      required this.title,
+      required this.location,
+      required this.minPrice,
+      required this.assessmentTxt,
+      required this.date,
+      required this.time,
+      required this.itemClicked,
+      required this.index
+      })
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +45,16 @@ class AppointmentListItem extends StatelessWidget{
           width: itemWidth,
           child: OutlinedButton(
             style: ButtonStyle(
-                backgroundColor: MaterialStateColor.resolveWith((states) => itemBgColor??Colors.white),
+                backgroundColor: MaterialStateColor.resolveWith(
+                    (states) => itemBgColor ?? Colors.white),
                 side: MaterialStateProperty.all(
                   BorderSide(
                     color: Colors.transparent,
                   ),
                 ),
-                overlayColor: MaterialStateColor.resolveWith((states) => primaryColor.withOpacity(0.2))
-            ),
-            onPressed: (){ itemClicked(context);},
+                overlayColor: MaterialStateColor.resolveWith(
+                    (states) => primaryColor.withOpacity(0.2))),
+            onPressed: itemClicked,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -65,10 +71,10 @@ class AppointmentListItem extends StatelessWidget{
                           image: NetworkImage(profileURL),
                           fit: BoxFit.fitWidth,
                         ),
-                        borderRadius:
-                        BorderRadius.all(Radius.elliptical(profileHeigth/2, profileHeigth/2)),
-                        border:
-                        Border.all(width: 1.0, color: const Color(0xff707070)),
+                        borderRadius: BorderRadius.all(Radius.elliptical(
+                            profileHeigth / 2, profileHeigth / 2)),
+                        border: Border.all(
+                            width: 1.0, color: const Color(0xff707070)),
                       ),
                     ),
                   ],
@@ -80,27 +86,27 @@ class AppointmentListItem extends StatelessWidget{
                   children: [
                     Container(
                       padding: const EdgeInsets.only(bottom: 5),
-                      width: screenWidth!*110/designWidth,
+                      width: screenWidth! * 110 / designWidth,
                       child: Text(
                         title,
                         style: TextStyle(
-                          fontSize: screenWidth!*16/designWidth,
+                          fontSize: screenWidth! * 16 / designWidth,
                           color: Colors.black,
                           fontWeight: FontWeight.w700,
                         ),
                         textHeightBehavior:
-                        TextHeightBehavior(applyHeightToFirstAscent: false),
+                            TextHeightBehavior(applyHeightToFirstAscent: false),
                         softWrap: false,
                       ),
                     ),
                     Text(
                       location,
                       style: TextStyle(
-                        fontSize: screenWidth!*10/designWidth,
+                        fontSize: screenWidth! * 10 / designWidth,
                         color: fontColor,
                       ),
                       textHeightBehavior:
-                      TextHeightBehavior(applyHeightToFirstAscent: false),
+                          TextHeightBehavior(applyHeightToFirstAscent: false),
                       softWrap: false,
                     ),
                   ],
@@ -122,16 +128,16 @@ class AppointmentListItem extends StatelessWidget{
                         /*Pin(size: screenWidth!*50/designWidth, end: 4.0),
                     Pin(size: screenWidth!*15/designWidth, start: 1.0),*/
                         Container(
-                          height: screenWidth!*16/designWidth,
-                          width: screenWidth!*55/designWidth,
+                          height: screenWidth! * 16 / designWidth,
+                          width: screenWidth! * 55 / designWidth,
                           child: Text(
                             assessmentTxt,
                             style: TextStyle(
                               fontSize: 11,
                               color: primaryColor,
                             ),
-                            textHeightBehavior:
-                            TextHeightBehavior(applyHeightToFirstAscent: false),
+                            textHeightBehavior: TextHeightBehavior(
+                                applyHeightToFirstAscent: false),
                             textAlign: TextAlign.center,
                             softWrap: false,
                           ),
@@ -139,21 +145,17 @@ class AppointmentListItem extends StatelessWidget{
                       ],
                     ),
                     Text(
-                      'Min. ₺$minPrice',
+                      'Topl. ₺$minPrice',
                       style: TextStyle(
-                        fontSize: screenWidth!*12/designWidth,
+                        fontSize: screenWidth! * 12 / designWidth,
                         color: primaryColor,
                       ),
                       textHeightBehavior:
-                      TextHeightBehavior(applyHeightToFirstAscent: false),
+                          TextHeightBehavior(applyHeightToFirstAscent: false),
                       textAlign: TextAlign.center,
                       softWrap: false,
                     ),
-
-
-
                   ],
-
                 ),
                 //Date and Time
                 Column(
@@ -162,12 +164,12 @@ class AppointmentListItem extends StatelessWidget{
                     Text(
                       '$date\nSaat $time',
                       style: TextStyle(
-                        fontSize: screenWidth!*14/designWidth,
+                        fontSize: screenWidth! * 14 / designWidth,
                         color: primaryColor,
                         fontWeight: FontWeight.w700,
                       ),
                       textHeightBehavior:
-                      TextHeightBehavior(applyHeightToFirstAscent: false),
+                          TextHeightBehavior(applyHeightToFirstAscent: false),
                       textAlign: TextAlign.center,
                       softWrap: false,
                     ),
@@ -181,15 +183,14 @@ class AppointmentListItem extends StatelessWidget{
     );
   }
 
-  void itemClicked(BuildContext context) {
-    BarberModel barber = BarberModel(title: title,address: location, assessment: assessmentTxt, profileURL: profileURL);
+  /*void itemClicked(BuildContext context) {
+
 
     if(panelController.isPanelClosed){
       panelController.open();
     }else{
       panelController.close();
     }
-  }
-
+  }*/
 
 }

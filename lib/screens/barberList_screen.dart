@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siravarmi/cloud_functions/dbHelperHttp.dart';
+import 'package:siravarmi/models/barber_model.dart';
 import 'package:siravarmi/providers/extensions.dart';
 import 'package:siravarmi/providers/shared_prefs_provider.dart';
 import 'package:siravarmi/routes/hero_dialog_route.dart';
@@ -34,7 +35,7 @@ class _BarberListState extends State {
   double _panelHeightClosed = 0;
   final panelController = PanelController();
 
-  List _items = [];
+  List<BarberModel> _barbers = [];
 
 
 
@@ -113,7 +114,7 @@ class _BarberListState extends State {
     return Padding(
       padding: const EdgeInsets.only(top: 130, bottom: 10),
       child: ListView.builder(
-          itemCount: _items.length,
+          itemCount: _barbers.length,
           itemBuilder: (context, index) => Container(
                 margin: EdgeInsets.only(bottom: 5),
                 child: ListItem(
@@ -121,12 +122,7 @@ class _BarberListState extends State {
                     itemWidth: 350,
                     profileHeigth: 50,
                     profileWidth: 50,
-                    profileURL: _items[index]["profileUrl"],
-                    title: _items[index]["name"],
-                    location: _items[index]["location"],
-                    minPrice: int.parse(
-                        _items[index]["minPrice"].toString()),
-                    assessmentTxt: "5 (+199)",
+                    barber: _barbers[index],
                     date: "15/07/2022",
                     time: "15:30"),
               )),
@@ -146,10 +142,20 @@ class _BarberListState extends State {
   Future<void> loadBarbers() async{
     DbHelperHttp dbHelper = DbHelperHttp();
     final itemsData = dbHelper.getBarberList();
+    var items = await itemsData;
+    print(items[0]["id"]);
 
-    _items = await itemsData;
     setState((){
-      _items = _items;
+      items.forEach((element) {
+        _barbers.add(BarberModel(
+            id: int.parse(element['id']),
+            name: element['name'],
+            address: element['location'],
+            minPrice: int.parse(element['minPrice']),
+            profileURL: element['profileUrl'],
+            open: element['open']==1?true:false,
+        ));
+      });
     });
   }
 

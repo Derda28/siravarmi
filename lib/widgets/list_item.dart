@@ -9,9 +9,8 @@ import 'package:siravarmi/utilities/consts.dart';
 class ListItem extends StatelessWidget{
   double itemHeigth, itemWidth, profileHeigth, profileWidth;
   Color? itemBgColor;
-  String profileURL;
-  String title, location, assessmentTxt, date, time;
-  int minPrice;
+  String date, time;
+  BarberModel barber;
 
   ListItem({Key? key,
     required this.itemHeigth,
@@ -19,11 +18,7 @@ class ListItem extends StatelessWidget{
     this.itemBgColor,
     required this.profileHeigth,
     required this.profileWidth,
-    required this.profileURL,
-    required this.title,
-    required this.location,
-    required this.minPrice,
-    required this.assessmentTxt,
+    required this.barber,
     required this.date,
     required this.time}) : super(key: key);
 
@@ -59,7 +54,7 @@ class ListItem extends StatelessWidget{
                       decoration: BoxDecoration(
                         color: Colors.white,
                         image: DecorationImage(
-                          image: NetworkImage(profileURL),
+                          image: NetworkImage(barber.profileURL),
                           fit: BoxFit.fitWidth,
                         ),
                         borderRadius:
@@ -79,7 +74,7 @@ class ListItem extends StatelessWidget{
                       padding: const EdgeInsets.only(bottom: 5),
                       width: screenWidth!*110/designWidth,
                       child: Text(
-                        title,
+                        barber.name,
                         style: TextStyle(
                           fontSize: screenWidth!*16/designWidth,
                           color: Colors.black,
@@ -91,7 +86,7 @@ class ListItem extends StatelessWidget{
                       ),
                     ),
                     Text(
-                      location,
+                      barber.address,
                       style: TextStyle(
                         fontSize: screenWidth!*10/designWidth,
                         color: fontColor,
@@ -123,7 +118,8 @@ class ListItem extends StatelessWidget{
                           height: screenWidth!*16/designWidth,
                           width: screenWidth!*55/designWidth,
                           child: Text(
-                            assessmentTxt,
+                            "mustBeEdited",
+
                             style: TextStyle(
                               fontSize: 11,
                               color: primaryColor,
@@ -137,7 +133,7 @@ class ListItem extends StatelessWidget{
                       ],
                     ),
                     Text(
-                      'Min. ₺$minPrice',
+                      'Min. ₺'+barber.minPrice.toString(),
                       style: TextStyle(
                         fontSize: screenWidth!*12/designWidth,
                         color: primaryColor,
@@ -180,8 +176,6 @@ class ListItem extends StatelessWidget{
   }
 
   void itemClicked(BuildContext context) {
-    BarberModel barber = BarberModel(title: title,address: location, assessment: assessmentTxt, profileURL: profileURL);
-
     Navigator.push(context, MaterialPageRoute(builder: (context)=>BarberScreen(barber)));
   }
 

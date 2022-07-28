@@ -25,4 +25,19 @@ double getSize(double sizeNumber){
   return screenWidth!*(sizeNumber/designWidth);
 }
 
+getDate(DateTime dateTime) {
+  print("getTimeEntered");
+  String day = dateTime.day.toString();
+  String month = dateTime.month.toString();
+  String year = dateTime.year.toString();
+  return day+"."+month+"."+year;
+}
+
+getTime(DateTime dateTime) {
+  print("getTimeEntered");
+  String hours = dateTime.hour.toString();
+  String minutes = dateTime.minute.toString();
+  return hours+":"+minutes;
+}
+
 

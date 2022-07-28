@@ -22,9 +22,9 @@ class BarberScreen extends StatefulWidget {
       "İstanbul Beykoz İstanbul Beykoz İstanbul Beykoz İstanbul Beykoz İstanbul Beykozİstanbul Beykoz İstanbul Beykoz İstanbul Beykoz ";
 
   BarberScreen(BarberModel barberModel, {Key? key}) : super(key: key) {
-    barberName = barberModel.title;
+    barberName = barberModel.name;
     profileURL = barberModel.profileURL;
-    assessmentTxt = barberModel.assessment;
+    assessmentTxt = "";/*barberModel.assessmentId.toString();*/
     adressInfo = barberModel.address;
   }
 

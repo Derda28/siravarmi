@@ -7,19 +7,23 @@ import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/assessment_popup_screen.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import '../../models/appointment_model.dart';
+
 final String _heroAssessment = "assessment-hero";
 
 class AppointmentSlidingUpPanel extends StatefulWidget {
   final ScrollController scrollController;
+  AppointmentModel? appointment;
+  bool isLastAppointment;
 
-  AppointmentSlidingUpPanel({required this.scrollController});
+  AppointmentSlidingUpPanel({required this.scrollController, this.appointment, required this.isLastAppointment});
 
   @override
   State<AppointmentSlidingUpPanel> createState() => _AppointmentSlidingUpPanelState();
 }
 
 class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
-  String barberName = "Salon AS";
+  /*String barberName = "Salon AS";
 
   String assessmentTxt = "3.1 (+200)";
 
@@ -27,7 +31,7 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
 
   String workDate = "16.07.2022";
 
-  String workTime = "22.00";
+  String workTime = "22.00";*/
 
   Icon ratingBarIcon = Icon(Icons.star);
 
@@ -69,7 +73,7 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
           margin: EdgeInsets.only(
               left: getSize(40), right: getSize(200), top: getSize(290)),
           child: Text(
-            barberName,
+            widget.appointment!.barberId.toString(),//MUST BE CHANGED!!!
             style: TextStyle(fontSize: getSize(36)),
           ),
           height: getSize(40),
@@ -102,7 +106,7 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                 margin: EdgeInsets.only(
                     top: screenWidth! * (12 / 412), left: getSize(3)),
                 child: Text(
-                  assessmentTxt,
+                  widget.appointment!.assessmentId.toString(),//MUST BE CHANGED!!!
                   style: TextStyle(
                     fontSize: getSize(13),
                     color: primaryColor,
@@ -139,7 +143,7 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                   bottom: getSize(265),
                   right: getSize(20)),
               child: Text(
-                workerName,
+                widget.appointment!.barberId.toString(),//MUST BE CHANGED!!!
                 style: TextStyle(fontSize: getSize(getSize(22))),
               ),
             )
@@ -168,7 +172,7 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                   bottom: getSize(215),
                   right: getSize(20)),
               child: Text(
-                workDate,
+                getDate(widget.appointment!.dateTime),//MUST BE CHANGED!!!
                 style: TextStyle(fontSize: getSize(22)),
               ),
             )
@@ -197,7 +201,7 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                   right: getSize(20)),
               alignment: Alignment.center,
               child: Text(
-                workTime,
+                getTime(widget.appointment!.dateTime),//MUST BE CHANGED!!!
                 style: TextStyle(fontSize: getSize(22)),
               ),
             )

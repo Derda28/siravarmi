@@ -1,10 +1,9 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:siravarmi/screens/appointment_screen.dart';
 import 'package:siravarmi/screens/home_screen.dart';
-import 'package:siravarmi/screens/notification_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/utilities/customeTheme.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 
 
@@ -20,6 +19,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale('tr', ''),
+        ],
       theme: customTheme,
       home: AnimatedSplashScreen(
           duration: 1500,
@@ -28,6 +35,7 @@ class MyApp extends StatelessWidget {
           splashTransition: SplashTransition.fadeTransition,
           backgroundColor: primaryColor)
     );
+
   }
 }
 

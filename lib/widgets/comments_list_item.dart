@@ -17,17 +17,17 @@ class CommentsListItem extends StatefulWidget {
 }
 
 class _CommentsListItemState extends State<CommentsListItem> {
-  UserModel? commentUser;
+
 
   @override
   void initState() {
-    loadUser();
+    //loadUser();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return commentUser!=null?Container(
+    return Container(
       padding: EdgeInsets.only(bottom: getSize(10), top: getSize(10), left: getSize(10)),
       /*height: getSize(150),*/
       decoration: BoxDecoration(
@@ -54,7 +54,7 @@ class _CommentsListItemState extends State<CommentsListItem> {
           Container(
             margin: EdgeInsets.only(left: getSize(60)),
             child: Text(
-              commentUser!.surname != null ? commentUser!.name!+commentUser!.surname!: commentUser!.name!,
+              widget.assessment.userSurname != null ? "${widget.assessment.userName!} ${widget.assessment.userSurname}": widget.assessment.userName!,
               style: TextStyle(
                 color: primaryColor,
                 fontSize: getSize(14),
@@ -92,26 +92,27 @@ class _CommentsListItemState extends State<CommentsListItem> {
           )
         ],
       ),
-    ):Text("Yükleniyor...");
-  }
-
-  Future<void> loadUser() async{
-    DbHelperHttp dbHelper = DbHelperHttp();
-    final assessmentUserData = dbHelper.getUserFromAssessment(widget.assessment.userId);
-    var assUser = await assessmentUserData;
-
-    commentUser = UserModel(
-        id: int.parse(assUser["id"]),
-        isMan: assUser["isMan"]=='1'?true:false,
-      mail: assUser["email"],
-      name: assUser["name"],
-      password: assUser["password"],
-      surname: assUser["surname"]
     );
-
-    setState((){
-      commentUser=commentUser;
-    });
-
   }
+
+  // Future<void> loadUser() async{
+  //   DbHelperHttp dbHelper = DbHelperHttp();
+  //   final assessmentUserData = dbHelper.getUserFromAssessment(widget.assessment.userId);
+  //   var assUser = await assessmentUserData;
+  //
+  //   commentUser = UserModel(
+  //       id: int.parse(assUser["id"]),
+  //       isMan: assUser["isMan"]=='1'?true:false,
+  //     mail: assUser["email"],
+  //     name: assUser["name"],
+  //     password: assUser["password"],
+  //     surname: assUser["surname"],
+  //   );
+  //
+  //
+  //   setState((){
+  //     commentUser=commentUser;
+  //   });
+  //
+  // }
 }

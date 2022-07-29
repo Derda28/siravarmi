@@ -154,6 +154,8 @@ class _BarberListState extends State {
           minPrice: int.parse(element['minPrice']),
           profileURL: element['profileUrl'],
           open: element['open']==1?true:false,
+          averageStars: double.parse("${element['averageStars']}"),
+          assessmentCount: int.parse("${element['assessmentCount']}"),
         ));
       });
     });

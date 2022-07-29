@@ -118,7 +118,7 @@ class ListItem extends StatelessWidget{
                           height: screenWidth!*16/designWidth,
                           width: screenWidth!*55/designWidth,
                           child: Text(
-                            "mustBeEdited",
+                            "${barber.averageStars} (${barber.assessmentCount})",
 
                             style: TextStyle(
                               fontSize: 11,
@@ -176,7 +176,8 @@ class ListItem extends StatelessWidget{
   }
 
   void itemClicked(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>BarberScreen(barber)));
+
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>BarberScreen(barberModel: barber,)));
   }
 
 

@@ -6,6 +6,8 @@ class BarberModel{
   String profileURL;
   String? phoneNumber;
   bool open;
+  double averageStars;
+  int assessmentCount;
   BarberModel({
     required this.id,
     required this.name,
@@ -14,6 +16,8 @@ class BarberModel{
     required this.profileURL,
     this.phoneNumber,
     required this.open,
+    required this.averageStars,
+    required this.assessmentCount,
   });
 
 

@@ -707,8 +707,13 @@ class _BarberScreenState extends State<BarberScreen> {
           id: int.parse(ass[i]["id"]),
           command: ass[i]['comment'],
           stars: int.parse(ass[i]['star']),
+          userName: ass[i]['userName'],
+          userSurname: ass[i]['userSurname'],
       ));
+
     }
+
+
     setState((){
       assessments = assessments;
     });

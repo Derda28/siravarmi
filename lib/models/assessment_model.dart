@@ -5,6 +5,8 @@ class AssessmentModel {
   int userId;
   int employeeId;
   String command;
+  String? userName;
+  String? userSurname;
 
   AssessmentModel(
       {required this.id,
@@ -12,5 +14,7 @@ class AssessmentModel {
       required this.barberId,
       required this.userId,
       required this.command,
-      required this.stars});
+      required this.stars,
+      this.userName,
+      this.userSurname,});
   }

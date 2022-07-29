@@ -152,7 +152,7 @@ class _BarberScreenState extends State<BarberScreen> {
                     color: primaryColor,
                   ),
                   textHeightBehavior:
-                  TextHeightBehavior(applyHeightToFirstAscent: false),
+                      TextHeightBehavior(applyHeightToFirstAscent: false),
                   textAlign: TextAlign.center,
                   softWrap: false,
                 ),
@@ -177,7 +177,7 @@ class _BarberScreenState extends State<BarberScreen> {
                     decoration: BoxDecoration(
                       color: secondaryColor,
                       borderRadius:
-                      BorderRadius.all(Radius.circular(getSize(25))),
+                          BorderRadius.all(Radius.circular(getSize(25))),
                     ),
                     height: getSize(48),
                   ),
@@ -188,7 +188,7 @@ class _BarberScreenState extends State<BarberScreen> {
                       decoration: BoxDecoration(
                         color: Colors.transparent,
                         borderRadius:
-                        BorderRadius.all(Radius.circular(getSize(25))),
+                            BorderRadius.all(Radius.circular(getSize(25))),
                       ),
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
@@ -221,7 +221,7 @@ class _BarberScreenState extends State<BarberScreen> {
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius:
-                            BorderRadius.all(Radius.circular(getSize(18))),
+                                BorderRadius.all(Radius.circular(getSize(18))),
                           ),
                         ),
                         child: Text(
@@ -325,7 +325,7 @@ class _BarberScreenState extends State<BarberScreen> {
                       Container(
                         decoration: BoxDecoration(color: Colors.white),
                         padding:
-                        EdgeInsets.only(top: getSize(2), left: getSize(10)),
+                            EdgeInsets.only(top: getSize(2), left: getSize(10)),
                         margin: EdgeInsets.only(
                             top: getSize(24), left: getSize(42)),
                         width: getSize(292),
@@ -556,9 +556,9 @@ class _BarberScreenState extends State<BarberScreen> {
               ),
               ListView.builder(
                 itemCount: assessments.length,
-                itemBuilder: (context, index){
-                  return CommentsListItem(assessment: assessments[index],);
-                },
+                  itemBuilder: (context, index){
+                    return CommentsListItem(assessment: assessments[index],);
+                  },
               )
             ],
           ),
@@ -626,9 +626,9 @@ class _BarberScreenState extends State<BarberScreen> {
             child: ElevatedButton(
               style: ButtonStyle(
                   backgroundColor:
-                  MaterialStateColor.resolveWith((states) => primaryColor),
+                      MaterialStateColor.resolveWith((states) => primaryColor),
                   overlayColor: MaterialStateColor.resolveWith(
-                          (states) => secondaryColor.withOpacity(0.2))),
+                      (states) => secondaryColor.withOpacity(0.2))),
               onPressed: () {},
               child: Text(
                 "Randevu olustur",
@@ -653,7 +653,7 @@ class _BarberScreenState extends State<BarberScreen> {
 
   Future<void> selectedServiceBtnClicked(BuildContext context) async {
     final result =
-    await Navigator.push(context, HeroDialogRoute(builder: (context) {
+        await Navigator.push(context, HeroDialogRoute(builder: (context) {
       return SelectedServicePopupScreen();
     }));
   }
@@ -701,12 +701,12 @@ class _BarberScreenState extends State<BarberScreen> {
 
     for(int i=0; i<ass.length; i++){
       assessments.add(AssessmentModel(
-        userId: int.parse(ass[i]["userId"]),
-        barberId: int.parse(ass[i]["barberId"]),
-        employeeId: int.parse(ass[i]["employeeId"]),
-        id: int.parse(ass[i]["id"]),
-        command: ass[i]['comment'],
-        stars: int.parse(ass[i]['star']),
+          userId: int.parse(ass[i]["userId"]),
+          barberId: int.parse(ass[i]["barberId"]),
+          employeeId: int.parse(ass[i]["employeeId"]),
+          id: int.parse(ass[i]["id"]),
+          command: ass[i]['comment'],
+          stars: int.parse(ass[i]['star']),
       ));
     }
     setState((){

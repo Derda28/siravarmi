@@ -16,15 +16,14 @@ class SettingButtons extends StatelessWidget {
   Color? textColor;
   Color? iconColor;
 
-
   SettingButtons(
       {Key? key,
-      required this.itemClicked,
-      this.selectedIcon,
-      this.assetImage,
-      this.iconColor,
-      this.textColor,
-      required this.buttonTitle})
+        required this.itemClicked,
+        this.selectedIcon,
+        this.assetImage,
+        this.iconColor,
+        this.textColor,
+        required this.buttonTitle})
       : super(key: key);
 
   @override

@@ -80,15 +80,15 @@ class _CommentsListItemState extends State<CommentsListItem> {
           ),
           //AssessmentComment
           Container(
-              margin: EdgeInsets.only( top: getSize(55)),
-              child: Text(
-                widget.assessment.command,
-                style: TextStyle(
-                    fontFamily: secondaryFontFamily,
-                    fontSize: getSize(14),
-                    color: fontColor
-                ),
-              )
+            margin: EdgeInsets.only( top: getSize(55)),
+            child: Text(
+              widget.assessment.command,
+              style: TextStyle(
+                fontFamily: secondaryFontFamily,
+                fontSize: getSize(14),
+                color: fontColor
+              ),
+            )
           )
         ],
       ),
@@ -103,10 +103,10 @@ class _CommentsListItemState extends State<CommentsListItem> {
     commentUser = UserModel(
         id: int.parse(assUser["id"]),
         isMan: assUser["isMan"]=='1'?true:false,
-        mail: assUser["email"],
-        name: assUser["name"],
-        password: assUser["password"],
-        surname: assUser["surname"]
+      mail: assUser["email"],
+      name: assUser["name"],
+      password: assUser["password"],
+      surname: assUser["surname"]
     );
 
     setState((){

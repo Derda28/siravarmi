@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class DbHelperHttp {
   Future<List<dynamic>> getBarberList() async {
     var url =
-    Uri.parse('https://testforsiravarmi.000webhostapp.com/getBarbers.php');
+        Uri.parse('https://testforsiravarmi.000webhostapp.com/getBarbers.php');
     http.Response response = await http.get(url);
 
     var data = jsonDecode(response.body);
@@ -50,7 +50,7 @@ class DbHelperHttp {
     var url = Uri.parse(
         'https://testforsiravarmi.000webhostapp.com/getAppointmentsFromUser.php');
     http.Response response =
-    await http.post(url, body: {'userId': userId.toString()});
+        await http.post(url, body: {'userId': userId.toString()});
 
     var data = jsonDecode(response.body);
     return data;
@@ -60,7 +60,7 @@ class DbHelperHttp {
     var url = Uri.parse(
         'https://testforsiravarmi.000webhostapp.com/getUserFromAssessment.php');
     http.Response response =
-    await http.post(url, body: {'userId': userId.toString()});
+        await http.post(url, body: {'userId': userId.toString()});
 
 
     var data = jsonDecode(response.body);

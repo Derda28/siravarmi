@@ -135,7 +135,7 @@ class _SettingScreenState extends State {
                   height: containerHSize,
                   width: containerWSize,
                   margin:
-                      EdgeInsets.only(top: getSize(150), left: getSize(187)),
+                  EdgeInsets.only(top: getSize(150), left: getSize(187)),
                   child: SettingButtons(
                       assetImage: "assets/images/BarberIcon2.png",
                       buttonTitle: "Berberler",
@@ -154,7 +154,7 @@ class _SettingScreenState extends State {
                   height: containerHSize,
                   width: containerWSize,
                   margin:
-                      EdgeInsets.only(top: getSize(260), left: getSize(187)),
+                  EdgeInsets.only(top: getSize(260), left: getSize(187)),
                   child: SettingButtons(
                     selectedIcon: Icons.format_align_center,
                     buttonTitle: " Kullanım\n Koşulları",
@@ -179,7 +179,7 @@ class _SettingScreenState extends State {
                   height: containerHSize,
                   width: containerWSize,
                   margin:
-                      EdgeInsets.only(top: getSize(370), left: getSize(187)),
+                  EdgeInsets.only(top: getSize(370), left: getSize(187)),
                   child: SettingButtons(
                     selectedIcon: Icons.exit_to_app,
                     iconColor: Colors.red,

@@ -1,10 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/navbar.dart';
-
+import 'package:siravarmi/widgets/setting_buttons.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../utilities/custom_screen_route.dart';
 import '../widgets/appbar.dart';
+import 'home_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -24,12 +26,27 @@ class _SettingScreenState extends State {
   double elevationSize = getSize(4);
   double borderSize = getSize(10);
 
+  final Uri toPrivacyLaunch = Uri(scheme: 'https', host: 'www.google.com');
+  final Uri toTermsOfUseLaunch = Uri(scheme: 'https', host: 'www.youtube.com');
+
+  Future<void>? _launched;
+
+  Future<void> _launchInBrowser(Uri url) async {
+    if (!await launchUrl(
+      url,
+      webViewConfiguration: WebViewConfiguration(),
+      mode: LaunchMode.inAppWebView,
+    )) {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: Appbar(label:"Menü", labelHome: "", fromHome: false),
+      appBar: Appbar(label: "Menü", labelHome: "", fromHome: false),
       body: Column(
         children: [avatarBody()],
       ),
@@ -68,18 +85,16 @@ class _SettingScreenState extends State {
             ),
           ),
         ),
-        Expanded(
-          child: Column(
-            children: <Widget>[
-              Divider(
-                height: getSize(293),
-                color: Colors.black,
-                thickness: getSize(1),
-                indent: getSize(40),
-                endIndent: getSize(40),
-              )
-            ],
-          ),
+        Column(
+          children: <Widget>[
+            Divider(
+              height: getSize(293),
+              color: Colors.black,
+              thickness: getSize(1),
+              indent: getSize(40),
+              endIndent: getSize(40),
+            )
+          ],
         ),
         SingleChildScrollView(
           child: Container(
@@ -92,240 +107,92 @@ class _SettingScreenState extends State {
                   height: containerHSize,
                   width: containerWSize,
                   margin: EdgeInsets.only(top: getSize(40)),
-                  child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                          primary: Colors.black38,
-                          side: BorderSide(
-                              color: Colors.black38, width: getSize(2)),
-                          shadowColor: Colors.black,
-                          elevation: elevationSize,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(borderSize))),
-                          backgroundColor: Colors.white),
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(Icons.favorite,
-                              color: fontColor, size: iconFont),
-                          Text(
-                            "Favoriler",
-                            style:
-                            TextStyle(color: fontColor, fontSize: textFont),
-                          ),
-                        ],
-                      )),
+                  child: SettingButtons(
+                    selectedIcon: Icons.favorite,
+                    buttonTitle: "Favoriler",
+                    itemClicked: () {},
+                  ),
                 ),
                 Container(
                   height: containerHSize,
                   width: containerWSize,
                   margin: EdgeInsets.only(top: getSize(40), left: getSize(187)),
-                  child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                          primary: Colors.black38,
-                          side: BorderSide(
-                              color: Colors.black38, width: getSize(2)),
-                          shadowColor: Colors.white,
-                          elevation: elevationSize,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(borderSize))),
-                          backgroundColor: Colors.white),
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(Icons.settings,
-                              color: fontColor, size: iconFont),
-                          Text(
-                            "Ayarlar",
-                            style:
-                            TextStyle(color: fontColor, fontSize: textFont),
-                          ),
-                        ],
-                      )),
+                  child: SettingButtons(
+                      selectedIcon: Icons.settings,
+                      buttonTitle: "Ayarlar",
+                      itemClicked: () {}),
                 ),
                 Container(
                   height: containerHSize,
                   width: containerWSize,
                   margin: EdgeInsets.only(top: getSize(150)),
-                  child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                          primary: Colors.black38,
-                          side: BorderSide(
-                              color: Colors.black38, width: getSize(2)),
-                          shadowColor: Colors.white,
-                          elevation: elevationSize,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(borderSize))),
-                          backgroundColor: Colors.white),
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(Icons.account_circle_outlined,
-                              color: fontColor, size: iconFont),
-                          Text(
-                            " Hesap \n Bilgileri",
-                            style:
-                            TextStyle(color: fontColor, fontSize: textFont),
-                          ),
-                        ],
-                      )),
+                  child: SettingButtons(
+                      selectedIcon: Icons.account_circle_outlined,
+                      buttonTitle: " Hesap \n Bilgileri",
+                      itemClicked: () {}),
                 ),
                 Container(
                   height: containerHSize,
                   width: containerWSize,
                   margin:
-                  EdgeInsets.only(top: getSize(150), left: getSize(187)),
-                  child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                          primary: Colors.black38,
-                          side: BorderSide(
-                              color: Colors.black38, width: getSize(2)),
-                          shadowColor: Colors.white,
-                          elevation: elevationSize,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(borderSize))),
-                          backgroundColor: Colors.white),
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Image(
-                              width: iconFont,
-                              height: iconFont,
-                              color: fontColor,
-                              image:
-                              AssetImage("assets/images/BarberIcon2.png")),
-                          Text(
-                            "Berberler",
-                            style:
-                            TextStyle(color: fontColor, fontSize: textFont),
-                          ),
-                        ],
-                      )),
+                      EdgeInsets.only(top: getSize(150), left: getSize(187)),
+                  child: SettingButtons(
+                      assetImage: "assets/images/BarberIcon2.png",
+                      buttonTitle: "Berberler",
+                      itemClicked: () {}),
                 ),
                 Container(
                   height: containerHSize,
                   width: containerWSize,
                   margin: EdgeInsets.only(top: getSize(260)),
-                  child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                          primary: Colors.black38,
-                          side: BorderSide(
-                              color: Colors.black38, width: getSize(2)),
-                          shadowColor: Colors.white,
-                          elevation: elevationSize,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(borderSize))),
-                          backgroundColor: Colors.white),
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(Icons.text_snippet_outlined,
-                              color: fontColor, size: iconFont),
-                          Text(
-                            "Hakkımızda",
-                            style:
-                            TextStyle(color: fontColor, fontSize: textFont),
-                          ),
-                        ],
-                      )),
+                  child: SettingButtons(
+                      selectedIcon: Icons.text_snippet_outlined,
+                      buttonTitle: "Hakkımızda",
+                      itemClicked: () {}),
                 ),
                 Container(
                   height: containerHSize,
                   width: containerWSize,
                   margin:
-                  EdgeInsets.only(top: getSize(260), left: getSize(187)),
-                  child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                          primary: Colors.black38,
-                          side: BorderSide(
-                              color: Colors.black38, width: getSize(2)),
-                          shadowColor: Colors.white,
-                          elevation: elevationSize,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(borderSize))),
-                          backgroundColor: Colors.white),
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(Icons.format_align_center,
-                              color: fontColor, size: iconFont),
-                          Text(
-                            " Kullanım\n Koşulları",
-                            style:
-                            TextStyle(color: fontColor, fontSize: textFont),
-                          ),
-                        ],
-                      )),
+                      EdgeInsets.only(top: getSize(260), left: getSize(187)),
+                  child: SettingButtons(
+                    selectedIcon: Icons.format_align_center,
+                    buttonTitle: " Kullanım\n Koşulları",
+                    itemClicked: () => setState(() {
+                      _launched = _launchInBrowser(toTermsOfUseLaunch);
+                    }),
+                  ),
                 ),
                 Container(
                   height: containerHSize,
                   width: containerWSize,
                   margin: EdgeInsets.only(top: getSize(370)),
-                  child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                          primary: Colors.black38,
-                          side: BorderSide(
-                              color: Colors.black38, width: getSize(2)),
-                          shadowColor: Colors.white,
-                          elevation: elevationSize,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(borderSize))),
-                          backgroundColor: Colors.white),
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(Icons.security,
-                              color: fontColor, size: iconFont),
-                          Text(
-                            "Gizlilik",
-                            style:
-                            TextStyle(color: fontColor, fontSize: textFont),
-                          ),
-                        ],
-                      )),
+                  child: SettingButtons(
+                    selectedIcon: Icons.security,
+                    buttonTitle: "Gizlilik",
+                    itemClicked: () => setState(() {
+                      _launched = _launchInBrowser(toPrivacyLaunch);
+                    }),
+                  ),
                 ),
                 Container(
                   height: containerHSize,
                   width: containerWSize,
                   margin:
-                  EdgeInsets.only(top: getSize(370), left: getSize(187)),
-                  child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                          primary: Colors.black38,
-                          side: BorderSide(
-                              color: Colors.black38, width: getSize(2)),
-                          shadowColor: Colors.white,
-                          elevation: elevationSize,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(borderSize))),
-                          backgroundColor: Colors.white),
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(Icons.exit_to_app,
-                              color: Colors.red, size: iconFont),
-                          Text(
-                            "Çıkış",
-                            style: TextStyle(
-                                color: Colors.red, fontSize: textFont),
-                          ),
-                        ],
-                      )),
+                      EdgeInsets.only(top: getSize(370), left: getSize(187)),
+                  child: SettingButtons(
+                    selectedIcon: Icons.exit_to_app,
+                    iconColor: Colors.red,
+                    textColor: Colors.red,
+                    buttonTitle: "Çıkış",
+                    itemClicked: () {
+                      setState(() {
+                        isLoggedIn = false;
+                      });
+                      Navigator.pushReplacement(
+                          context, CustomScreenRoute(child: HomeScreen()));
+                    },
+                  ),
                 )
               ],
             ),

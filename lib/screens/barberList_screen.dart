@@ -71,14 +71,14 @@ class _BarberListState extends State {
         child: ElevatedButton(
 
             style: ButtonStyle(
-              overlayColor: MaterialStateColor.resolveWith((states) => primaryColor.withOpacity(0.5)),
+                overlayColor: MaterialStateColor.resolveWith((states) => primaryColor.withOpacity(0.5)),
                 backgroundColor:
-                    MaterialStateColor.resolveWith((states) => Colors.white),
+                MaterialStateColor.resolveWith((states) => Colors.white),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  side: BorderSide.none,
-                ))),
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: BorderSide.none,
+                    ))),
             onPressed: () {
               filterBtnClicked();
             },
@@ -95,12 +95,12 @@ class _BarberListState extends State {
               style: ButtonStyle(
                   overlayColor: MaterialStateColor.resolveWith((states) => primaryColor.withOpacity(0.5)),
                   backgroundColor:
-                      MaterialStateColor.resolveWith((states) => Colors.white),
+                  MaterialStateColor.resolveWith((states) => Colors.white),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    side: BorderSide.none,
-                  ))),
+                        borderRadius: BorderRadius.circular(10.0),
+                        side: BorderSide.none,
+                      ))),
               onPressed: () {
                 sortBtnClicked();
               },
@@ -116,16 +116,16 @@ class _BarberListState extends State {
       child: ListView.builder(
           itemCount: _barbers.length,
           itemBuilder: (context, index) => Container(
-                margin: EdgeInsets.only(bottom: 5),
-                child: ListItem(
-                    itemHeigth: 60,
-                    itemWidth: 350,
-                    profileHeigth: 50,
-                    profileWidth: 50,
-                    barber: _barbers[index],
-                    date: "15/07/2022",
-                    time: "15:30"),
-              )),
+            margin: EdgeInsets.only(bottom: 5),
+            child: ListItem(
+                itemHeigth: 60,
+                itemWidth: 350,
+                profileHeigth: 50,
+                profileWidth: 50,
+                barber: _barbers[index],
+                date: "15/07/2022",
+                time: "15:30"),
+          )),
     );
   }
 
@@ -148,12 +148,12 @@ class _BarberListState extends State {
     setState((){
       items.forEach((element) {
         _barbers.add(BarberModel(
-            id: int.parse(element['id']),
-            name: element['name'],
-            address: element['location'],
-            minPrice: int.parse(element['minPrice']),
-            profileURL: element['profileUrl'],
-            open: element['open']==1?true:false,
+          id: int.parse(element['id']),
+          name: element['name'],
+          address: element['location'],
+          minPrice: int.parse(element['minPrice']),
+          profileURL: element['profileUrl'],
+          open: element['open']==1?true:false,
         ));
       });
     });
@@ -187,8 +187,8 @@ class _BarberListState extends State {
       padding: EdgeInsets.only(top: 30, left: 30, right: 30, bottom: 20),
       footer: ElevatedButton(
         style: ButtonStyle(
-          backgroundColor: MaterialStateColor.resolveWith((states) => primaryColor),
-          overlayColor: MaterialStateColor.resolveWith((states) => secondaryColor.withOpacity(0.5))
+            backgroundColor: MaterialStateColor.resolveWith((states) => primaryColor),
+            overlayColor: MaterialStateColor.resolveWith((states) => secondaryColor.withOpacity(0.5))
         ),
         onPressed: () {  },
         child: Container(

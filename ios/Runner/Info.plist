@@ -43,6 +43,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>LSApplicationQueriesSchemes</key>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 </dict>

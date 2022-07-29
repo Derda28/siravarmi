@@ -1,5 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:siravarmi/screens/menu_about_screen.dart';
+import 'package:siravarmi/screens/menu_account_info_screen.dart';
+import 'package:siravarmi/screens/menu_barbers_screen.dart';
+import 'package:siravarmi/screens/menu_favorite_screen.dart';
+import 'package:siravarmi/screens/menu_setting_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/navbar.dart';
 import 'package:siravarmi/widgets/setting_buttons.dart';
@@ -34,7 +39,6 @@ class _SettingScreenState extends State {
   Future<void> _launchInBrowser(Uri url) async {
     if (!await launchUrl(
       url,
-      webViewConfiguration: WebViewConfiguration(),
       mode: LaunchMode.inAppWebView,
     )) {
       throw 'Could not launch $url';
@@ -110,7 +114,7 @@ class _SettingScreenState extends State {
                   child: SettingButtons(
                     selectedIcon: Icons.favorite,
                     buttonTitle: "Favoriler",
-                    itemClicked: () {},
+                    itemClicked: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => MenuFavoriteScreen())),
                   ),
                 ),
                 Container(
@@ -120,7 +124,8 @@ class _SettingScreenState extends State {
                   child: SettingButtons(
                       selectedIcon: Icons.settings,
                       buttonTitle: "Ayarlar",
-                      itemClicked: () {}),
+                    itemClicked: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => MenuSettingScreen())),
+                  ),
                 ),
                 Container(
                   height: containerHSize,
@@ -129,7 +134,8 @@ class _SettingScreenState extends State {
                   child: SettingButtons(
                       selectedIcon: Icons.account_circle_outlined,
                       buttonTitle: " Hesap \n Bilgileri",
-                      itemClicked: () {}),
+                    itemClicked: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => MenuAccountInfoScreen())),
+                  ),
                 ),
                 Container(
                   height: containerHSize,
@@ -139,7 +145,8 @@ class _SettingScreenState extends State {
                   child: SettingButtons(
                       assetImage: "assets/images/BarberIcon2.png",
                       buttonTitle: "Berberler",
-                      itemClicked: () {}),
+                    itemClicked: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => MenuBarbersScreen())),
+                  ),
                 ),
                 Container(
                   height: containerHSize,
@@ -147,8 +154,9 @@ class _SettingScreenState extends State {
                   margin: EdgeInsets.only(top: getSize(260)),
                   child: SettingButtons(
                       selectedIcon: Icons.text_snippet_outlined,
-                      buttonTitle: "Hakkımızda",
-                      itemClicked: () {}),
+                      buttonTitle: "Hakkında",
+                    itemClicked: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => MenuAboutScreen())),
+                  ),
                 ),
                 Container(
                   height: containerHSize,

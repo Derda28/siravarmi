@@ -398,7 +398,7 @@ class _LoginScreenState extends State<LoginScreen> {
             surname: response['surname'],
             mail: response['email'],
             password: response['password'],
-            isMan: response['isMan']
+            isMan: response['isMan']=="1"?true:false,
         );
         Navigator.pop(context, true);
       }else if(response['message']=='invalidMail'){

@@ -4,29 +4,21 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:siravarmi/widgets/comments_list_item.dart';
 import 'package:siravarmi/widgets/selected_service_popup_screen.dart';
 import 'package:siravarmi/widgets/slidingUpPanels/barber_slidingUpPanel.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import '../cloud_functions/dbHelperHttp.dart';
+import '../models/assessment_model.dart';
 import '../models/barber_model.dart';
 import '../routes/hero_dialog_route.dart';
 import '../utilities/consts.dart';
 import '../utilities/custom_rect_tween.dart';
 
 class BarberScreen extends StatefulWidget {
-  String profileURL =
-      "https://static.booksy.com/static/live/covers/barbers.jpg";
-  String barberName = "Salon AS";
-  String assessmentTxt = "3.1 (+200)";
-  String adressInfo =
-      "İstanbul Beykoz İstanbul Beykoz İstanbul Beykoz İstanbul Beykoz İstanbul Beykozİstanbul Beykoz İstanbul Beykoz İstanbul Beykoz ";
-
-  BarberScreen(BarberModel barberModel, {Key? key}) : super(key: key) {
-    barberName = barberModel.name;
-    profileURL = barberModel.profileURL;
-    assessmentTxt = "";/*barberModel.assessmentId.toString();*/
-    adressInfo = barberModel.address;
-  }
+  BarberModel barberModel;
+  BarberScreen({ required this.barberModel, Key? key}) : super(key: key);
 
   @override
   State<BarberScreen> createState() => _BarberScreenState();
@@ -65,6 +57,14 @@ class _BarberScreenState extends State<BarberScreen> {
       infosColor = primaryColor,
       commentsColor = primaryColor;
 
+  List<AssessmentModel> assessments = [];
+
+  @override
+  void initState() {
+    loadAssessments();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
@@ -83,7 +83,7 @@ class _BarberScreenState extends State<BarberScreen> {
         Container(
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: NetworkImage(widget.profileURL), fit: BoxFit.cover)),
+                  image: NetworkImage(widget.barberModel.profileURL), fit: BoxFit.cover)),
           height: profileHeigt,
           width: screenWidth,
           child: IconButton(
@@ -115,7 +115,7 @@ class _BarberScreenState extends State<BarberScreen> {
               softWrap: false,
               overflow: TextOverflow.fade,
               maxLines: 1,
-              widget.barberName,
+              widget.barberModel.name,
               style: TextStyle(
                 color: primaryColor,
                 fontSize: getSize(34),
@@ -146,7 +146,7 @@ class _BarberScreenState extends State<BarberScreen> {
                 height: getSize(25),
                 width: getSize(45),
                 child: Text(
-                  widget.assessmentTxt,
+                  "${widget.barberModel.averageStars} (${widget.barberModel.assessmentCount})",
                   style: TextStyle(
                     fontSize: getSize(11),
                     color: primaryColor,
@@ -331,7 +331,7 @@ class _BarberScreenState extends State<BarberScreen> {
                         width: getSize(292),
                         height: getSize(195),
                         child: AutoSizeText(
-                          widget.adressInfo,
+                          widget.barberModel.address,
                           maxLines: 4,
                           style: TextStyle(fontSize: inContainerSize),
                         ),
@@ -554,9 +554,11 @@ class _BarberScreenState extends State<BarberScreen> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: getSize(50),
-                width: getSize(50),
+              ListView.builder(
+                itemCount: assessments.length,
+                  itemBuilder: (context, index){
+                    return CommentsListItem(assessment: assessments[index],);
+                  },
               )
             ],
           ),
@@ -579,7 +581,7 @@ class _BarberScreenState extends State<BarberScreen> {
                     child: TextButton(
                       child: Text(
                           style: TextStyle(
-                              color: secondaryColor, fontSize: getSize(16)),
+                              color: Colors.white, fontSize: getSize(16)),
                           "x Hizmet Seçili"),
                       onPressed: () {
                         selectedServiceBtnClicked(context);
@@ -689,6 +691,26 @@ class _BarberScreenState extends State<BarberScreen> {
       commentsColor = Colors.white;
       timer.cancel();
       setState(() {});
+    });
+  }
+
+  Future<void> loadAssessments() async{
+    DbHelperHttp dbHelper = DbHelperHttp();
+    final assessmentsData = dbHelper.getAssessmentList(widget.barberModel.id);
+    var ass = await assessmentsData;
+
+    for(int i=0; i<ass.length; i++){
+      assessments.add(AssessmentModel(
+          userId: int.parse(ass[i]["userId"]),
+          barberId: int.parse(ass[i]["barberId"]),
+          employeeId: int.parse(ass[i]["employeeId"]),
+          id: int.parse(ass[i]["id"]),
+          command: ass[i]['comment'],
+          stars: int.parse(ass[i]['star']),
+      ));
+    }
+    setState((){
+      assessments = assessments;
     });
   }
 }

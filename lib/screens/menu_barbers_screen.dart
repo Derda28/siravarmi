@@ -12,6 +12,7 @@ class MenuBarbersScreen extends StatelessWidget{
         title: Text("Berberler"),
       ),
       body: Column(),
+      backgroundColor: bgColor,
     );
   }
 

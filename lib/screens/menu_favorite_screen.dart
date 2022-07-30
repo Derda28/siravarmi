@@ -12,6 +12,7 @@ class MenuFavoriteScreen extends StatelessWidget{
         title: Text("Favoriler"),
       ),
       body: Column(),
+      backgroundColor: bgColor,
     );
   }
 

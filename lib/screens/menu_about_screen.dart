@@ -12,6 +12,7 @@ class MenuAboutScreen extends StatelessWidget{
         title: Text("Hakkında"),
       ),
       body: Column(),
+      backgroundColor: bgColor,
     );
   }
 

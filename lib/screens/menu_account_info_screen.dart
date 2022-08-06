@@ -12,6 +12,7 @@ class MenuAccountInfoScreen extends StatelessWidget{
         title: Text("Hesap Bilgileri"),
       ),
       body: Column(),
+      backgroundColor: bgColor,
     );
   }
 

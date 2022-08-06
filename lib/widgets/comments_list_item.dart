@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:siravarmi/cloud_functions/users_database.dart';
 import 'package:siravarmi/utilities/consts.dart';
 
 import '../cloud_functions/dbHelperHttp.dart';
@@ -18,16 +19,17 @@ class CommentsListItem extends StatefulWidget {
 
 class _CommentsListItemState extends State<CommentsListItem> {
 
+  UserModel? commentUser;
 
   @override
   void initState() {
-    //loadUser();
+    loadUser();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return commentUser!=null?Container(
       padding: EdgeInsets.only(bottom: getSize(10), top: getSize(10), left: getSize(10)),
       /*height: getSize(150),*/
       decoration: BoxDecoration(
@@ -54,7 +56,7 @@ class _CommentsListItemState extends State<CommentsListItem> {
           Container(
             margin: EdgeInsets.only(left: getSize(60)),
             child: Text(
-              widget.assessment.userSurname != null ? "${widget.assessment.userName!} ${widget.assessment.userSurname}": widget.assessment.userName!,
+              commentUser!.surname != null ? "${commentUser!.name} ${commentUser!.surname}": commentUser!.name!,
               style: TextStyle(
                 color: primaryColor,
                 fontSize: getSize(14),
@@ -70,11 +72,11 @@ class _CommentsListItemState extends State<CommentsListItem> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Icon(Icons.star, color:widget.assessment.stars>=1?secondaryColor:fontColor, size: 15,),
-                Icon(Icons.star, color:widget.assessment.stars>=2?secondaryColor:fontColor, size: 15,),
-                Icon(Icons.star, color:widget.assessment.stars>=3?secondaryColor:fontColor, size: 15,),
-                Icon(Icons.star, color:widget.assessment.stars>=4?secondaryColor:fontColor, size: 15,),
-                Icon(Icons.star, color:widget.assessment.stars>=5?secondaryColor:fontColor, size: 15,),
+                Icon(Icons.star, color:widget.assessment.stars!>=1?secondaryColor:fontColor, size: 15,),
+                Icon(Icons.star, color:widget.assessment.stars!>=2?secondaryColor:fontColor, size: 15,),
+                Icon(Icons.star, color:widget.assessment.stars!>=3?secondaryColor:fontColor, size: 15,),
+                Icon(Icons.star, color:widget.assessment.stars!>=4?secondaryColor:fontColor, size: 15,),
+                Icon(Icons.star, color:widget.assessment.stars!>=5?secondaryColor:fontColor, size: 15,),
               ],
             ),
           ),
@@ -82,7 +84,7 @@ class _CommentsListItemState extends State<CommentsListItem> {
           Container(
             margin: EdgeInsets.only( top: getSize(55)),
             child: Text(
-              widget.assessment.command,
+              widget.assessment.comment!,
               style: TextStyle(
                 fontFamily: secondaryFontFamily,
                 fontSize: getSize(14),
@@ -92,7 +94,7 @@ class _CommentsListItemState extends State<CommentsListItem> {
           )
         ],
       ),
-    );
+    ):Text("LOADING...");
   }
 
   // Future<void> loadUser() async{
@@ -115,4 +117,12 @@ class _CommentsListItemState extends State<CommentsListItem> {
   //   });
   //
   // }
+  loadUser() async {
+    UsersDatabase usersDb = UsersDatabase();
+    commentUser = await usersDb.getUsers(widget.assessment.userId!);
+    setState((){
+      commentUser = commentUser;
+    });
+  }
+
 }

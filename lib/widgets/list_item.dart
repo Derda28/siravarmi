@@ -2,7 +2,9 @@ import 'package:adobe_xd/pinned.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:siravarmi/cloud_functions/employees_database.dart';
 import 'package:siravarmi/models/barber_model.dart';
+import 'package:siravarmi/models/employee_model.dart';
 import 'package:siravarmi/screens/barber_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 
@@ -11,6 +13,7 @@ class ListItem extends StatelessWidget{
   Color? itemBgColor;
   String date, time;
   BarberModel barber;
+  List<EmployeeModel> employees = [];
 
   ListItem({Key? key,
     required this.itemHeigth,
@@ -20,7 +23,7 @@ class ListItem extends StatelessWidget{
     required this.profileWidth,
     required this.barber,
     required this.date,
-    required this.time}) : super(key: key);
+    required this.time,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +57,7 @@ class ListItem extends StatelessWidget{
                       decoration: BoxDecoration(
                         color: Colors.white,
                         image: DecorationImage(
-                          image: NetworkImage(barber.profileURL),
+                          image: NetworkImage(barber.profileURL!),
                           fit: BoxFit.fitWidth,
                         ),
                         borderRadius:
@@ -74,7 +77,7 @@ class ListItem extends StatelessWidget{
                       padding: const EdgeInsets.only(bottom: 5),
                       width: screenWidth!*110/designWidth,
                       child: Text(
-                        barber.name,
+                        barber.name!,
                         style: TextStyle(
                           fontSize: screenWidth!*16/designWidth,
                           color: Colors.black,
@@ -86,7 +89,7 @@ class ListItem extends StatelessWidget{
                       ),
                     ),
                     Text(
-                      barber.address,
+                      barber.address!,
                       style: TextStyle(
                         fontSize: screenWidth!*10/designWidth,
                         color: fontColor,
@@ -175,9 +178,18 @@ class ListItem extends StatelessWidget{
     );
   }
 
-  void itemClicked(BuildContext context) {
+  Future<void> itemClicked(BuildContext context) async {
+
+    employees = await loadEmployees(barber.id);
+    barber.setEmployees(employees);
 
     Navigator.push(context, MaterialPageRoute(builder: (context)=>BarberScreen(barberModel: barber,)));
+  }
+
+  loadEmployees(int? id) async {
+    EmployeesDatabase empDb = EmployeesDatabase();
+    var result = await empDb.getEmployeesFromBarber(id!);
+    return result;
   }
 
 

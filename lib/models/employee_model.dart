@@ -1,10 +1,10 @@
 class EmployeeModel{
-  int id;
-  int barberId;
-  String name;
+  int? id;
+  int? barberId;
+  String? name;
   String? surname;
-  bool gender;
-  bool working;
+  bool? gender;
+  bool? working;
 
   EmployeeModel({
     required this.barberId,
@@ -14,4 +14,13 @@ class EmployeeModel{
     required this.working,
     this.surname,
   });
+
+  EmployeeModel.fromJson(Map json) {
+    id = json['id'];
+    barberId = json['barberId'];
+    name = json['name'];
+    surname = json['surname'];
+    gender = json['gender']==1?true:false;
+    working = json['working']==1?true:false;
+  }
 }

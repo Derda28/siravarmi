@@ -1,5 +1,6 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:siravarmi/cloud_functions/appointments_database.dart';
 import 'package:siravarmi/screens/home_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/utilities/customeTheme.dart';
@@ -8,6 +9,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 

@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:siravarmi/cloud_functions/appointments_database.dart';
+import 'package:siravarmi/cloud_functions/assessment_database.dart';
+import 'package:siravarmi/cloud_functions/barbers_database.dart';
 import 'package:siravarmi/cloud_functions/dbHelperHttp.dart';
 import 'package:siravarmi/cloud_functions/db_helper_mysql1.dart';
+import 'package:siravarmi/cloud_functions/employees_database.dart';
+import 'package:siravarmi/cloud_functions/favorites_database.dart';
+import 'package:siravarmi/cloud_functions/services_database.dart';
+import 'package:siravarmi/models/assessment_model.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/navbar.dart';
 import 'package:siravarmi/widgets/search_btn.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 
+import '../cloud_functions/users_database.dart';
 import '../widgets/appbar.dart';
 import '../widgets/home_screen_btn.dart';
 import 'barberList_screen.dart';
@@ -25,6 +33,13 @@ class _HomeScreenState extends State {
   @override
   void initState() {
     super.initState();
+    loadData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    //closeData();
   }
 
   @override
@@ -236,6 +251,28 @@ class _HomeScreenState extends State {
                 )))
       ],
     );
+  }
+
+  void loadData() {
+    AppointmentDatabase appDb = AppointmentDatabase();
+    AssessmentDatabase assDb = AssessmentDatabase();
+    BarbersDatabase barbersDb = BarbersDatabase();
+    EmployeesDatabase empDb = EmployeesDatabase();
+    FavoritesDatabase favDb = FavoritesDatabase();
+    ServicesDatabase servicesDb = ServicesDatabase();
+    UsersDatabase usersDb = UsersDatabase();
+
+
+    appDb.getAppointmentsFromMySql(user.id!);
+    assDb.getAssessmentsFromMySql();
+    barbersDb.getBarbersFromMysql();
+    empDb.getEmployeesFromMysql();
+    favDb.getEmployeesFromMysql();
+    servicesDb.getEmployeesFromMysql();
+    usersDb.getUsersFromMySql();
+  }
+
+  void closeData() {
   }
 
 

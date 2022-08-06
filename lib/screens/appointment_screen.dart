@@ -1,13 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:siravarmi/cloud_functions/appointments_database.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/appointment_list_item.dart';
-import 'package:siravarmi/widgets/list_item.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../cloud_functions/dbHelperHttp.dart';
 import '../models/appointment_model.dart';
+import '../models/barber_model.dart';
 import '../widgets/appbar.dart';
 import '../widgets/navbar.dart';
 import '../widgets/slidingUpPanels/appointment_slidingUpPanel.dart';
@@ -20,10 +19,14 @@ class AppointmentScreen extends StatefulWidget {
 }
 
 class _AppointmentState extends State {
+  List<BarberModel> _barbers = [];
+
   final panelController = PanelController();
 
   final String lastAppointmentTxt = "Gecmis Randevular";
   final String commingAppointmentTxt = "Gelecek Randevular";
+
+  AppointmentDatabase appDbHelper = AppointmentDatabase();
 
   List<AppointmentModel> appointments = [];
   List<AppointmentModel> commingAppointments = [];
@@ -31,18 +34,19 @@ class _AppointmentState extends State {
 
   bool isLastAppointment = true;
   AppointmentModel? selectedAppointment;
+  bool areAppointmentsLoaded = false;
 
   @override
   void initState() {
     super.initState();
     if(isLoggedIn){
       loadAppointments();
+      loadBarbers();
     }
   }
 
   @override
   void dispose() {
-
     super.dispose();
   }
 
@@ -65,7 +69,7 @@ class _AppointmentState extends State {
   }
 
   buildSUP() {
-    return SlidingUpPanel(
+    return areAppointmentsLoaded?SlidingUpPanel(
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -89,7 +93,7 @@ class _AppointmentState extends State {
         isLastAppointment: isLastAppointment,
         appointment: selectedAppointment
       ),
-    );
+    ):Text("Yükleniyor...");
   }
 
   buildComingTxt() {
@@ -128,10 +132,10 @@ class _AppointmentState extends State {
               profileWidth: 50,
               title: commingAppointments[index].barberId.toString(),
               location: commingAppointments[index].barberId.toString(),
-              minPrice: commingAppointments[index].totalPrice,
+              minPrice: commingAppointments[index].totalPrice!,
               assessmentTxt: commingAppointments[index].assessmentId.toString(),
-              date: getDate(commingAppointments[index].dateTime),
-              time: getTime(commingAppointments[index].dateTime),
+              date: getDate(commingAppointments[index].dateTime!),
+              time: getTime(commingAppointments[index].dateTime!),
               profileURL: 'http://dummyimage.com/217x156.png/ff4444/ffffff',
               itemClicked: (){
                 setState((){
@@ -184,10 +188,10 @@ class _AppointmentState extends State {
               profileWidth: 50,
               title: lastAppointments[index].barberId.toString(),
               location: lastAppointments[index].barberId.toString(),
-              minPrice: lastAppointments[index].totalPrice,
+              minPrice: lastAppointments[index].totalPrice!,
               assessmentTxt: lastAppointments[index].assessmentId.toString(),
-              date: getDate(lastAppointments[index].dateTime),
-              time: getTime(lastAppointments[index].dateTime),
+              date: getDate(lastAppointments[index].dateTime!),
+              time: getTime(lastAppointments[index].dateTime!),
               profileURL: 'http://dummyimage.com/217x156.png/ff4444/ffffff',
               itemClicked: (){
                 setState((){
@@ -204,7 +208,7 @@ class _AppointmentState extends State {
   }
 
   Future<void> loadAppointments() async{
-    DbHelperHttp dbHelper = DbHelperHttp();
+    /*DbHelperHttp dbHelper = DbHelperHttp();
     final appointmentsData = dbHelper.getAppointmentList(user.id!);
     var app = await appointmentsData;
 
@@ -218,7 +222,9 @@ class _AppointmentState extends State {
           id: int.parse(app[i]["id"]),
           totalPrice: int.parse(app[i]["totalPrice"]))
       );
-    }
+    }*/
+    final appointmentsResult = await appDbHelper.getAppointments(user.id!);
+    appointments = appointmentsResult;
     setState((){
       appointments = appointments;
     });
@@ -226,14 +232,39 @@ class _AppointmentState extends State {
     sortAppointments();
   }
 
+  Future<void> loadBarbers() async{
+    DbHelperHttp dbHelper = DbHelperHttp();
+    final itemsData = dbHelper.getBarberList();
+    var items = await itemsData;
+    print(items[0]["id"]);
+
+    setState((){
+      items.forEach((element) {
+        _barbers.add(BarberModel(
+          id: int.parse(element['id']),
+          name: element['name'],
+          address: element['location'],
+          minPrice: int.parse(element['minPrice']),
+          profileURL: element['profileUrl'],
+          open: element['open']==1?true:false,
+          averageStars: double.parse("${element['averageStars']}"),
+          assessmentCount: int.parse("${element['assessmentCount']}"),
+        ));
+      });
+    });
+  }
+
   sortAppointments(){
     for (var value in appointments) {
-      if(value.dateTime.isAfter(DateTime.now())){
+      if(value.dateTime!.isAfter(DateTime.now())){
         commingAppointments.add(value);
       }else{
         lastAppointments.add(value);
       }
     }
+    setState((){
+      areAppointmentsLoaded = true;
+    });
   }
 
 

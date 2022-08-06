@@ -18,8 +18,8 @@ double designWidth = 412.0;
 const String primaryFontFamily = "Montserrat";
 const String secondaryFontFamily = "Montserrat-Medium";
 
-bool isLoggedIn = false;
-UserModel user = UserModel();
+bool isLoggedIn = true;
+UserModel user = UserModel(name: "derda", surname: "savas", isMan: true, id: 1);
 
 double getSize(double sizeNumber){
   return screenWidth!*(sizeNumber/designWidth);

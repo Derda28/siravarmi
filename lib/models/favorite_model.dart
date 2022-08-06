@@ -1,8 +1,8 @@
 class FavoriteModel{
-  int id;
-  int userId;
-  int barberId;
-  int employeeId;
+  int? id;
+  int? userId;
+  int? barberId;
+  int? employeeId;
 
   FavoriteModel({
     required this.id,
@@ -10,4 +10,11 @@ class FavoriteModel{
     required this.userId,
     required this.employeeId,
 });
+
+  FavoriteModel.fromJson(Map json) {
+    id = json['id'];
+    userId = json['userId'];
+    barberId = json['barberId'];
+    employeeId = json['employeeId'];
+  }
 }

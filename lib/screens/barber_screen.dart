@@ -4,13 +4,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:siravarmi/cloud_functions/assessment_database.dart';
 import 'package:siravarmi/widgets/comments_list_item.dart';
 import 'package:siravarmi/widgets/selected_service_popup_screen.dart';
 import 'package:siravarmi/widgets/slidingUpPanels/barber_slidingUpPanel.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-import '../cloud_functions/dbHelperHttp.dart';
 import '../models/assessment_model.dart';
 import '../models/barber_model.dart';
 import '../routes/hero_dialog_route.dart';
@@ -19,33 +18,13 @@ import '../utilities/custom_rect_tween.dart';
 
 class BarberScreen extends StatefulWidget {
   BarberModel barberModel;
-  BarberScreen({required this.barberModel, Key? key}) : super(key: key);
+  BarberScreen({ required this.barberModel, Key? key}) : super(key: key);
 
   @override
   State<BarberScreen> createState() => _BarberScreenState();
 }
 
 class _BarberScreenState extends State<BarberScreen> {
-  final String lat = '25.421';
-  final String lon = '32.412';
-  Uri? googleMapsUrl;
-  Uri? appleMapsUrl;
-  Future<void>? _launched;
-
-  Future<void> _launchMap(Uri url) async {
-    if (!await launchUrl(
-        url,
-        mode: LaunchMode.externalApplication,
-    ))
-    /*if(!await launchUrl(
-      url,
-      mode: LaunchMode.externalApplication,
-    ))*/
-    {
-      throw 'Could not launch URL';
-    }
-  }
-
   double profileHeigt = getSize(300);
 
   final String phoneNumber = "0 (850) 442 15 22";
@@ -82,8 +61,8 @@ class _BarberScreenState extends State<BarberScreen> {
 
   @override
   void initState() {
-    googleMapsUrl = Uri.parse("https://www.google.com/maps/place/Lumen+Field/@47.5951518,-122.3316394,17z");
     loadAssessments();
+    print(widget.barberModel.employees?.length);
     super.initState();
   }
 
@@ -95,7 +74,7 @@ class _BarberScreenState extends State<BarberScreen> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Sira Var Mi"),
-        ),
+        ),//
         body: frontBody(context));
   }
 
@@ -105,8 +84,7 @@ class _BarberScreenState extends State<BarberScreen> {
         Container(
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: NetworkImage(widget.barberModel.profileURL),
-                  fit: BoxFit.cover)),
+                  image: NetworkImage(widget.barberModel.profileURL!), fit: BoxFit.cover)),
           height: profileHeigt,
           width: screenWidth,
           child: IconButton(
@@ -138,7 +116,7 @@ class _BarberScreenState extends State<BarberScreen> {
               softWrap: false,
               overflow: TextOverflow.fade,
               maxLines: 1,
-              widget.barberModel.name,
+              widget.barberModel.name!,
               style: TextStyle(
                 color: primaryColor,
                 fontSize: getSize(34),
@@ -147,7 +125,7 @@ class _BarberScreenState extends State<BarberScreen> {
           ),
         ),
         Container(
-          margin: EdgeInsets.only(top: getSize(270), left: getSize(344)),
+          margin: EdgeInsets.only(top: getSize(270),left: getSize(344)),
           height: getSize(25),
           width: getSize(70),
           child: Row(
@@ -354,7 +332,7 @@ class _BarberScreenState extends State<BarberScreen> {
                         width: getSize(292),
                         height: getSize(195),
                         child: AutoSizeText(
-                          widget.barberModel.address,
+                          widget.barberModel.address!,
                           maxLines: 4,
                           style: TextStyle(fontSize: inContainerSize),
                         ),
@@ -373,9 +351,7 @@ class _BarberScreenState extends State<BarberScreen> {
                             style: TextStyle(
                                 fontSize: getSize(16), color: Colors.white),
                           ),
-                          onPressed: () => setState(() {
-                            _launched = _launchMap(googleMapsUrl!);
-                          }),
+                          onPressed: () {},
                         ),
                       ),
                       Container(
@@ -581,11 +557,9 @@ class _BarberScreenState extends State<BarberScreen> {
               ),
               ListView.builder(
                 itemCount: assessments.length,
-                itemBuilder: (context, index) {
-                  return CommentsListItem(
-                    assessment: assessments[index],
-                  );
-                },
+                  itemBuilder: (context, index){
+                    return CommentsListItem(assessment: assessments[index],);
+                  },
               )
             ],
           ),
@@ -721,31 +695,47 @@ class _BarberScreenState extends State<BarberScreen> {
     });
   }
 
-  Future<void> loadAssessments() async {
-    DbHelperHttp dbHelper = DbHelperHttp();
-    final assessmentsData = dbHelper.getAssessmentList(widget.barberModel.id);
+  Future<void> loadAssessments() async{
+    /*DbHelperHttp dbHelper = DbHelperHttp();
+    final assessmentsData = dbHelper.getAssessmentListFromBarber(widget.barberModel.id);
     var ass = await assessmentsData;
 
-    for (int i = 0; i < ass.length; i++) {
+    for(int i=0; i<ass.length; i++){
       assessments.add(AssessmentModel(
-        userId: int.parse(ass[i]["userId"]),
-        barberId: int.parse(ass[i]["barberId"]),
-        employeeId: int.parse(ass[i]["employeeId"]),
-        id: int.parse(ass[i]["id"]),
-        command: ass[i]['comment'],
-        stars: int.parse(ass[i]['star']),
-        userName: ass[i]['userName'],
-        userSurname: ass[i]['userSurname'],
+          userId: int.parse(ass[i]["userId"]),
+          barberId: int.parse(ass[i]["barberId"]),
+          employeeId: int.parse(ass[i]["employeeId"]),
+          id: int.parse(ass[i]["id"]),
+          comment: ass[i]['comment'],
+          stars: int.parse(ass[i]['star']),
+          userName: ass[i]['userName'],
+          userSurname: ass[i]['userSurname'],
       ));
-    }
 
-    setState(() {
+    }*/
+
+    AssessmentDatabase assDb = AssessmentDatabase();
+
+    final assessmentResult = await assDb.getAssessments() as List<AssessmentModel>;
+    getAssessmentOnlyForThisBarber(assessmentResult);
+
+
+  }
+
+  void getAssessmentOnlyForThisBarber(List<AssessmentModel> result) {
+    for(var element in result){
+      if(element.barberId == widget.barberModel.id){
+        assessments.add(element);
+      }
+    }
+    setState((){
       assessments = assessments;
     });
+
   }
 }
 
-final String _heroselectedService = "selected-service-hero";
+const String _heroselectedService = "selected-service-hero";
 
 class Entry {
   late final String title;

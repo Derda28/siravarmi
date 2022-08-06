@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:siravarmi/cloud_functions/barbers_database.dart';
 import 'package:siravarmi/cloud_functions/dbHelperHttp.dart';
+import 'package:siravarmi/cloud_functions/employees_database.dart';
 import 'package:siravarmi/models/barber_model.dart';
+import 'package:siravarmi/models/employee_model.dart';
 import 'package:siravarmi/providers/extensions.dart';
 import 'package:siravarmi/providers/shared_prefs_provider.dart';
 import 'package:siravarmi/routes/hero_dialog_route.dart';
@@ -116,7 +119,7 @@ class _BarberListState extends State {
       child: ListView.builder(
           itemCount: _barbers.length,
           itemBuilder: (context, index) => Container(
-                margin: EdgeInsets.only(bottom: 5),
+                margin: EdgeInsets.only(bottom: getSize(5)),
                 child: ListItem(
                     itemHeigth: 60,
                     itemWidth: 350,
@@ -140,10 +143,9 @@ class _BarberListState extends State {
   }*/
 
   Future<void> loadBarbers() async{
-    DbHelperHttp dbHelper = DbHelperHttp();
+   /* DbHelperHttp dbHelper = DbHelperHttp();
     final itemsData = dbHelper.getBarberList();
     var items = await itemsData;
-    print(items[0]["id"]);
 
     setState((){
       items.forEach((element) {
@@ -158,6 +160,12 @@ class _BarberListState extends State {
             assessmentCount: int.parse("${element['assessmentCount']}"),
         ));
       });
+    });*/
+
+    BarbersDatabase barbersDb = BarbersDatabase();
+    _barbers = await barbersDb.getBarbers();
+    setState((){
+      _barbers = _barbers;
     });
   }
 
@@ -215,4 +223,5 @@ class _BarberListState extends State {
       margin: EdgeInsets.only(left: 30,right: 30),
     );
   }
+
 }

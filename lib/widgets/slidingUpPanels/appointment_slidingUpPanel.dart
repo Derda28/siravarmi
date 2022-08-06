@@ -172,7 +172,7 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                   bottom: getSize(215),
                   right: getSize(20)),
               child: Text(
-                getDate(widget.appointment!.dateTime),//MUST BE CHANGED!!!
+                getDate(widget.appointment!.dateTime!),//MUST BE CHANGED!!!
                 style: TextStyle(fontSize: getSize(22)),
               ),
             )
@@ -201,7 +201,7 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                   right: getSize(20)),
               alignment: Alignment.center,
               child: Text(
-                getTime(widget.appointment!.dateTime),//MUST BE CHANGED!!!
+                getTime(widget.appointment!.dateTime!),//MUST BE CHANGED!!!
                 style: TextStyle(fontSize: getSize(22)),
               ),
             )

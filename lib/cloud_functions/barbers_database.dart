@@ -45,6 +45,19 @@ class BarbersDatabase {
     return barberList;
   }
 
+  Future<BarberModel> getBarberById(int id) async{
+    if(database==null) await open();
+    String sql = "SELECT * FROM barbers WHERE id=$id";
+    var result = await database!.rawQuery(sql);
+
+    if(result.isNotEmpty){
+      BarberModel barber = BarberModel.fromJson(result[0]);
+      return barber;
+    }
+
+    return BarberModel(id: 0, name: "", address: "", minPrice: 0, profileURL: "", open: false, averageStars: 0, assessmentCount: 0);
+  }
+
   Future<void> getBarbersFromMysql() async{
     if(database==null) await open();
     DbHelperHttp dbHelper = DbHelperHttp();

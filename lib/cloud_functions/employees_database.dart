@@ -45,6 +45,19 @@ class EmployeesDatabase {
     return employees;
   }
 
+  Future<EmployeeModel> getEmployeeById(int id) async{
+    if(database==null) await open();
+    String sql = "SELECT * FROM employees WHERE id=$id";
+    var result = await database!.rawQuery(sql);
+
+    if(result.isNotEmpty){
+      EmployeeModel emp = EmployeeModel.fromJson(result[0]);
+      return emp;
+    }
+
+    return EmployeeModel(barberId: 0, id: 0, name: "", gender: false, working: false);
+  }
+
   getEmployeesFromMysql() async{
     if (database == null) await open();
     DbHelperHttp dbHelper = DbHelperHttp();

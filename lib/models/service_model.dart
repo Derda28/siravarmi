@@ -6,6 +6,7 @@ class ServiceModel{
   int? price;
   bool? gender;
   int? barberId;
+  String? category;
 
   ServiceModel({
     required this.barberId,
@@ -13,6 +14,7 @@ class ServiceModel{
     required this.gender,
     required this.name,
     required this.price,
+    required this.category,
 });
 
   ServiceModel.fromJson(Map json) {
@@ -21,5 +23,6 @@ class ServiceModel{
     name = json['name'];
     price = json['price'];
     gender = json['gender']==1?true:false;
+    category = json['category'];
   }
 }

@@ -5,11 +5,11 @@ import 'package:sqflite/sqflite.dart';
 import 'dbHelperHttp.dart';
 
 class ServicesDatabase {
-  final String id = "_id";
   final String name = "name";
   final String barberId = "barberId";
   final String price = "price";
   final String gender = "gender";
+  final String category = "category";
 
   final servicesDatabaseName = "services.db";
   final servicesTableName = "services";
@@ -26,11 +26,11 @@ class ServicesDatabase {
 
   Future<void> createTable(Database db) async {
     await db.execute(
-      "CREATE TABLE $servicesTableName (id INTEGER NOT NULL,$name VARCHAR(50),$barberId INTEGER NOT NULL,$price INTEGER NOT NULL, $gender INTEGER NOT NULL)",
+      "CREATE TABLE $servicesTableName (id INTEGER NOT NULL,$name VARCHAR(50),$barberId INTEGER NOT NULL,$price INTEGER NOT NULL, $gender INTEGER NOT NULL, $category VARCHAR(25) NOT NULL)",
     );
   }
 
-  Future<List<ServiceModel>> getFavorites() async {
+  Future<List<ServiceModel>> getServices() async {
     if (database == null) await open();
     var selectResult = await database!
         .rawQuery("SELECT * FROM $servicesTableName");
@@ -57,6 +57,7 @@ class ServicesDatabase {
           'price' : element['price'],
           'name' : element['name'],
           'gender' : element['gender'],
+          'category' : element['category'],
         });
       }
 

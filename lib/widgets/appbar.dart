@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siravarmi/screens/login_screen.dart';
+import 'package:siravarmi/screens/menu_account_info_screen.dart';
 
 import '../utilities/consts.dart';
 
@@ -96,7 +97,7 @@ class _AppbarState extends State<Appbar> {
         updateTitle();
       }
     }else{
-
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>MenuAccountInfoScreen()));
     }
   }
 

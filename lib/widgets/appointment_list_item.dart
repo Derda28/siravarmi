@@ -10,11 +10,9 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 class AppointmentListItem extends StatelessWidget {
   double itemHeigth, itemWidth, profileHeigth, profileWidth;
   Color? itemBgColor;
-  String profileURL;
-  String title, location, assessmentTxt, date, time;
-  int minPrice;
-  void Function() itemClicked;
-  int index;
+  String date, time;
+  Future<void> Function() itemClicked;
+  BarberModel barberModel;
 
   AppointmentListItem(
       {Key? key,
@@ -23,17 +21,11 @@ class AppointmentListItem extends StatelessWidget {
       this.itemBgColor,
       required this.profileHeigth,
       required this.profileWidth,
-      required this.profileURL,
-      required this.title,
-      required this.location,
-      required this.minPrice,
-      required this.assessmentTxt,
       required this.date,
       required this.time,
       required this.itemClicked,
-      required this.index
-      })
-      : super(key: key);
+      required this.barberModel,
+      }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +60,7 @@ class AppointmentListItem extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         image: DecorationImage(
-                          image: NetworkImage(profileURL),
+                          image: NetworkImage(barberModel.profileURL!),
                           fit: BoxFit.fitWidth,
                         ),
                         borderRadius: BorderRadius.all(Radius.elliptical(
@@ -88,7 +80,7 @@ class AppointmentListItem extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 5),
                       width: screenWidth! * 110 / designWidth,
                       child: Text(
-                        title,
+                        barberModel.name!,
                         style: TextStyle(
                           fontSize: screenWidth! * 16 / designWidth,
                           color: Colors.black,
@@ -100,7 +92,7 @@ class AppointmentListItem extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      location,
+                      barberModel.address!,
                       style: TextStyle(
                         fontSize: screenWidth! * 10 / designWidth,
                         color: fontColor,
@@ -131,7 +123,7 @@ class AppointmentListItem extends StatelessWidget {
                           height: screenWidth! * 16 / designWidth,
                           width: screenWidth! * 55 / designWidth,
                           child: Text(
-                            assessmentTxt,
+                            "${barberModel.averageStars} (+${barberModel.assessmentCount})",
                             style: TextStyle(
                               fontSize: 11,
                               color: primaryColor,
@@ -145,7 +137,7 @@ class AppointmentListItem extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      'Topl. ₺$minPrice',
+                      'Topl. ₺${barberModel.minPrice}',
                       style: TextStyle(
                         fontSize: screenWidth! * 12 / designWidth,
                         color: primaryColor,

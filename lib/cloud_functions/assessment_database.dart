@@ -44,6 +44,19 @@ class AssessmentDatabase {
     return appointments;
   }
 
+  Future<AssessmentModel> getAssessmentById(int id) async{
+    if(database==null) await open();
+    String sql = "SELECT * FROM assessments WHERE id=$id";
+    var result = await database!.rawQuery(sql);
+
+    if(result.isNotEmpty){
+      AssessmentModel ass = AssessmentModel.fromJson(result[0]);
+      return ass;
+    }
+
+    return AssessmentModel(id: 0, employeeId: 0, barberId: 0, userId: 0, comment: "", stars: 0);
+  }
+
   Future<void> getAssessmentsFromMySql() async {
     if(database==null) await open();
     DbHelperHttp dbHelper = DbHelperHttp();

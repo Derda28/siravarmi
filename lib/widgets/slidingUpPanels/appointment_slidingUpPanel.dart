@@ -2,6 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:siravarmi/cloud_functions/assessment_database.dart';
+import 'package:siravarmi/cloud_functions/barbers_database.dart';
+import 'package:siravarmi/cloud_functions/employees_database.dart';
+import 'package:siravarmi/models/assessment_model.dart';
+import 'package:siravarmi/models/barber_model.dart';
+import 'package:siravarmi/models/employee_model.dart';
 import 'package:siravarmi/routes/hero_dialog_route.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/assessment_popup_screen.dart';
@@ -14,9 +20,12 @@ final String _heroAssessment = "assessment-hero";
 class AppointmentSlidingUpPanel extends StatefulWidget {
   final ScrollController scrollController;
   AppointmentModel? appointment;
+  BarberModel? barber;
+  EmployeeModel? employee;
+  AssessmentModel? assessment;
   bool isLastAppointment;
 
-  AppointmentSlidingUpPanel({required this.scrollController, this.appointment, required this.isLastAppointment});
+  AppointmentSlidingUpPanel({required this.scrollController, this.appointment, required this.isLastAppointment, required this.barber,required this.employee, required this.assessment});
 
   @override
   State<AppointmentSlidingUpPanel> createState() => _AppointmentSlidingUpPanelState();
@@ -39,10 +48,16 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
 
   final panelController = PanelController();
 
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
 
-    return Stack(
+    return widget.appointment!=null?Stack(
       children: [
         Container(
           alignment: Alignment.center,
@@ -62,20 +77,19 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
           margin: EdgeInsets.only(top: getSize(60)),
           padding: EdgeInsets.only(),
           decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: NetworkImage(
-                      "https://static.booksy.com/static/live/covers/barbers.jpg"),
-                  fit: BoxFit.cover)),
+              image: widget.barber!=null?DecorationImage(
+                  image: NetworkImage(widget.barber!.profileURL!),
+                  fit: BoxFit.cover):DecorationImage(image: NetworkImage("https://st2.depositphotos.com/22942720/44248/i/1600/depositphotos_442487056-stock-photo-hairdressers-cut-clients-barbershop-advertising.jpg"), fit: BoxFit.cover)),
           height: getSize(220),
           width: screenWidth,
         ),
         Container(
           margin: EdgeInsets.only(
               left: getSize(40), right: getSize(200), top: getSize(290)),
-          child: Text(
-            widget.appointment!.barberId.toString(),//MUST BE CHANGED!!!
+          child: widget.barber!=null?Text(
+            widget.barber!.name!,//MUST BE CHANGED!!!
             style: TextStyle(fontSize: getSize(36)),
-          ),
+          ):Text("LOADING..."),
           height: getSize(40),
         ),
         Container(
@@ -105,8 +119,8 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                 width: screenWidth! * 66 / designWidth,
                 margin: EdgeInsets.only(
                     top: screenWidth! * (12 / 412), left: getSize(3)),
-                child: Text(
-                  widget.appointment!.assessmentId.toString(),//MUST BE CHANGED!!!
+                child: widget.barber!=null?Text(
+                  "${widget.barber!.averageStars} (${widget.barber!.assessmentCount})",//MUST BE CHANGED!!!
                   style: TextStyle(
                     fontSize: getSize(13),
                     color: primaryColor,
@@ -115,7 +129,7 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                   TextHeightBehavior(applyHeightToFirstAscent: false),
                   textAlign: TextAlign.center,
                   softWrap: false,
-                ),
+                ):Text("LOADING..."),
               ),
             ],
           ),
@@ -142,10 +156,10 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                   top: getSize(360),
                   bottom: getSize(265),
                   right: getSize(20)),
-              child: Text(
-                widget.appointment!.barberId.toString(),//MUST BE CHANGED!!!
+              child: widget.employee!=null?Text(
+                widget.employee!.surname!=null?"${widget.employee!.name} ${widget.employee!.surname}":widget.employee!.name!,//MUST BE CHANGED!!!
                 style: TextStyle(fontSize: getSize(getSize(22))),
-              ),
+              ): Text("LOADING..."),
             )
           ],
         ),
@@ -244,7 +258,7 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
           ),
         )
       ],
-    );
+    ):Text("WAIT...");
   }
 
   Future<void> starIsClicked(double i, BuildContext context) async {
@@ -252,4 +266,6 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
         HeroDialogRoute(builder: (context) => AssessmentPopUpScreen(initialStars: i,)));
 
   }
+
+
 }

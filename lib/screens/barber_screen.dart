@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:siravarmi/cloud_functions/assessment_database.dart';
+import 'package:siravarmi/cloud_functions/services_database.dart';
+import 'package:siravarmi/models/service_model.dart';
 import 'package:siravarmi/widgets/comments_list_item.dart';
 import 'package:siravarmi/widgets/selected_service_popup_screen.dart';
 import 'package:siravarmi/widgets/slidingUpPanels/barber_slidingUpPanel.dart';
@@ -58,11 +60,17 @@ class _BarberScreenState extends State<BarberScreen> {
       commentsColor = primaryColor;
 
   List<AssessmentModel> assessments = [];
+  List<ServiceModel> services = [];
+
+  List<ServiceModel> womenServices = [];
+  List<ServiceModel> menServices = [];
+
+  Map<String, List<ServiceModel>> womenServicesByCategories = {};
+  Map<String, List<ServiceModel>> menServicesByCategories = {};
 
   @override
   void initState() {
-    loadAssessments();
-    print(widget.barberModel.employees?.length);
+    loadData();
     super.initState();
   }
 
@@ -281,19 +289,98 @@ class _BarberScreenState extends State<BarberScreen> {
               Container(
                 height: getSize(50),
                 width: getSize(50),
-                child: ListView.builder(
-                  itemCount: data.length,
-                  itemBuilder: (BuildContext context, int index) => Card(
-                    color: Colors.white,
-                    margin: EdgeInsets.only(bottom: getSize(15)),
-                    child: Container(
-                      padding: EdgeInsets.only(),
-                      decoration: BoxDecoration(border: Border.all()),
-                      child: EntryItem(
-                        data[index],
+                child: ListView(
+                  physics: BouncingScrollPhysics(),
+                  children: [
+                    Container(
+                      color: Colors.white,
+                      margin: EdgeInsets.only(bottom: getSize(15)),
+                      child: Container(
+                        padding: EdgeInsets.only(),
+                        decoration: BoxDecoration(border: Border.all()),
+                        child: ExpansionTile(
+                            title: Text("ERKEK"),
+                            children: [ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              itemCount: menServicesByCategories.keys.toList().length,
+                              itemBuilder: (BuildContext context, int index) => Card(
+                                color: Colors.white,
+                                margin: EdgeInsets.only(bottom: getSize(15)),
+                                child: Container(
+                                  padding: EdgeInsets.only(),
+                                  child: ExpansionTile(
+                                    title: Text(menServicesByCategories.keys.toList()[index]),
+                                    children: [
+                                      ListView.builder(
+                                          shrinkWrap: true,
+                                          physics: NeverScrollableScrollPhysics(),
+                                          scrollDirection: Axis.vertical,
+                                          itemCount: menServicesByCategories[menServicesByCategories.keys.toList()[index]]?.length,
+                                          itemBuilder: (BuildContext context, int index2){
+                                            return ListTile(
+                                              title: Text(menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].name!),
+                                              trailing: Text("₺${menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].price!.toString()}"),
+
+                                            );
+
+                                          }
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            ]
+                        ),
                       ),
                     ),
-                  ),
+                    Container(
+                      color: Colors.white,
+                      margin: EdgeInsets.only(bottom: getSize(15)),
+                      child: Container(
+                        padding: EdgeInsets.only(),
+                        decoration: BoxDecoration(border: Border.all()),
+                        child: ExpansionTile(
+                            title: Text("KADIN"),
+                            children: [ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              itemCount: womenServicesByCategories.keys.toList().length,
+                              itemBuilder: (BuildContext context, int index) => Card(
+                                color: Colors.white,
+                                margin: EdgeInsets.only(bottom: getSize(15)),
+                                child: Container(
+                                  padding: EdgeInsets.only(),
+                                  child: ExpansionTile(
+                                    title: Text(womenServicesByCategories.keys.toList()[index]),
+                                    children: [
+                                      ListView.builder(
+                                          shrinkWrap: true,
+                                          physics: NeverScrollableScrollPhysics(),
+                                          scrollDirection: Axis.vertical,
+                                          itemCount: womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]?.length,
+                                          itemBuilder: (BuildContext context, int index2){
+                                            return ListTile(
+                                              title: Text(womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].name!),
+                                              trailing: Text("₺${womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].price!.toString()}"),
+
+                                            );
+
+                                          }
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            ]
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
               Container(
@@ -695,29 +782,16 @@ class _BarberScreenState extends State<BarberScreen> {
     });
   }
 
-  Future<void> loadAssessments() async{
-    /*DbHelperHttp dbHelper = DbHelperHttp();
-    final assessmentsData = dbHelper.getAssessmentListFromBarber(widget.barberModel.id);
-    var ass = await assessmentsData;
-
-    for(int i=0; i<ass.length; i++){
-      assessments.add(AssessmentModel(
-          userId: int.parse(ass[i]["userId"]),
-          barberId: int.parse(ass[i]["barberId"]),
-          employeeId: int.parse(ass[i]["employeeId"]),
-          id: int.parse(ass[i]["id"]),
-          comment: ass[i]['comment'],
-          stars: int.parse(ass[i]['star']),
-          userName: ass[i]['userName'],
-          userSurname: ass[i]['userSurname'],
-      ));
-
-    }*/
-
+  Future<void> loadData() async{
     AssessmentDatabase assDb = AssessmentDatabase();
+    ServicesDatabase servicesDb = ServicesDatabase();
 
     final assessmentResult = await assDb.getAssessments() as List<AssessmentModel>;
     getAssessmentOnlyForThisBarber(assessmentResult);
+
+    final servicesResult = await servicesDb.getServices();
+    getServicesOnlyForThisBarber(servicesResult);
+
 
 
   }
@@ -733,59 +807,34 @@ class _BarberScreenState extends State<BarberScreen> {
     });
 
   }
+
+  void getServicesOnlyForThisBarber(List<ServiceModel> result) {
+    for(var element in result){
+      if(element.barberId == widget.barberModel.id){
+        services.add(element);
+      }
+    }
+
+    for(var element in services){
+      if(element.gender!){
+        if(!menServicesByCategories.containsKey(element.category)){
+          List<ServiceModel> thisList = [element];
+          menServicesByCategories[element.category!] = thisList;
+        }else{
+          menServicesByCategories[element.category]?.add(element);
+        }
+      }else{
+        if(!womenServicesByCategories.containsKey(element.category)){
+          List<ServiceModel> thisList = [element];
+          womenServicesByCategories[element.category!] = thisList;
+        }else{
+          womenServicesByCategories[element.category]?.add(element);
+        }
+      }
+
+    }
+
+  }
 }
 
 const String _heroselectedService = "selected-service-hero";
-
-class Entry {
-  late final String title;
-  late final List<Entry> children;
-  Entry(this.title, [this.children = const <Entry>[]]);
-}
-
-final List<Entry> data = <Entry>[
-  Entry(
-    'Cilt Bakım (KADIN)',
-    <Entry>[
-      Entry('Test 1'),
-      Entry('Test 2'),
-      Entry('Test 3'),
-    ],
-  ),
-  // Second Bar
-  Entry(
-    'Saç (ERKEK)',
-    <Entry>[
-      Entry('Test 1'),
-      Entry('Test 2'),
-    ],
-  ),
-  //  Third Bar
-  Entry(
-    'Tırnak (ERKEK)',
-    <Entry>[Entry('Test 1'), Entry('Test 2'), Entry('Test 3')],
-  ),
-];
-
-class EntryItem extends StatelessWidget {
-  const EntryItem(this.entry);
-  final Entry entry;
-
-  Widget _buildTiles(Entry root) {
-    if (root.children.isEmpty) {
-      return ListTile(
-        title: Text(root.title),
-      );
-    }
-    return ExpansionTile(
-      key: PageStorageKey<Entry>(root),
-      title: Text(root.title),
-      children: root.children.map<Widget>(_buildTiles).toList(),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildTiles(entry);
-  }
-}

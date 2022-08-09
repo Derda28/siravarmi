@@ -8,14 +8,19 @@ import 'package:siravarmi/cloud_functions/db_helper_mysql1.dart';
 import 'package:siravarmi/cloud_functions/employees_database.dart';
 import 'package:siravarmi/cloud_functions/favorites_database.dart';
 import 'package:siravarmi/cloud_functions/services_database.dart';
+import 'package:siravarmi/models/appointment_model.dart';
 import 'package:siravarmi/models/assessment_model.dart';
+import 'package:siravarmi/screens/appointment_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/navbar.dart';
 import 'package:siravarmi/widgets/search_btn.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 
 import '../cloud_functions/users_database.dart';
+import '../models/barber_model.dart';
+import '../utilities/custom_screen_route.dart';
 import '../widgets/appbar.dart';
+import '../widgets/appointment_list_item.dart';
 import '../widgets/home_screen_btn.dart';
 import 'barberList_screen.dart';
 
@@ -29,6 +34,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State {
 
+  List<AppointmentModel>? commingAppointments;
+  List<BarberModel>? barbers;
+
+  bool areDataLoaded = false;
 
   @override
   void initState() {
@@ -248,12 +257,31 @@ class _HomeScreenState extends State {
                 style: TextStyle(
                   fontSize: screenWidth!*0.04,
                   color: fontColor,
-                )))
+                )
+            )
+        ),
+        areDataLoaded?Padding(
+                padding: EdgeInsets.only(top: getSize(15)),
+                  child: AppointmentListItem(
+                    itemHeigth: 60,
+                    itemWidth: 350,
+                    itemBgColor: Colors.white,
+                    profileHeigth: 50,
+                    profileWidth: 50,
+                    date: getDate(commingAppointments!.isNotEmpty?commingAppointments![0].dateTime!:DateTime.now()),
+                    time: getTime(commingAppointments!.isNotEmpty?commingAppointments![0].dateTime!:DateTime.now()),
+                    itemClicked: (){
+                      return Navigator.pushReplacement(context, CustomScreenRoute(
+                      child: AppointmentScreen()));
+                    },
+                    barberModel: getBarberById(commingAppointments![0].barberId),
+                  ),
+                ):Text("LOADING..."),
       ],
     );
   }
 
-  void loadData() {
+  Future<void> loadData() async {
     AppointmentDatabase appDb = AppointmentDatabase();
     AssessmentDatabase assDb = AssessmentDatabase();
     BarbersDatabase barbersDb = BarbersDatabase();
@@ -270,9 +298,25 @@ class _HomeScreenState extends State {
     favDb.getEmployeesFromMysql();
     servicesDb.getEmployeesFromMysql();
     usersDb.getUsersFromMySql();
+
+    commingAppointments = await appDb.getCommingAppointments(user.id!);
+    barbers = await  barbersDb.getBarbers();
+
+    setState((){
+      commingAppointments = commingAppointments;
+      areDataLoaded = true;
+    });
   }
 
   void closeData() {
+  }
+
+  getBarberById(int? barberId) {
+    for(var barber in barbers!) {
+      if(barber.id == barberId){
+        return barber;
+      }
+    }
   }
 
 

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:siravarmi/cloud_functions/appointments_database.dart';
+import 'package:siravarmi/cloud_functions/assessment_database.dart';
+import 'package:siravarmi/cloud_functions/barbers_database.dart';
+import 'package:siravarmi/cloud_functions/employees_database.dart';
+import 'package:siravarmi/models/employee_model.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/appointment_list_item.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../cloud_functions/dbHelperHttp.dart';
 import '../models/appointment_model.dart';
+import '../models/assessment_model.dart';
 import '../models/barber_model.dart';
 import '../widgets/appbar.dart';
 import '../widgets/navbar.dart';
@@ -27,6 +32,9 @@ class _AppointmentState extends State {
   final String commingAppointmentTxt = "Gelecek Randevular";
 
   AppointmentDatabase appDbHelper = AppointmentDatabase();
+  AssessmentDatabase assDbHelper = AssessmentDatabase();
+  BarbersDatabase barbersDbHelper = BarbersDatabase();
+  EmployeesDatabase empDbHelper = EmployeesDatabase();
 
   List<AppointmentModel> appointments = [];
   List<AppointmentModel> commingAppointments = [];
@@ -34,6 +42,10 @@ class _AppointmentState extends State {
 
   bool isLastAppointment = true;
   AppointmentModel? selectedAppointment;
+  AssessmentModel? selectedAssessment;
+  BarberModel? selectedBarber;
+  EmployeeModel? selectedEmployee;
+
   bool areAppointmentsLoaded = false;
 
   @override
@@ -91,7 +103,10 @@ class _AppointmentState extends State {
       panelBuilder: (sc) => AppointmentSlidingUpPanel(
         scrollController: sc,
         isLastAppointment: isLastAppointment,
-        appointment: selectedAppointment
+        appointment: selectedAppointment,
+        barber : selectedBarber,
+        employee : selectedEmployee,
+        assessment : selectedAssessment,
       ),
     ):Text("Yükleniyor...");
   }
@@ -116,7 +131,7 @@ class _AppointmentState extends State {
   }
 
   buildComingAppointment() {
-    return SizedBox(
+    return areAppointmentsLoaded?SizedBox(
       height: getSize((65 * commingAppointments.length.toDouble())),
       child: ListView.builder(
         physics: NeverScrollableScrollPhysics(),
@@ -130,25 +145,20 @@ class _AppointmentState extends State {
               itemBgColor: Colors.white,
               profileHeigth: 50,
               profileWidth: 50,
-              title: commingAppointments[index].barberId.toString(),
-              location: commingAppointments[index].barberId.toString(),
-              minPrice: commingAppointments[index].totalPrice!,
-              assessmentTxt: commingAppointments[index].assessmentId.toString(),
               date: getDate(commingAppointments[index].dateTime!),
               time: getTime(commingAppointments[index].dateTime!),
-              profileURL: 'http://dummyimage.com/217x156.png/ff4444/ffffff',
               itemClicked: (){
                 setState((){
                   isLastAppointment = false;
                 });
                 return itemClicked(index);
               },
-              index: index,
+              barberModel: getBarberById(commingAppointments[index].barberId),
             ),
           );
         },
       ),
-    );
+    ):Text("YÜKLENIYOR...");
   }
 
   buildLastTxt() {
@@ -171,7 +181,7 @@ class _AppointmentState extends State {
   }
 
   buildLastAppointments() {
-    return SizedBox(
+    return areAppointmentsLoaded?SizedBox(
       height: getSize(65 * lastAppointments.length.toDouble()),
       child: ListView.builder(
         physics: NeverScrollableScrollPhysics(),
@@ -186,50 +196,31 @@ class _AppointmentState extends State {
               itemBgColor: Colors.white,
               profileHeigth: 50,
               profileWidth: 50,
-              title: lastAppointments[index].barberId.toString(),
-              location: lastAppointments[index].barberId.toString(),
-              minPrice: lastAppointments[index].totalPrice!,
-              assessmentTxt: lastAppointments[index].assessmentId.toString(),
               date: getDate(lastAppointments[index].dateTime!),
               time: getTime(lastAppointments[index].dateTime!),
-              profileURL: 'http://dummyimage.com/217x156.png/ff4444/ffffff',
               itemClicked: (){
                 setState((){
                   isLastAppointment = true;
                 });
                 return itemClicked(index);
               },
-              index: index,
+              barberModel: getBarberById(lastAppointments[index].barberId),
             ),
           );
         },
       ),
-    );
+    ):Text("YÜKLENIYOR...");
   }
 
   Future<void> loadAppointments() async{
-    /*DbHelperHttp dbHelper = DbHelperHttp();
-    final appointmentsData = dbHelper.getAppointmentList(user.id!);
-    var app = await appointmentsData;
+    lastAppointments = await appDbHelper.getLastAppointments(user.id!);
+    commingAppointments = await appDbHelper.getCommingAppointments(user.id!);
 
-    for(int i=0; i<app.length; i++){
-      appointments.add(AppointmentModel(
-          userId: int.parse(app[i]["userId"]),
-          dateTime: DateTime.parse(app[i]["dateTime"]),
-          assessmentId: int.parse(app[i]["assessmentId"]),
-          barberId: int.parse(app[i]["barberId"]),
-          employeeId: int.parse(app[i]["employeeId"]),
-          id: int.parse(app[i]["id"]),
-          totalPrice: int.parse(app[i]["totalPrice"]))
-      );
-    }*/
-    final appointmentsResult = await appDbHelper.getAppointments(user.id!);
-    appointments = appointmentsResult;
     setState((){
-      appointments = appointments;
+      lastAppointments = lastAppointments;
+      commingAppointments = commingAppointments;
+      areAppointmentsLoaded = true;
     });
-
-    sortAppointments();
   }
 
   Future<void> loadBarbers() async{
@@ -254,45 +245,38 @@ class _AppointmentState extends State {
     });
   }
 
-  sortAppointments(){
-    for (var value in appointments) {
-      if(value.dateTime!.isAfter(DateTime.now())){
-        commingAppointments.add(value);
-      }else{
-        lastAppointments.add(value);
-      }
+
+
+  Future<void> itemClicked(int index) async {
+    if(isLastAppointment){
+      selectedAppointment = AppointmentModel(
+          userId: lastAppointments[index].userId,
+          dateTime: lastAppointments[index].dateTime,
+          assessmentId: lastAppointments[index].assessmentId,
+          barberId: lastAppointments[index].barberId,
+          employeeId: lastAppointments[index].employeeId,
+          id: lastAppointments[index].id,
+          totalPrice: lastAppointments[index].totalPrice
+      );
+      selectedAssessment = await assDbHelper.getAssessmentById(selectedAppointment!.assessmentId!);
+    }else{
+      selectedAppointment = AppointmentModel(
+          userId: commingAppointments[index].userId,
+          dateTime: commingAppointments[index].dateTime,
+          assessmentId: commingAppointments[index].assessmentId,
+          barberId: commingAppointments[index].barberId,
+          employeeId: commingAppointments[index].employeeId,
+          id: commingAppointments[index].id,
+          totalPrice: commingAppointments[index].totalPrice
+      );
     }
-    setState((){
-      areAppointmentsLoaded = true;
-    });
-  }
-
-
-
-  void itemClicked(int index) {
+    selectedBarber = await barbersDbHelper.getBarberById(selectedAppointment!.barberId!);
+    selectedEmployee = await empDbHelper.getEmployeeById(selectedAppointment!.employeeId!);
     setState(() {
-      if(isLastAppointment){
-        selectedAppointment = AppointmentModel(
-            userId: lastAppointments[index].userId,
-            dateTime: lastAppointments[index].dateTime,
-            assessmentId: lastAppointments[index].assessmentId,
-            barberId: lastAppointments[index].barberId,
-            employeeId: lastAppointments[index].employeeId,
-            id: lastAppointments[index].id,
-            totalPrice: lastAppointments[index].totalPrice
-        );
-      }else{
-        selectedAppointment = AppointmentModel(
-            userId: commingAppointments[index].userId,
-            dateTime: commingAppointments[index].dateTime,
-            assessmentId: commingAppointments[index].assessmentId,
-            barberId: commingAppointments[index].barberId,
-            employeeId: commingAppointments[index].employeeId,
-            id: commingAppointments[index].id,
-            totalPrice: commingAppointments[index].totalPrice
-        );
-      }
-
+      selectedAppointment = selectedAppointment;
+      selectedAssessment = selectedAssessment;
+      selectedEmployee = selectedEmployee;
+      selectedBarber = selectedBarber;
     });
 
     if(panelController.isPanelClosed){
@@ -300,5 +284,15 @@ class _AppointmentState extends State {
     }else{
       panelController.close();
     }
+  }
+
+  getBarberById(int? barberId) {
+    BarberModel? res;
+    for(var value in _barbers){
+      if(value.id==barberId){
+        res = value;
+      }
+    }
+    return res;
   }
 }

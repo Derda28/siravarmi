@@ -68,10 +68,22 @@ class AppointmentDatabase {
     });
   }*/
 
-   Future<List<AppointmentModel>> getAppointments(int userId) async{
+   Future<List<AppointmentModel>> getLastAppointments(int userId) async{
     if(database==null) await open();
 
-    var selectResult = await database!.rawQuery("SELECT * FROM $appointmentsTableName where userId=$userId");
+    var selectResult = await database!.rawQuery("SELECT * FROM $appointmentsTableName where userId=$userId AND $dateTime<CURRENT_DATE ORDER BY date($dateTime) DESC");
+
+    List<AppointmentModel> appointments = [];
+    for(var element in selectResult){
+      appointments.add(AppointmentModel.fromJson(element));
+    }
+    return appointments;
+  }
+
+  Future<List<AppointmentModel>> getCommingAppointments(int userId) async{
+    if(database==null) await open();
+
+    var selectResult = await database!.rawQuery("SELECT * FROM $appointmentsTableName where userId=$userId AND $dateTime>CURRENT_DATE ORDER BY date($dateTime) ASC");
 
     List<AppointmentModel> appointments = [];
     for(var element in selectResult){

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:siravarmi/models/favorite_model.dart';
+import 'package:siravarmi/models/working_hours_model.dart';
 
 class DbHelperHttp {
   Future<List<dynamic>> getBarberList() async {
@@ -87,7 +88,6 @@ class DbHelperHttp {
     http.Response response =
     await http.get(url);
 
-
     var data = jsonDecode(response.body);
     return data;
   }
@@ -126,6 +126,15 @@ class DbHelperHttp {
 
   Future<List<dynamic>> getServices() async{
     var url = Uri.parse('https://yadetemizlik.com/getServices.php');
+    http.Response response = await http.get(url);
+
+    var data  = jsonDecode(response.body);
+
+    return data;
+  }
+
+  Future<List<dynamic>> getWorkingHours() async{
+    var url = Uri.parse('https://yadetemizlik.com/getWorkingHours.php');
     http.Response response = await http.get(url);
 
     var data  = jsonDecode(response.body);

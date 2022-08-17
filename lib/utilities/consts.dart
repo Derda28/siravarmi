@@ -25,19 +25,52 @@ double getSize(double sizeNumber){
   return screenWidth!*(sizeNumber/designWidth);
 }
 
-getDate(DateTime dateTime) {
-  print("getTimeEntered");
-  String day = dateTime.day.toString();
-  String month = dateTime.month.toString();
-  String year = dateTime.year.toString();
-  return day+"."+month+"."+year;
+String getDate(DateTime dateTime) {
+  return formateDate(dateTime.day, dateTime.month, dateTime.year);
 }
 
-getTime(DateTime dateTime) {
-  print("getTimeEntered");
-  String hours = dateTime.hour.toString();
-  String minutes = dateTime.minute.toString();
-  return hours+":"+minutes;
+String getTime(DateTime dateTime) {
+  return formateTime(dateTime.hour , dateTime.minute, null);
+}
+
+String formateDate(int day, int month, int year){
+  String dayR,monthR,yearR;
+  if(day<10){
+    dayR = "0$day";
+  }else{
+    dayR = "$day";
+  }
+  if(month<10){
+    monthR = "0$month";
+  }else{
+    monthR = "$month";
+  }
+  yearR = "$year";
+  return dayR+"."+monthR+"."+yearR;
+}
+
+formateTime(int hour, int minute, int? second){
+  String hourR,minuteR,secondR;
+  if(hour<10){
+    hourR = "0$hour";
+  }else{
+    hourR = "$hour";
+  }
+  if(minute<10){
+    minuteR = "0$minute";
+  }else{
+    minuteR = "$minute";
+  }
+  if(second!=null){
+    if(second<10){
+      secondR = "0$second";
+    }else{
+      secondR = "$second";
+    }
+    return hourR+"."+minuteR+"."+secondR;
+  }else{
+    return hourR+"."+minuteR;
+  }
 }
 
 

@@ -7,6 +7,7 @@ class ServiceModel{
   bool? gender;
   int? barberId;
   String? category;
+  bool? selected;
 
   ServiceModel({
     required this.barberId,

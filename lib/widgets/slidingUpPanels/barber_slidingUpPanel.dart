@@ -15,7 +15,7 @@ class BarberSlidingUpPanel extends StatefulWidget {
 
 
 class _BarberSlidingUpPanelState extends State<BarberSlidingUpPanel> {
-  DateTime date = DateTime(2022, 07, 28);
+  DateTime date = DateTime.now();
   TimeOfDay time = TimeOfDay.now();
   @override
   Widget build(BuildContext context) {
@@ -160,9 +160,9 @@ class _BarberSlidingUpPanelState extends State<BarberSlidingUpPanel> {
                           endIndent: getSize(5),
                         ),
                         Text(
+                            getDate(date),
                             maxLines: 1,
                             textAlign: TextAlign.center,
-                            "${date.day}/${date.month}/${date.year}",
                             style: TextStyle(
                                 fontSize: getSize(18),
                                 fontFamily: secondaryFontFamily,
@@ -216,9 +216,9 @@ class _BarberSlidingUpPanelState extends State<BarberSlidingUpPanel> {
                           endIndent: getSize(5),
                         ),
                         Text(
+                          formateTime(time.hour, time.minute, null),
                           maxLines: 1,
                           textAlign: TextAlign.center,
-                          "${time.hour}:${time.minute}",
                           style: TextStyle(
                               fontSize: getSize(18),
                               fontFamily: secondaryFontFamily,

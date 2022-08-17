@@ -7,6 +7,7 @@ class AssessmentModel {
   String? comment;
   String? userName;
   String? userSurname;
+  DateTime? date;
 
   AssessmentModel({
     required this.id,
@@ -17,6 +18,7 @@ class AssessmentModel {
     required this.stars,
     this.userName,
     this.userSurname,
+    this.date
   });
 
   AssessmentModel.fromJson(Map json) {
@@ -26,6 +28,7 @@ class AssessmentModel {
     barberId = json["barberId"]!;
     employeeId = json["employeeId"]!;
     comment = json["comment"]!;
+    date = DateTime.tryParse(json['date'].toString());
   }
 
 }

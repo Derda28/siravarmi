@@ -80,6 +80,12 @@ class _CommentsListItemState extends State<CommentsListItem> {
               ],
             ),
           ),
+          Container(
+            margin: EdgeInsets.only(left: getSize(240)),
+            child: Text(
+              getDate(widget.assessment.date!),
+            ),
+          ),
           //AssessmentComment
           Container(
             margin: EdgeInsets.only( top: getSize(55)),

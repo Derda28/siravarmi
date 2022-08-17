@@ -224,24 +224,13 @@ class _AppointmentState extends State {
   }
 
   Future<void> loadBarbers() async{
-    DbHelperHttp dbHelper = DbHelperHttp();
-    final itemsData = dbHelper.getBarberList();
-    var items = await itemsData;
-    print(items[0]["id"]);
+    /*DbHelperHttp dbHelper = DbHelperHttp();*/
+    BarbersDatabase barbersDbHelper = BarbersDatabase();
+    final itemsData = barbersDbHelper.getBarbers();
+    var result = await itemsData;
 
     setState((){
-      items.forEach((element) {
-        _barbers.add(BarberModel(
-          id: int.parse(element['id']),
-          name: element['name'],
-          address: element['location'],
-          minPrice: int.parse(element['minPrice']),
-          profileURL: element['profileUrl'],
-          open: element['open']==1?true:false,
-          averageStars: double.parse("${element['averageStars']}"),
-          assessmentCount: int.parse("${element['assessmentCount']}"),
-        ));
-      });
+      _barbers = result;
     });
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 import 'package:siravarmi/cloud_functions/appointments_database.dart';
 import 'package:siravarmi/cloud_functions/assessment_database.dart';
 import 'package:siravarmi/cloud_functions/barbers_database.dart';
@@ -8,8 +9,10 @@ import 'package:siravarmi/cloud_functions/db_helper_mysql1.dart';
 import 'package:siravarmi/cloud_functions/employees_database.dart';
 import 'package:siravarmi/cloud_functions/favorites_database.dart';
 import 'package:siravarmi/cloud_functions/services_database.dart';
+import 'package:siravarmi/cloud_functions/working_hours_database.dart';
 import 'package:siravarmi/models/appointment_model.dart';
 import 'package:siravarmi/models/assessment_model.dart';
+import 'package:siravarmi/models/working_hours_model.dart';
 import 'package:siravarmi/screens/appointment_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/navbar.dart';
@@ -262,20 +265,20 @@ class _HomeScreenState extends State {
         ),
         areDataLoaded?Padding(
                 padding: EdgeInsets.only(top: getSize(15)),
-                  child: AppointmentListItem(
+                  child: commingAppointments!.length==1?AppointmentListItem(
                     itemHeigth: 60,
                     itemWidth: 350,
                     itemBgColor: Colors.white,
                     profileHeigth: 50,
                     profileWidth: 50,
-                    date: getDate(commingAppointments!.isNotEmpty?commingAppointments![0].dateTime!:DateTime.now()),
-                    time: getTime(commingAppointments!.isNotEmpty?commingAppointments![0].dateTime!:DateTime.now()),
+                    date: getDate(commingAppointments![0].dateTime!),
+                    time: getTime(commingAppointments![0].dateTime!),
                     itemClicked: (){
                       return Navigator.pushReplacement(context, CustomScreenRoute(
                       child: AppointmentScreen()));
                     },
                     barberModel: getBarberById(commingAppointments![0].barberId),
-                  ),
+                  ):SizedBox(width: getSize(5),),
                 ):Text("LOADING..."),
       ],
     );
@@ -289,6 +292,7 @@ class _HomeScreenState extends State {
     FavoritesDatabase favDb = FavoritesDatabase();
     ServicesDatabase servicesDb = ServicesDatabase();
     UsersDatabase usersDb = UsersDatabase();
+    WorkingHoursDatabase wHDb = WorkingHoursDatabase();
 
 
     appDb.getAppointmentsFromMySql(user.id!);
@@ -298,6 +302,7 @@ class _HomeScreenState extends State {
     favDb.getEmployeesFromMysql();
     servicesDb.getEmployeesFromMysql();
     usersDb.getUsersFromMySql();
+    wHDb.getWorkingHoursFromMysql();
 
     commingAppointments = await appDb.getCommingAppointments(user.id!);
     barbers = await  barbersDb.getBarbers();

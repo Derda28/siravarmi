@@ -12,6 +12,7 @@ class AssessmentDatabase {
   final String barberId = "barberId";
   final String employeeId = "employeeId";
   final String comment = "comment";
+  final String date = "date";
 
   final assessmentDatabaseName = "assessment.db";
   final assessmentTableName = "assessments";
@@ -28,7 +29,7 @@ class AssessmentDatabase {
 
   Future<void> createTable(Database db) async {
     await db.execute(
-      "CREATE TABLE $assessmentTableName (id INTEGER NOT NULL,$stars INTEGER ,$userId INTEGER NOT NULL,$barberId INTEGER NOT NULL, $employeeId INTEGER NOT NULL, $comment VARCHAR(100) NOT NULL)",
+      "CREATE TABLE $assessmentTableName (id INTEGER NOT NULL,$stars INTEGER ,$userId INTEGER NOT NULL,$barberId INTEGER NOT NULL, $employeeId INTEGER NOT NULL, $comment VARCHAR(100) NOT NULL, $date DATETIME NOT NULL)",
     );
   }
 
@@ -66,6 +67,7 @@ class AssessmentDatabase {
     for (var element in result) {
       var isExistingData = await database!.rawQuery("SELECT * FROM $assessmentTableName where id="+element['id']);
       if(isExistingData.isEmpty){
+        print(element['date']);
         database!.insert(assessmentTableName, <String, Object>{
           'id' : element['id'],
           'stars' : element['star'],
@@ -73,6 +75,7 @@ class AssessmentDatabase {
           'barberId' : element['barberId'],
           'employeeId' : element['employeeId'],
           'comment' : element['comment'],
+          'date' : element['date'],
         });
       }
 

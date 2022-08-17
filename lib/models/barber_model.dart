@@ -33,7 +33,7 @@ class BarberModel{
     profileURL = json['profileUrl'];
     phoneNumber = json['phoneNumber'];
     open = json['open']==1?true:false;
-    averageStars = json['averageStars'];
+    averageStars = double.tryParse(json['averageStars'].toStringAsFixed(2));
     assessmentCount = json['assessmentCount'];
   }
 

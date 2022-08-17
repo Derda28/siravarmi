@@ -4,9 +4,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart';
 import 'package:siravarmi/cloud_functions/assessment_database.dart';
 import 'package:siravarmi/cloud_functions/services_database.dart';
+import 'package:siravarmi/cloud_functions/working_hours_database.dart';
 import 'package:siravarmi/models/service_model.dart';
+import 'package:siravarmi/models/working_hours_model.dart';
 import 'package:siravarmi/widgets/comments_list_item.dart';
 import 'package:siravarmi/widgets/selected_service_popup_screen.dart';
 import 'package:siravarmi/widgets/slidingUpPanels/barber_slidingUpPanel.dart';
@@ -31,7 +34,13 @@ class _BarberScreenState extends State<BarberScreen> {
 
   final String phoneNumber = "0 (850) 442 15 22";
 
-  String shopTime = "08.00 - 17.00";
+  String mondayTime = "Yükleniyor...";
+  String tuesdayTime = "Yükleniyor...";
+  String wednesdayTime = "Yükleniyor...";
+  String thursdayTime = "Yükleniyor...";
+  String fridayTime = "Yükleniyor...";
+  String saturdayTime = "Yükleniyor...";
+  String sundayTime = "Yükleniyor...";
 
   PageController pageController = PageController(initialPage: 0);
 
@@ -61,12 +70,16 @@ class _BarberScreenState extends State<BarberScreen> {
 
   List<AssessmentModel> assessments = [];
   List<ServiceModel> services = [];
+  List<ServiceModel> selectedServices = [];
 
-  List<ServiceModel> womenServices = [];
-  List<ServiceModel> menServices = [];
+  List<WorkingHoursModel> workingHoursList = [];
+  Map<String, WorkingHoursModel> workingHoursInWeek = {};
+  bool areWorkingHoursLoaded = false;
 
   Map<String, List<ServiceModel>> womenServicesByCategories = {};
   Map<String, List<ServiceModel>> menServicesByCategories = {};
+
+  bool isFavorite = false;
 
   @override
   void initState() {
@@ -95,13 +108,26 @@ class _BarberScreenState extends State<BarberScreen> {
                   image: NetworkImage(widget.barberModel.profileURL!), fit: BoxFit.cover)),
           height: profileHeigt,
           width: screenWidth,
-          child: IconButton(
-            icon: Icon(Icons.favorite_border),
+        ),
+        Container(
+          margin: EdgeInsets.only(left: getSize(365), top: getSize(10)),
+          height: getSize(35),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(getSize(20)), bottomLeft: Radius.circular(getSize(20)))
+          ),
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              side: BorderSide.none,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(getSize(20)), bottomLeft: Radius.circular(getSize(20)))),
+              padding: EdgeInsets.only(right: getSize(0)),
+            ),
+            child: isFavorite?Icon(Icons.favorite, size: getSize(30), color: secondaryColor,):Icon(Icons.favorite_border, size: getSize(30), color: primaryColor,),
             onPressed: () {
-              // BURAYA FONKSİYON EKLENİCEK
+              setState((){
+                isFavorite=!isFavorite;
+              });
             },
-            padding: EdgeInsets.only(left: getSize(378), bottom: getSize(265)),
-            iconSize: getSize(30),
           ),
         ),
         Container(
@@ -133,40 +159,44 @@ class _BarberScreenState extends State<BarberScreen> {
           ),
         ),
         Container(
-          margin: EdgeInsets.only(top: getSize(270),left: getSize(344)),
+          margin: EdgeInsets.only(top: getSize(50), left: getSize(0)),
           height: getSize(25),
-          width: getSize(70),
-          child: Row(
-            children: [
-              Container(
-                width: getSize(18),
-                height: getSize(18),
-                child: SvgPicture.string(
-                  '<svg viewBox="194.0 149.0 35.0 35.0" ><path transform="translate(194.0, 149.0)" d="M 16.55211448669434 2.820034503936768 C 16.85749244689941 1.911513090133667 18.14250755310059 1.911513090133667 18.4478874206543 2.820034503936768 L 21.65240097045898 12.35370826721191 C 21.78610229492188 12.75147819519043 22.1539249420166 13.02346038818359 22.57341384887695 13.03473949432373 L 32.28314971923828 13.2957706451416 C 33.21295166015625 13.32076740264893 33.60798263549805 14.49047565460205 32.88371658325195 15.07407760620117 L 25.09336853027344 21.35141181945801 C 24.78136444091797 21.60282135009766 24.6495532989502 22.01619529724121 24.75843238830566 22.40180778503418 L 27.53403663635254 32.23200225830078 C 27.79165267944336 33.14437866210938 26.75349426269531 33.86965179443359 25.98543548583984 33.31387710571289 L 18.08622741699219 27.59795761108398 C 17.73640060424805 27.34482002258301 17.26360130310059 27.34482002258301 16.91377258300781 27.59795761108398 L 9.014564514160156 33.31387710571289 C 8.246504783630371 33.86965179443359 7.208349227905273 33.14437866210938 7.465964317321777 32.23200225830078 L 10.24156761169434 22.40180778503418 C 10.35044765472412 22.01619529724121 10.21863651275635 21.60282135009766 9.906631469726562 21.35141181945801 L 2.116285085678101 15.0740795135498 C 1.392019271850586 14.49047660827637 1.787049174308777 13.32076835632324 2.716848611831665 13.29577255249023 L 12.42658805847168 13.03474140167236 C 12.84607601165771 13.02346420288086 13.21389961242676 12.75148105621338 13.34760093688965 12.35371112823486 Z" fill="#002964" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>',
-                  allowDrawingOutsideViewBox: true,
-                ),
-              ),
-
-              /*Pin(size: screenWidth!*50/designWidth, end: 4.0),
-                      Pin(size: screenWidth!*15/designWidth, start: 1.0),*/
-              Container(
-                margin: EdgeInsets.only(left: getSize(2)),
-                alignment: Alignment.center,
-                height: getSize(25),
-                width: getSize(45),
-                child: Text(
-                  "${widget.barberModel.averageStars} (${widget.barberModel.assessmentCount})",
-                  style: TextStyle(
-                    fontSize: getSize(11),
-                    color: primaryColor,
+          width: getSize(85),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(topRight: Radius.circular(getSize(20)), bottomRight: Radius.circular(getSize(20)))
+          ),
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              side: BorderSide.none,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topRight: Radius.circular(getSize(20)), bottomRight: Radius.circular(getSize(20)))),
+              padding: EdgeInsets.only(left: getSize(10)),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.star_purple500_sharp, color: secondaryColor,size: getSize(20),),
+                Container(
+                  margin: EdgeInsets.only(left: getSize(2)),
+                  alignment: Alignment.center,
+                  height: getSize(25),
+                  width: getSize(45),
+                  child: Text(
+                    "${widget.barberModel.averageStars} (${widget.barberModel.assessmentCount})",
+                    style: TextStyle(
+                      fontSize: getSize(11),
+                      color: primaryColor,
+                    ),
+                    softWrap: false,
                   ),
-                  textHeightBehavior:
-                      TextHeightBehavior(applyHeightToFirstAscent: false),
-                  textAlign: TextAlign.center,
-                  softWrap: false,
                 ),
-              ),
-            ],
+              ],
+            ),
+            onPressed: (){
+              pageController.animateToPage(2,
+                  duration: Duration(milliseconds: 100),
+                  curve: Curves.ease);
+              _toggleThird();
+            },
           ),
         ),
         Padding(
@@ -321,7 +351,28 @@ class _BarberScreenState extends State<BarberScreen> {
                                           itemBuilder: (BuildContext context, int index2){
                                             return ListTile(
                                               title: Text(menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].name!),
-                                              trailing: Text("₺${menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].price!.toString()}"),
+                                              trailing: Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text("₺${menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].price!.toString()}"),
+                                                  Checkbox(
+                                                      value: menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].selected,
+                                                      onChanged: (value){
+                                                        setState((){
+                                                          if(menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].selected==true){
+                                                            menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].selected=false;
+                                                            selectedServices.remove(menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2]);
+                                                          }else{
+                                                            menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].selected=true;
+                                                            selectedServices.add(menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2]);
+                                                          }
+                                                        });
+                                                      },
+                                                  ),
+                                                ],
+                                              ),
+
 
                                             );
 
@@ -365,8 +416,27 @@ class _BarberScreenState extends State<BarberScreen> {
                                           itemBuilder: (BuildContext context, int index2){
                                             return ListTile(
                                               title: Text(womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].name!),
-                                              trailing: Text("₺${womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].price!.toString()}"),
-
+                                              trailing: Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text("₺${womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].price!.toString()}"),
+                                                  Checkbox(
+                                                    value: womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].selected,
+                                                    onChanged: (value)=>{
+                                                      setState((){
+                                                        if(womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].selected==true){
+                                                          womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].selected=false;
+                                                          selectedServices.remove(womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2]);
+                                                        }else{
+                                                          womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].selected=true;
+                                                          selectedServices.add(womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2]);
+                                                        }
+                                                      })
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
                                             );
 
                                           }
@@ -494,7 +564,7 @@ class _BarberScreenState extends State<BarberScreen> {
                             height: containerHeightSize,
                             width: smallContainerWidthSize,
                             child: Text(
-                              shopTime,
+                              mondayTime,
                               style: TextStyle(fontSize: inContainerSize),
                             ),
                           ),
@@ -517,7 +587,7 @@ class _BarberScreenState extends State<BarberScreen> {
                             height: containerHeightSize,
                             width: smallContainerWidthSize,
                             child: Text(
-                              shopTime,
+                              tuesdayTime,
                               style: TextStyle(fontSize: inContainerSize),
                             ),
                           ),
@@ -540,7 +610,7 @@ class _BarberScreenState extends State<BarberScreen> {
                             height: containerHeightSize,
                             width: smallContainerWidthSize,
                             child: Text(
-                              shopTime,
+                              wednesdayTime,
                               style: TextStyle(fontSize: inContainerSize),
                             ),
                           ),
@@ -563,7 +633,7 @@ class _BarberScreenState extends State<BarberScreen> {
                             height: containerHeightSize,
                             width: smallContainerWidthSize,
                             child: Text(
-                              shopTime,
+                              thursdayTime,
                               style: TextStyle(fontSize: inContainerSize),
                             ),
                           ),
@@ -586,7 +656,7 @@ class _BarberScreenState extends State<BarberScreen> {
                             height: containerHeightSize,
                             width: smallContainerWidthSize,
                             child: Text(
-                              shopTime,
+                              fridayTime,
                               style: TextStyle(fontSize: inContainerSize),
                             ),
                           ),
@@ -609,7 +679,7 @@ class _BarberScreenState extends State<BarberScreen> {
                             height: containerHeightSize,
                             width: smallContainerWidthSize,
                             child: Text(
-                              shopTime,
+                              saturdayTime,
                               style: TextStyle(fontSize: inContainerSize),
                             ),
                           ),
@@ -632,7 +702,7 @@ class _BarberScreenState extends State<BarberScreen> {
                             height: containerHeightSize,
                             width: smallContainerWidthSize,
                             child: Text(
-                              shopTime,
+                              sundayTime,
                               style: TextStyle(fontSize: inContainerSize),
                             ),
                           )
@@ -670,7 +740,7 @@ class _BarberScreenState extends State<BarberScreen> {
                       child: Text(
                           style: TextStyle(
                               color: Colors.white, fontSize: getSize(16)),
-                          "x Hizmet Seçili"),
+                          "${selectedServices.length} Hizmet Seçili"),
                       onPressed: () {
                         selectedServiceBtnClicked(context);
                       },
@@ -694,7 +764,7 @@ class _BarberScreenState extends State<BarberScreen> {
         SlidingUpPanel(
           backdropEnabled: true,
           minHeight: 0,
-          maxHeight: getSize(250),
+          maxHeight: getSize(300),
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(getSize(15)),
               topRight: Radius.circular(getSize(15))),
@@ -740,10 +810,35 @@ class _BarberScreenState extends State<BarberScreen> {
   }
 
   Future<void> selectedServiceBtnClicked(BuildContext context) async {
+    print(selectedServices.length);
     final result =
-        await Navigator.push(context, HeroDialogRoute(builder: (context) {
-      return SelectedServicePopupScreen();
-    }));
+        await showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (_)=> CustomDialog(selectedServices));/*Navigator.push(context, HeroDialogRoute(builder: (context) {
+      return SelectedServicePopupScreen(selectedServices: selectedServices);
+    }));*/
+    print(selectedServices.length);
+    setState((){
+      if(result!=null){
+        selectedServices = result;
+        for(var e in menServicesByCategories.keys){
+          for(int i=0; i<menServicesByCategories[e]!.length; i++){
+            menServicesByCategories[e]![i].selected = false;
+          }
+        }
+        for(var e in womenServicesByCategories.keys){
+          for(int i=0; i<womenServicesByCategories[e]!.length; i++){
+            womenServicesByCategories[e]![i].selected = false;
+          }
+        }
+        for(var e in selectedServices){
+          if(e.gender!){
+            menServicesByCategories[e.category]![menServicesByCategories[e.category]!.indexOf(e)].selected =true;
+          }
+        }
+      }
+    });
   }
 
   void _toggleFirst() {
@@ -785,6 +880,7 @@ class _BarberScreenState extends State<BarberScreen> {
   Future<void> loadData() async{
     AssessmentDatabase assDb = AssessmentDatabase();
     ServicesDatabase servicesDb = ServicesDatabase();
+    WorkingHoursDatabase wHDb = WorkingHoursDatabase();
 
     final assessmentResult = await assDb.getAssessments() as List<AssessmentModel>;
     getAssessmentOnlyForThisBarber(assessmentResult);
@@ -792,8 +888,8 @@ class _BarberScreenState extends State<BarberScreen> {
     final servicesResult = await servicesDb.getServices();
     getServicesOnlyForThisBarber(servicesResult);
 
-
-
+    final workingHoursResult = await wHDb.getWorkingHourByBarberId(widget.barberModel.id!);
+    placingTheWorkingHours(workingHoursResult);
   }
 
   void getAssessmentOnlyForThisBarber(List<AssessmentModel> result) {
@@ -818,22 +914,145 @@ class _BarberScreenState extends State<BarberScreen> {
     for(var element in services){
       if(element.gender!){
         if(!menServicesByCategories.containsKey(element.category)){
+          element.selected = false;
           List<ServiceModel> thisList = [element];
           menServicesByCategories[element.category!] = thisList;
         }else{
+          element.selected =false;
           menServicesByCategories[element.category]?.add(element);
         }
       }else{
         if(!womenServicesByCategories.containsKey(element.category)){
+          element.selected =false;
           List<ServiceModel> thisList = [element];
           womenServicesByCategories[element.category!] = thisList;
         }else{
+          element.selected =false;
           womenServicesByCategories[element.category]?.add(element);
         }
       }
 
     }
 
+  }
+
+  void placingTheWorkingHours(List<WorkingHoursModel> workingHoursResult) {
+    setState((){
+      workingHoursList = workingHoursResult;
+      for(var w in workingHoursResult){
+        if(w.type=="shp"){
+          workingHoursInWeek[w.day!]=w;
+        }
+      }
+      areWorkingHoursLoaded =true;
+    });
+
+    writingDownWorkingHours();
+  }
+
+  void writingDownWorkingHours() {
+      setState((){
+        mondayTime = formateTime(workingHoursInWeek['mon']!.open!.hour, workingHoursInWeek['mon']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['mon']!.close!.hour, workingHoursInWeek['mon']!.open!.minute, null);
+        tuesdayTime = formateTime(workingHoursInWeek['tue']!.open!.hour, workingHoursInWeek['tue']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['tue']!.close!.hour, workingHoursInWeek['tue']!.open!.minute, null);
+        wednesdayTime = formateTime(workingHoursInWeek['wed']!.open!.hour, workingHoursInWeek['wed']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['wed']!.close!.hour, workingHoursInWeek['wed']!.open!.minute, null);
+        thursdayTime = formateTime(workingHoursInWeek['thu']!.open!.hour, workingHoursInWeek['thu']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['thu']!.close!.hour, workingHoursInWeek['thu']!.open!.minute, null);
+        fridayTime = formateTime(workingHoursInWeek['fri']!.open!.hour, workingHoursInWeek['fri']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['fri']!.close!.hour, workingHoursInWeek['fri']!.open!.minute, null);
+        saturdayTime = formateTime(workingHoursInWeek['sat']!.open!.hour, workingHoursInWeek['sat']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['sat']!.close!.hour, workingHoursInWeek['sat']!.open!.minute, null);
+        sundayTime = formateTime(workingHoursInWeek['sun']!.open!.hour, workingHoursInWeek['sun']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['sun']!.close!.hour, workingHoursInWeek['sun']!.open!.minute, null);
+      });
+  }
+}
+
+class CustomDialog extends StatefulWidget{
+  final List<ServiceModel> selectedServicesPop = [];
+
+  CustomDialog(List<ServiceModel> selectedServices, {Key? key}) : super(key: key){
+    for(var i in selectedServices){
+      selectedServicesPop.add(i);
+    }
+  }
+
+  @override
+  State<CustomDialog> createState() => _CustomDialogState();
+}
+
+class _CustomDialogState extends State<CustomDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Secili Hizmetler",
+                style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: primaryFontFamily,
+                    color: primaryColor
+                ),
+              ),
+              Container(
+                height: 300,
+                padding: const EdgeInsets.all(8.0),
+                child: ListView.builder(
+                  itemCount: widget.selectedServicesPop.length,
+                  itemBuilder: (context, index) => OutlinedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateColor.resolveWith((states) => primaryColor),
+                        overlayColor: MaterialStateColor.resolveWith((states) => secondaryColor),
+                      ),
+                      onPressed: (){
+                        setState((){
+                          widget.selectedServicesPop.remove(widget.selectedServicesPop[index]);//TODO: Service becomes -1 even if cancled
+                        });
+                      },
+                      child: ListTile(
+                        title: Text(
+                          (index+1).toString()+". ${widget.selectedServicesPop[index].name}",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: secondaryFontFamily,
+                              color: Colors.white
+                          ),
+                        ),
+                        trailing: Text(
+                          "₺${widget.selectedServicesPop[index].price}",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: secondaryFontFamily,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                  ),
+                ),
+              ),
+              Row(
+                children: [
+                  ElevatedButton(
+                      onPressed: (){
+                        Navigator.pop(context, null);
+                      },
+                      child: Text(
+                        "IPTAL"
+                      )
+                  ),
+                  ElevatedButton(
+                      onPressed: (){
+                        Navigator.pop(context, widget.selectedServicesPop);
+                      },
+                      child: Text(
+                          "TAMAM"
+                      )
+                  ),
+                ],
+              )
+            ],
+          )
+      ),
+    );
   }
 }
 

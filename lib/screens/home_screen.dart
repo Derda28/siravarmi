@@ -299,10 +299,12 @@ class _HomeScreenState extends State {
     assDb.getAssessmentsFromMySql();
     barbersDb.getBarbersFromMysql();
     empDb.getEmployeesFromMysql();
-    favDb.getEmployeesFromMysql();
+    favDb.getFavoritesFromMysql();
     servicesDb.getEmployeesFromMysql();
     usersDb.getUsersFromMySql();
     wHDb.getWorkingHoursFromMysql();
+
+    favorites = await favDb.getFavorites();
 
     commingAppointments = await appDb.getCommingAppointments(user.id!);
     barbers = await  barbersDb.getBarbers();

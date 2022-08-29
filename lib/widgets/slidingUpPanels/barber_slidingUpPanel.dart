@@ -5,9 +5,18 @@ import 'package:siravarmi/routes/hero_dialog_route.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/select_barber_popup_screen.dart';
 
+import '../../models/employee_model.dart';
+
 final String _heroSelectBarber = "select-barber-hero";
 
 class BarberSlidingUpPanel extends StatefulWidget {
+  List<EmployeeModel> employees = [];
+  BarberSlidingUpPanel(List<EmployeeModel> employees){
+    for(var e in employees){
+      this.employees.add(e);
+    }
+  }
+
   @override
   State<BarberSlidingUpPanel> createState() => _BarberSlidingUpPanelState();
 }
@@ -17,6 +26,13 @@ class BarberSlidingUpPanel extends StatefulWidget {
 class _BarberSlidingUpPanelState extends State<BarberSlidingUpPanel> {
   DateTime date = DateTime.now();
   TimeOfDay time = TimeOfDay.now();
+  EmployeeModel? selectedEmployee;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -104,7 +120,7 @@ class _BarberSlidingUpPanelState extends State<BarberSlidingUpPanel> {
                             endIndent: getSize(0),
                           ),
                           AutoSizeText(
-                            "Farketmez",
+                            selectedEmployee==null?"Farketmez":selectedEmployee!.name!,
                             style: TextStyle(
                                 fontSize: getSize(18),
                                 fontFamily: secondaryFontFamily,
@@ -244,9 +260,16 @@ class _BarberSlidingUpPanelState extends State<BarberSlidingUpPanel> {
     );
   }
 
-  void selectBarberClicked(BuildContext context) {
-    Navigator.push(context,
-        HeroDialogRoute(builder: (context) => SelectBarberPopupScreen()));
+  Future<void> selectBarberClicked(BuildContext context) async {
+    var resultFuture = showDialog(
+        context: context,
+        builder: (_)=>SelectBarberPopupScreen(employees: widget.employees)
+    );
+    var result = await resultFuture;
+
+    setState((){
+      selectedEmployee = result;
+    });
   }
 }
 

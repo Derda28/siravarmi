@@ -142,4 +142,9 @@ class DbHelperHttp {
     return data;
   }
 
+  void insertRawQuery(String sql) async {
+    var url = Uri.parse('https://yadetemizlik.com/insertRawQuery.php');
+    await http.post(url, body: {'sql': sql});
+  }
+
 }

@@ -2,6 +2,8 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
+import 'package:siravarmi/cloud_functions/favorites_database.dart';
+import 'package:siravarmi/models/favorite_model.dart';
 
 import '../models/user_model.dart';
 
@@ -20,6 +22,7 @@ const String secondaryFontFamily = "Montserrat-Medium";
 
 bool isLoggedIn = true;
 UserModel user = UserModel(name: "derda", surname: "savas", isMan: true, id: 1);
+List<FavoriteModel> favorites = [];
 
 double getSize(double sizeNumber){
   return screenWidth!*(sizeNumber/designWidth);
@@ -70,6 +73,16 @@ formateTime(int hour, int minute, int? second){
     return hourR+"."+minuteR+"."+secondR;
   }else{
     return hourR+"."+minuteR;
+  }
+}
+
+isBarberFavorite(int barberId) async {
+  FavoritesDatabase favDb = FavoritesDatabase();
+  var result = await favDb.isFavorite(barberId);
+  if(result){
+    return true;
+  }else{
+    return false;
   }
 }
 

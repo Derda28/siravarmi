@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siravarmi/cloud_functions/barbers_database.dart';
 import 'package:siravarmi/cloud_functions/dbHelperHttp.dart';
 import 'package:siravarmi/cloud_functions/employees_database.dart';
+import 'package:siravarmi/cloud_functions/favorites_database.dart';
 import 'package:siravarmi/models/barber_model.dart';
 import 'package:siravarmi/models/employee_model.dart';
 import 'package:siravarmi/providers/extensions.dart';
@@ -115,16 +116,12 @@ class _BarberListState extends State {
 
   buildList() {
     return Padding(
-      padding: const EdgeInsets.only(top: 130, bottom: 10),
+      padding: const EdgeInsets.only(top: 130, bottom: 10, left: 30, right: 30),
       child: ListView.builder(
           itemCount: _barbers.length,
           itemBuilder: (context, index) => Container(
                 margin: EdgeInsets.only(bottom: getSize(5)),
                 child: ListItem(
-                    itemHeigth: 60,
-                    itemWidth: 350,
-                    profileHeigth: 50,
-                    profileWidth: 50,
                     barber: _barbers[index],
                     date: "15/07/2022",
                     time: "15:30"),

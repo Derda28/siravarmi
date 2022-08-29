@@ -26,7 +26,7 @@ class ServicesDatabase {
 
   Future<void> createTable(Database db) async {
     await db.execute(
-      "CREATE TABLE $servicesTableName (id INTEGER NOT NULL,$name VARCHAR(50),$barberId INTEGER NOT NULL,$price INTEGER NOT NULL, $gender INTEGER NOT NULL, $category VARCHAR(25) NOT NULL)",
+      "CREATE TABLE $servicesTableName (id INTEGER PRIMARY KEY,$name VARCHAR(50),$barberId INTEGER NOT NULL,$price INTEGER NOT NULL, $gender INTEGER NOT NULL, $category VARCHAR(25) NOT NULL)",
     );
   }
 

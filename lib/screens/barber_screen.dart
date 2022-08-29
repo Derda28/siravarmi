@@ -6,8 +6,11 @@ import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart';
 import 'package:siravarmi/cloud_functions/assessment_database.dart';
+import 'package:siravarmi/cloud_functions/employees_database.dart';
+import 'package:siravarmi/cloud_functions/favorites_database.dart';
 import 'package:siravarmi/cloud_functions/services_database.dart';
 import 'package:siravarmi/cloud_functions/working_hours_database.dart';
+import 'package:siravarmi/models/employee_model.dart';
 import 'package:siravarmi/models/service_model.dart';
 import 'package:siravarmi/models/working_hours_model.dart';
 import 'package:siravarmi/widgets/comments_list_item.dart';
@@ -68,6 +71,7 @@ class _BarberScreenState extends State<BarberScreen> {
       infosColor = primaryColor,
       commentsColor = primaryColor;
 
+  List<EmployeeModel> employees = [];
   List<AssessmentModel> assessments = [];
   List<ServiceModel> services = [];
   List<ServiceModel> selectedServices = [];
@@ -124,9 +128,7 @@ class _BarberScreenState extends State<BarberScreen> {
             ),
             child: isFavorite?Icon(Icons.favorite, size: getSize(30), color: secondaryColor,):Icon(Icons.favorite_border, size: getSize(30), color: primaryColor,),
             onPressed: () {
-              setState((){
-                isFavorite=!isFavorite;
-              });
+              favoriteBtnIsClicked();
             },
           ),
         ),
@@ -778,7 +780,7 @@ class _BarberScreenState extends State<BarberScreen> {
           controller: panelController,
           padding: EdgeInsets.only(
               left: getSize(20), right: getSize(20), top: getSize(20)),
-          panelBuilder: (builder) => BarberSlidingUpPanel(),
+          panelBuilder: (builder) => BarberSlidingUpPanel(employees),
           footer: Padding(
             padding: EdgeInsets.only(left: getSize(180)),
             child: ElevatedButton(
@@ -810,7 +812,6 @@ class _BarberScreenState extends State<BarberScreen> {
   }
 
   Future<void> selectedServiceBtnClicked(BuildContext context) async {
-    print(selectedServices.length);
     final result =
         await showDialog(
             barrierDismissible: false,
@@ -818,7 +819,6 @@ class _BarberScreenState extends State<BarberScreen> {
             builder: (_)=> CustomDialog(selectedServices));/*Navigator.push(context, HeroDialogRoute(builder: (context) {
       return SelectedServicePopupScreen(selectedServices: selectedServices);
     }));*/
-    print(selectedServices.length);
     setState((){
       if(result!=null){
         selectedServices = result;
@@ -879,17 +879,25 @@ class _BarberScreenState extends State<BarberScreen> {
 
   Future<void> loadData() async{
     AssessmentDatabase assDb = AssessmentDatabase();
+    EmployeesDatabase empDb = EmployeesDatabase();
     ServicesDatabase servicesDb = ServicesDatabase();
     WorkingHoursDatabase wHDb = WorkingHoursDatabase();
 
-    final assessmentResult = await assDb.getAssessments() as List<AssessmentModel>;
+    final assessmentResult = await assDb.getAssessments();
     getAssessmentOnlyForThisBarber(assessmentResult);
+
+    final employeeResult = await empDb.getEmployeesFromBarber(widget.barberModel.id!);
+    setState((){
+      employees = employeeResult;
+    });
 
     final servicesResult = await servicesDb.getServices();
     getServicesOnlyForThisBarber(servicesResult);
 
     final workingHoursResult = await wHDb.getWorkingHourByBarberId(widget.barberModel.id!);
     placingTheWorkingHours(workingHoursResult);
+
+    checkIfFavorite();
   }
 
   void getAssessmentOnlyForThisBarber(List<AssessmentModel> result) {
@@ -960,6 +968,22 @@ class _BarberScreenState extends State<BarberScreen> {
         saturdayTime = formateTime(workingHoursInWeek['sat']!.open!.hour, workingHoursInWeek['sat']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['sat']!.close!.hour, workingHoursInWeek['sat']!.open!.minute, null);
         sundayTime = formateTime(workingHoursInWeek['sun']!.open!.hour, workingHoursInWeek['sun']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['sun']!.close!.hour, workingHoursInWeek['sun']!.open!.minute, null);
       });
+  }
+
+  Future<void> checkIfFavorite() async {
+    isFavorite = await isBarberFavorite(widget.barberModel.id!);
+    setState((){
+      isFavorite = isFavorite;
+    });
+  }
+
+  void favoriteBtnIsClicked() {
+    //BURADAN DEVAAAAAAMMM
+    FavoritesDatabase favDb = FavoritesDatabase();
+    favDb.negateIt(widget.barberModel.id!);
+    setState((){
+      isFavorite=!isFavorite;
+    });
   }
 }
 

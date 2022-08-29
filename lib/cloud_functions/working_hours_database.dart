@@ -26,7 +26,7 @@ class WorkingHoursDatabase{
 
   Future<void> createTable(Database db) async {
     await db.execute(
-      "CREATE TABLE $workingHoursTableName (id INTEGER NOT NULL, $type VARCHAR(3) NOT NULL, $_open TIME NOT NULL, $close TIME NOT NULL, $date DATE, $day VARCHAR(3) NOT NULL, $barberId INTEGER NOT NULL)",
+      "CREATE TABLE $workingHoursTableName (id INTEGER PRIMARY KEY, $type VARCHAR(3) NOT NULL, $_open TIME NOT NULL, $close TIME NOT NULL, $date DATE, $day VARCHAR(3) NOT NULL, $barberId INTEGER NOT NULL)",
     );
   }
 

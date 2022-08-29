@@ -28,14 +28,14 @@ class EmployeesDatabase {
 
   Future<void> createTable(Database db) async {
     await db.execute(
-      "CREATE TABLE $employeesTableName (id INTEGER NOT NULL,$name VARCHAR(20),$surname VARCHAR(20),$working INTEGER NOT NULL, barberId INTEGER NOT NULL, $gender INTEGER NOT NULL, $type INTEGER NOT NULL)",
+      "CREATE TABLE $employeesTableName (id INTEGER PRIMARY KEY,$name VARCHAR(20),$surname VARCHAR(20),$working INTEGER NOT NULL, barberId INTEGER NOT NULL, $gender INTEGER NOT NULL, $type INTEGER NOT NULL)",
     );
   }
 
   Future<List<EmployeeModel>> getEmployeesFromBarber(int barberId) async {
     if (database == null) await open();
     var selectResult = await database!
-        .rawQuery("SELECT * FROM $employeesTableName where id=$barberId");
+        .rawQuery("SELECT * FROM $employeesTableName where barberId=$barberId");
 
     List<EmployeeModel> employees = [];
     for (var element in selectResult) {

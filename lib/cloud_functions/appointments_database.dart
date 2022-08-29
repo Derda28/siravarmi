@@ -34,7 +34,7 @@ class AppointmentDatabase {
 
   Future<void> createTable(Database db) async {
     await db.execute(
-      "CREATE TABLE $appointmentsTableName (id INTEGER NOT NULL,$dateTime DATETIME,$userId INTEGER NOT NULL,$barberId INTEGER NOT NULL, $employeeId INTEGER NOT NULL, $assessmentId INTEGER NOT NULL, $totalPrice INTEGER NOT NULL)",
+      "CREATE TABLE $appointmentsTableName (id INTEGER PRIMARY KEY,$dateTime DATETIME,$userId INTEGER NOT NULL,$barberId INTEGER NOT NULL, $employeeId INTEGER NOT NULL, $assessmentId INTEGER NOT NULL, $totalPrice INTEGER NOT NULL)",
     );
   }
 

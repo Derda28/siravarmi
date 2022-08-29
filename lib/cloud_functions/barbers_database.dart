@@ -29,7 +29,7 @@ class BarbersDatabase {
 
   Future<void> createTable(Database db) async {
     await db.execute(
-      "CREATE TABLE $barbersTableName (id INTEGER NOT NULL,$name VARCHAR(20) ,$address TEXT NOT NULL,$minPrice INTEGER NOT NULL, $phoneNumber VARCHAR(10), $isOpen INTEGER(1) NOT NULL, $profileUrl TEXT NOT NULL, $averageStars REAL NOT NULL, $assessmentCount INTEGER NOT NULL)",
+      "CREATE TABLE $barbersTableName (id INTEGER PRIMARY KEY,$name VARCHAR(20) ,$address TEXT NOT NULL,$minPrice INTEGER NOT NULL, $phoneNumber VARCHAR(10), $isOpen INTEGER(1) NOT NULL, $profileUrl TEXT NOT NULL, $averageStars REAL NOT NULL, $assessmentCount INTEGER NOT NULL)",
     );
   }
 

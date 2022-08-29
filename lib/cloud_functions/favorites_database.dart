@@ -26,7 +26,7 @@ class FavoritesDatabase {
 
   Future<void> createTable(Database db) async {
     await db.execute(
-      "CREATE TABLE $favoritesTableName (id INTEGER NOT NULL,$userId INTEGER NOT NULL,$barberId INTEGER NOT NULL,$employeeId INTEGER NOT NULL)",
+      "CREATE TABLE $favoritesTableName (id INTEGER PRIMARY KEY,$userId INTEGER NOT NULL,$barberId INTEGER NOT NULL,$employeeId INTEGER)",
     );
   }
 
@@ -43,7 +43,41 @@ class FavoritesDatabase {
     return favorites;
   }
 
-  getEmployeesFromMysql() async{
+  isFavorite(int barberId) async {
+    if (database == null) await open();
+
+    var selectResult = await database!
+        .rawQuery("SELECT * FROM $favoritesTableName where barberId=$barberId AND userId=${user.id} AND employeeId is null");
+    if(selectResult.isNotEmpty){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  void negateIt(int barberId) async {
+    if(database == null) await open();
+    
+    bool isItPresent = await isFavorite(barberId);
+    String sql;
+
+    if(isItPresent){
+      sql = "DELETE FROM $favoritesTableName WHERE barberId=$barberId AND userId=${user.id} AND employeeId is null";
+      await database!.rawQuery(sql);
+    }else{
+      sql = "INSERT INTO $favoritesTableName (userId, barberId) VALUES (${user.id}, $barberId)";
+      await database!.rawQuery(sql);
+    }
+
+    negateItInMysqlToo(sql);
+  }
+
+  void negateItInMysqlToo(String sql) {
+    DbHelperHttp dbHelper = DbHelperHttp();
+    dbHelper.insertRawQuery(sql);
+  }
+
+  getFavoritesFromMysql() async{
     if (database == null) await open();
     DbHelperHttp dbHelper = DbHelperHttp();
     var result = await dbHelper.getFavorites(user.id!);

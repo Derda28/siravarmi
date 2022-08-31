@@ -7,7 +7,7 @@ import 'package:siravarmi/screens/menu_favorite_screen.dart';
 import 'package:siravarmi/screens/menu_setting_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/navbar.dart';
-import 'package:siravarmi/widgets/setting_buttons.dart';
+import 'package:siravarmi/widgets/button/setting_buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../utilities/custom_screen_route.dart';
 import '../widgets/appbar.dart';

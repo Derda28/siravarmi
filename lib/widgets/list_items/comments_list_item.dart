@@ -4,9 +4,9 @@ import 'package:http/http.dart';
 import 'package:siravarmi/cloud_functions/users_database.dart';
 import 'package:siravarmi/utilities/consts.dart';
 
-import '../cloud_functions/dbHelperHttp.dart';
-import '../models/assessment_model.dart';
-import '../models/user_model.dart';
+import '../../cloud_functions/dbHelperHttp.dart';
+import '../../models/assessment_model.dart';
+import '../../models/user_model.dart';
 
 class CommentsListItem extends StatefulWidget {
   AssessmentModel assessment;

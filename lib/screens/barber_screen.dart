@@ -13,8 +13,8 @@ import 'package:siravarmi/cloud_functions/working_hours_database.dart';
 import 'package:siravarmi/models/employee_model.dart';
 import 'package:siravarmi/models/service_model.dart';
 import 'package:siravarmi/models/working_hours_model.dart';
-import 'package:siravarmi/widgets/comments_list_item.dart';
-import 'package:siravarmi/widgets/selected_service_popup_screen.dart';
+import 'package:siravarmi/widgets/list_items/comments_list_item.dart';
+import 'package:siravarmi/widgets/popups/selected_service_popup_screen.dart';
 import 'package:siravarmi/widgets/slidingUpPanels/barber_slidingUpPanel.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -780,26 +780,7 @@ class _BarberScreenState extends State<BarberScreen> {
           controller: panelController,
           padding: EdgeInsets.only(
               left: getSize(20), right: getSize(20), top: getSize(20)),
-          panelBuilder: (builder) => BarberSlidingUpPanel(employees),
-          footer: Padding(
-            padding: EdgeInsets.only(left: getSize(180)),
-            child: ElevatedButton(
-              style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateColor.resolveWith((states) => primaryColor),
-                  overlayColor: MaterialStateColor.resolveWith(
-                      (states) => secondaryColor.withOpacity(0.2))),
-              onPressed: () {},
-              child: Text(
-                "Randevu olustur",
-                style: TextStyle(
-                  fontSize: getSize(18),
-                  fontFamily: secondaryFontFamily,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
+          panelBuilder: (builder) => BarberSlidingUpPanel(employees,selectedServices),
         )
       ],
     );
@@ -985,6 +966,8 @@ class _BarberScreenState extends State<BarberScreen> {
       isFavorite=!isFavorite;
     });
   }
+
+
 }
 
 class CustomDialog extends StatefulWidget{

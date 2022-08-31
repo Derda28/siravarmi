@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../screens/barberList_screen.dart';
-import '../screens/barber_screen.dart';
-import '../utilities/consts.dart';
+import '../../screens/barberList_screen.dart';
+import '../../screens/barber_screen.dart';
+import '../../utilities/consts.dart';
 
 class SearchBtn{
   Widget build({required double height,double? topMargin, required BuildContext btnClick, required String whichScreen}){

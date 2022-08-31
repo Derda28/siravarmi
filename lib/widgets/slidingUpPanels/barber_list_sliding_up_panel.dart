@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/utilities/custom_screen_route.dart';
-import 'package:siravarmi/widgets/near_me_popup_screen.dart';
-import 'package:siravarmi/widgets/price_filter_popup_screen.dart';
+import 'package:siravarmi/widgets/popups/near_me_popup_screen.dart';
+import 'package:siravarmi/widgets/popups/price_filter_popup_screen.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../routes/hero_dialog_route.dart';

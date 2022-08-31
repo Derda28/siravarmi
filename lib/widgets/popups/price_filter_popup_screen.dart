@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../utilities/consts.dart';
-import '../utilities/custom_rect_tween.dart';
+import '../../utilities/consts.dart';
+import '../../utilities/custom_rect_tween.dart';
 
 class PriceFilterPopupScreen extends StatefulWidget {
   const PriceFilterPopupScreen({Key? key}) : super(key: key);

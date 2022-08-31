@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart';
 
-import '../utilities/consts.dart';
-import 'dismiss_keyboard.dart';
+import '../../utilities/consts.dart';
+import '../dismiss_keyboard.dart';
 
 
 class AssessmentPopUpScreen extends StatelessWidget {

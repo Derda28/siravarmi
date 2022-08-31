@@ -10,7 +10,7 @@ import 'package:siravarmi/models/barber_model.dart';
 import 'package:siravarmi/models/employee_model.dart';
 import 'package:siravarmi/routes/hero_dialog_route.dart';
 import 'package:siravarmi/utilities/consts.dart';
-import 'package:siravarmi/widgets/assessment_popup_screen.dart';
+import 'package:siravarmi/widgets/popups/assessment_popup_screen.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../models/appointment_model.dart';

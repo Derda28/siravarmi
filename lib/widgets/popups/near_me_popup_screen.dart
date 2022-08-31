@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:intl/intl.dart';
 
-import '../utilities/consts.dart';
-import '../utilities/custom_rect_tween.dart';
+import '../../utilities/consts.dart';
+import '../../utilities/custom_rect_tween.dart';
 
 class NearMePopupScreen extends StatefulWidget{
   @override

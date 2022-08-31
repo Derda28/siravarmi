@@ -16,15 +16,15 @@ import 'package:siravarmi/models/working_hours_model.dart';
 import 'package:siravarmi/screens/appointment_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/navbar.dart';
-import 'package:siravarmi/widgets/search_btn.dart';
+import 'package:siravarmi/widgets/button/search_btn.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 
 import '../cloud_functions/users_database.dart';
 import '../models/barber_model.dart';
 import '../utilities/custom_screen_route.dart';
 import '../widgets/appbar.dart';
-import '../widgets/appointment_list_item.dart';
-import '../widgets/home_screen_btn.dart';
+import '../widgets/list_items/appointment_list_item.dart';
+import '../widgets/button/home_screen_btn.dart';
 import 'barberList_screen.dart';
 
 class HomeScreen extends StatefulWidget {

@@ -16,11 +16,11 @@ import 'package:siravarmi/screens/select_address_screen.dart';
 import 'package:siravarmi/screens/sort_popup_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/utilities/custom_rect_tween.dart';
-import 'package:siravarmi/widgets/search_btn.dart';
+import 'package:siravarmi/widgets/button/search_btn.dart';
 import 'package:siravarmi/widgets/slidingUpPanels/barber_list_sliding_up_panel.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../widgets/list_item.dart';
+import '../widgets/list_items/list_item.dart';
 import '../widgets/search_textinput.dart';
 import 'barber_screen.dart';
 

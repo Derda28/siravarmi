@@ -9,6 +9,7 @@ class WorkingHoursModel{
   DateTime? date;
   String? day;
   int? barberId;
+  int? employeeId;
 
   WorkingHoursModel({
     this.id,
@@ -17,7 +18,8 @@ class WorkingHoursModel{
     this.close,
     this.day,
     this.date,
-    this.barberId
+    this.barberId,
+    this.employeeId,
   });
 
   WorkingHoursModel.fromJson(Map json){
@@ -28,6 +30,7 @@ class WorkingHoursModel{
     date = json['date'];
     day = json['day'];
     barberId = json['barberId'];
+    employeeId = json['employeeId'];
 
 
     /*open = TimeOfDay(hour: int.parse(formateTime(open!.hour, open!.minute, null).substring(0,2)), minute: int.parse(formateTime(open!.hour, open!.minute, null).substring(3,5)));

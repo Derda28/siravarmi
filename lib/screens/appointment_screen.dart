@@ -5,7 +5,7 @@ import 'package:siravarmi/cloud_functions/barbers_database.dart';
 import 'package:siravarmi/cloud_functions/employees_database.dart';
 import 'package:siravarmi/models/employee_model.dart';
 import 'package:siravarmi/utilities/consts.dart';
-import 'package:siravarmi/widgets/appointment_list_item.dart';
+import 'package:siravarmi/widgets/list_items/appointment_list_item.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../cloud_functions/dbHelperHttp.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../utilities/consts.dart';
+import '../../utilities/consts.dart';
 
 class SettingButtons extends StatelessWidget {
   double textFont = getSize(18);

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:siravarmi/widgets/list_item.dart';
+import 'package:siravarmi/widgets/list_items/list_item.dart';
 
-import '../models/employee_model.dart';
-import '../utilities/consts.dart';
+import '../../models/employee_model.dart';
+import '../../utilities/consts.dart';
 
 
 class SelectBarberPopupScreen extends StatelessWidget {

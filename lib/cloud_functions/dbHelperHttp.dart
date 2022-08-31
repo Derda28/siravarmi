@@ -4,7 +4,10 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:siravarmi/models/favorite_model.dart';
+import 'package:siravarmi/models/service_model.dart';
 import 'package:siravarmi/models/working_hours_model.dart';
+
+import '../utilities/consts.dart';
 
 class DbHelperHttp {
   Future<List<dynamic>> getBarberList() async {
@@ -145,6 +148,18 @@ class DbHelperHttp {
   void insertRawQuery(String sql) async {
     var url = Uri.parse('https://yadetemizlik.com/insertRawQuery.php');
     await http.post(url, body: {'sql': sql});
+  }
+
+  createAppointment(int barberId, int employeeId, DateTime dateTime, ServiceModel s) async {
+    var url = Uri.parse('https://yadetemizlik.com/createAppointmentFromUser.php');
+    await http.post(url, body: {
+      'userId' : user.id!.toString(),
+      'barberId' : barberId.toString(),
+      'employeeId' : employeeId.toString(),
+      'dateTime' : dateTime.toString(),
+      'totalPrice' : s.price.toString(),
+      'serviceId' : s.id.toString(),
+    });
   }
 
 }

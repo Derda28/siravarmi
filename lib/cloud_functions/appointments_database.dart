@@ -1,8 +1,11 @@
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:siravarmi/models/appointment_model.dart';
 import 'package:siravarmi/screens/barber_screen.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../models/service_model.dart';
+import '../utilities/consts.dart';
 import 'dbHelperHttp.dart';
 
 class AppointmentDatabase {
@@ -20,11 +23,6 @@ class AppointmentDatabase {
   int version = 1;
   Database? database;
 
-  /*AppointmentDatabase._init();
-  static final AppointmentDatabase instance = AppointmentDatabase._init();
-
-  static Database? _database;*/
-
   Future<void> open() async {
     database = await openDatabase(appointmentsDatabaseName, version: version,
         onCreate: (db, version) async {
@@ -37,36 +35,6 @@ class AppointmentDatabase {
       "CREATE TABLE $appointmentsTableName (id INTEGER PRIMARY KEY,$dateTime DATETIME,$userId INTEGER NOT NULL,$barberId INTEGER NOT NULL, $employeeId INTEGER NOT NULL, $assessmentId INTEGER NOT NULL, $totalPrice INTEGER NOT NULL)",
     );
   }
-
-
-  /*Future<Database> get database async{
-
-    if(_database!=null){
-      return _database!;
-    }
-
-    _database = await _initDb('appointments.db');
-    return _database!;
-  }
-
-  Future<Database> _initDb(String filePath) async{
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, filePath);
-
-    return await openDatabase(path, version: 1, onCreate: (db, version) {
-      db.execute('''
-      CREATE TABLE $appointmentsTableName(
-        $id INTEGER NOT NULL,
-        $dateTime DATETIME NOT NULL,
-        $userId INTEGER NOT NULL,
-        $barberId INTEGER NOT NULL,
-        $employeeId INTEGER NOT NULL,
-        $assessmentId INTEGER,
-        $totalPrice INTEGER NOT NULL
-      )
-    ''');
-    });
-  }*/
 
    Future<List<AppointmentModel>> getLastAppointments(int userId) async{
     if(database==null) await open();
@@ -91,6 +59,25 @@ class AppointmentDatabase {
     }
     return appointments;
   }
+  Future<List<AppointmentModel>> getAppointmentsOfDayAndEmployee(DateTime day, int id) async{
+     if(database==null) await open();
+
+     final DateFormat formatter = DateFormat('yyyy-MM-dd');
+     final String formatted = formatter.format(day);
+     /*day.subtract(Duration(milliseconds: day.microsecond, seconds: day.second, minutes: day.minute, hours: day.hour));*/
+     day = day.add(const Duration(days: 1));
+     final String formatted2 = formatter.format(day);
+
+     String sql = "SELECT* FROM $appointmentsTableName where $dateTime < '$formatted2' and $dateTime >= '$formatted' AND $employeeId=$id";
+
+     var selectResult = await database!.rawQuery(sql);
+
+     List<AppointmentModel> appointments = [];
+     for(var element in selectResult){
+       appointments.add(AppointmentModel.fromJson(element));
+     }
+     return appointments;
+  }
 
   Future<void> getAppointmentsFromMySql(int userId) async {
      if(database==null) await open();
@@ -111,6 +98,17 @@ class AppointmentDatabase {
          });
        }
      }
+  }
+
+  createAppointment(int barberId, int employeeId, List<ServiceModel> services, DateTime dateTime) async{
+    if(database==null) await open();
+    DbHelperHttp dbHelper = DbHelperHttp();
+
+    for(var s in services){
+      await dbHelper.createAppointment(barberId, employeeId, dateTime, s);
+    }
+
+   getAppointmentsFromMySql(user.id!);
   }
 
   Future close() async {

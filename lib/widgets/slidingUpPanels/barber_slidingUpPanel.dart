@@ -33,10 +33,9 @@ class BarberSlidingUpPanel extends StatefulWidget {
 }
 
 class _BarberSlidingUpPanelState extends State<BarberSlidingUpPanel> {
-  DateTime date = DateTime.now();
+  DateTime? date;
   TimeOfDay? time;
   EmployeeModel? selectedEmployee;
-  WorkingHoursModel? workingHoursOfSelectedEmployee;
 
   List<TimeOfDayModel> selectableTimesForAppointment = [];
   List<AppointmentModel> appointmentsOfDay = [];
@@ -149,29 +148,8 @@ class _BarberSlidingUpPanelState extends State<BarberSlidingUpPanel> {
                     backgroundColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white),
                   ),
-                  onPressed: () async {
-                    DateTime? newDate = await showDatePicker(
-                        context: context,
-                        initialDate: date,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime(2031));
-
-                    // if 'cancel' => null
-                    if (newDate == null) return;
-
-                    setState(() => date = newDate);
-                    if(selectedEmployee!=null){
-                      selectableTimesForAppointment = await loadWorkingHoursForEmployee(selectedEmployee!.id!);
-                      setState(() {
-                        selectableTimesForAppointment = selectableTimesForAppointment;
-                      });
-                    }else{
-                      selectedEmployee = await getEarliestEmployeeId();
-                      selectableTimesForAppointment = await loadWorkingHoursForEmployee(selectedEmployee!.id!);
-                      setState(() {
-                        selectableTimesForAppointment = selectableTimesForAppointment;
-                      });
-                    }
+                  onPressed: () {
+                    dateIsSelected(context);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -185,7 +163,7 @@ class _BarberSlidingUpPanelState extends State<BarberSlidingUpPanel> {
                         indent: getSize(5),
                         endIndent: getSize(5),
                       ),
-                      Text(getDate(date),
+                      Text(date!=null?getDate(date!):"seciniz",
                           maxLines: 1,
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -521,45 +499,50 @@ class _BarberSlidingUpPanelState extends State<BarberSlidingUpPanel> {
     setState(() {
       selectedEmployee = result;
     });
-
-    if(selectedEmployee!=null){
-      selectableTimesForAppointment = await loadWorkingHoursForEmployee(selectedEmployee!.id!);
-      setState(() {
-        selectableTimesForAppointment = selectableTimesForAppointment;
-      });
-    }
   }
 
   Future<List<TimeOfDayModel>> loadWorkingHoursForEmployee(int employeeId) async {
     WorkingHoursDatabase wHDb = WorkingHoursDatabase();
-    workingHoursOfSelectedEmployee =
+    WorkingHoursModel workingHoursOfSelectedEmployee =
         await wHDb.getWorkingHoursByEmployeeId(employeeId);
-    int startOfTime = workingHoursOfSelectedEmployee!.open!.hour * 60 +
-        workingHoursOfSelectedEmployee!.open!.minute;
-    int endOfTime = workingHoursOfSelectedEmployee!.close!.hour * 60 +
-        workingHoursOfSelectedEmployee!.close!.minute;
 
     List<TimeOfDayModel> timeList = [];
-    for (int i = startOfTime; i <= endOfTime; i += 30) {
-      timeList.add(TimeOfDayModel(
-          timeOfDay: TimeOfDay(hour: i ~/ 60, minute: i % 60),
-          available: true));
-    }
-    AppointmentDatabase appDb = AppointmentDatabase();
-    appointmentsOfDay = await appDb.getAppointmentsOfDayAndEmployee(
-        date, employeeId);
+    if(workingHoursOfSelectedEmployee.id!>0){
+      int startOfTime = workingHoursOfSelectedEmployee.open!.hour * 60 +
+          workingHoursOfSelectedEmployee.open!.minute;
+      int endOfTime = workingHoursOfSelectedEmployee.close!.hour * 60 +
+          workingHoursOfSelectedEmployee.close!.minute;
 
-    for (int i = 0; i < timeList.length; i++) {
-      for (int j = 0; j < appointmentsOfDay.length; j++) {
-        if (timeList[i].timeOfDay ==
-            TimeOfDay.fromDateTime(appointmentsOfDay[j].dateTime!)) {
-          setState(() {
-            timeList[i].available = false;
-          });
+
+
+      for (int i = startOfTime; i <= endOfTime; i += 30) {
+        timeList.add(TimeOfDayModel(
+            timeOfDay: TimeOfDay(hour: i ~/ 60, minute: i % 60),
+            available: true));
+      }
+      AppointmentDatabase appDb = AppointmentDatabase();
+      if(date!=null){
+        appointmentsOfDay = await appDb.getAppointmentsOfDayAndEmployee(
+            date!, employeeId);
+        for (int i = 0; i < timeList.length; i++) {
+          if(date!.year==DateTime.now().year&&date!.month==DateTime.now().month&&date!.day==DateTime.now().day){
+            if(timeOfDayToDouble(timeList[i].timeOfDay!)<=timeOfDayToDouble(TimeOfDay.now())){
+              setState(() {
+                timeList[i].available = false;
+              });
+            }
+          }
+          for (int j = 0; j < appointmentsOfDay.length; j++) {
+            if (timeList[i].timeOfDay ==
+                TimeOfDay.fromDateTime(appointmentsOfDay[j].dateTime!)) {
+              setState(() {
+                timeList[i].available = false;
+              });
+            }
+          }
         }
       }
-    }
-
+      }
     return timeList;
   }
 
@@ -582,7 +565,7 @@ class _BarberSlidingUpPanelState extends State<BarberSlidingUpPanel> {
 
     switch(res){
       case 1:
-        await appDb.createAppointment(selectedEmployee!.barberId!, selectedEmployee!.id!, widget.selectedServices, DateTime(date.year, date.month, date.day, time!.hour, time!.minute));
+        await appDb.createAppointment(selectedEmployee!.barberId!, selectedEmployee!.id!, widget.selectedServices, DateTime(date!.year, date!.month, date!.day, time!.hour, time!.minute));
         break;
       case 2:
       //Toast that Min 1 Service, Date and Time must be selected
@@ -604,7 +587,7 @@ class _BarberSlidingUpPanelState extends State<BarberSlidingUpPanel> {
     for(int i=0; i<widget.employees.length; i++){
       var result = await loadWorkingHoursForEmployee(widget.employees[i].id!);
       for(int j=0; j<result.length; j++){
-        if(result[j].available!){
+        if(result[j].available!&&timeOfDayToDouble(result[j].timeOfDay!)>timeOfDayToDouble(TimeOfDay.now())){
           earliestTimeOfEmployees[i]=result[j].timeOfDay!;
           break;
         }
@@ -625,4 +608,29 @@ class _BarberSlidingUpPanelState extends State<BarberSlidingUpPanel> {
   }
 
   double timeOfDayToDouble(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+
+  Future<void> dateIsSelected(BuildContext context) async {
+    DateTime? newDate = await showDatePicker(
+        context: context,
+        initialDate: date!=null?date!:DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2031));
+
+    // if 'cancel' => null
+    if (newDate == null) return;
+
+    setState(() => date = newDate);
+    if(selectedEmployee!=null){
+      selectableTimesForAppointment = await loadWorkingHoursForEmployee(selectedEmployee!.id!);
+      setState(() {
+        selectableTimesForAppointment = selectableTimesForAppointment;
+      });
+    }else{
+      selectedEmployee = await getEarliestEmployeeId();
+      selectableTimesForAppointment = await loadWorkingHoursForEmployee(selectedEmployee!.id!);
+      setState(() {
+        selectableTimesForAppointment = selectableTimesForAppointment;
+      });
+    }
+  }
 }

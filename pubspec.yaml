@@ -95,5 +95,4 @@ flutter:
 
   assets:
     - assets/images/
-    - BarberListExample.json
     - districtList.json

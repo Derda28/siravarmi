@@ -9,9 +9,9 @@ import '../../models/assessment_model.dart';
 import '../../models/user_model.dart';
 
 class CommentsListItem extends StatefulWidget {
-  AssessmentModel assessment;
+  final AssessmentModel assessment;
 
-  CommentsListItem({required this.assessment, Key? key}) : super(key: key);
+  const CommentsListItem({required this.assessment, Key? key}) : super(key: key);
 
   @override
   State<CommentsListItem> createState() => _CommentsListItemState();
@@ -20,6 +20,13 @@ class CommentsListItem extends StatefulWidget {
 class _CommentsListItemState extends State<CommentsListItem> {
 
   UserModel? commentUser;
+
+  @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
 
   @override
   void initState() {
@@ -103,26 +110,6 @@ class _CommentsListItemState extends State<CommentsListItem> {
     ):Text("LOADING...");
   }
 
-  // Future<void> loadUser() async{
-  //   DbHelperHttp dbHelper = DbHelperHttp();
-  //   final assessmentUserData = dbHelper.getUserFromAssessment(widget.assessment.userId);
-  //   var assUser = await assessmentUserData;
-  //
-  //   commentUser = UserModel(
-  //       id: int.parse(assUser["id"]),
-  //       isMan: assUser["isMan"]=='1'?true:false,
-  //     mail: assUser["email"],
-  //     name: assUser["name"],
-  //     password: assUser["password"],
-  //     surname: assUser["surname"],
-  //   );
-  //
-  //
-  //   setState((){
-  //     commentUser=commentUser;
-  //   });
-  //
-  // }
   loadUser() async {
     UsersDatabase usersDb = UsersDatabase();
     commentUser = await usersDb.getUsers(widget.assessment.userId!);

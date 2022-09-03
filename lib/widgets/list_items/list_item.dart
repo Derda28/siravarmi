@@ -10,17 +10,20 @@ import 'package:siravarmi/models/employee_model.dart';
 import 'package:siravarmi/screens/barber_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 
+import '../../cloud_functions/appointments_database.dart';
+import '../../cloud_functions/working_hours_database.dart';
+import '../../models/appointment_model.dart';
+import '../../models/time_of_day_model.dart';
+import '../../models/working_hours_model.dart';
+
 class ListItem extends StatefulWidget {
   Color? itemBgColor;
-  String date, time;
   BarberModel barber;
 
   ListItem({
     Key? key,
     this.itemBgColor,
     required this.barber,
-    required this.date,
-    required this.time,
   }) : super(key: key);
 
   @override
@@ -29,13 +32,15 @@ class ListItem extends StatefulWidget {
 
 class _ListItemState extends State<ListItem> {
   bool? isFavorite;
+  DateTime? earliestDateTime;
 
   List<EmployeeModel> employees = [];
 
   @override
   void initState() {
-    checkFavoriteStatus();
     super.initState();
+    checkFavoriteStatus();
+    loadEmployees(widget.barber.id);
   }
 
   @override
@@ -220,7 +225,7 @@ class _ListItemState extends State<ListItem> {
           Padding(
             padding: EdgeInsets.only(top: getSize(230), left: getSize(260), bottom: getSize(10)),
             child: Text(
-              '${widget.date}\nSaat ${widget.time}',
+              earliestDateTime != null ? '${getDate(earliestDateTime!)}\nSaat ${getTime(earliestDateTime!)}':"DOLU",
               style: TextStyle(
                 fontSize: screenWidth! * 14 / designWidth,
                 color: secondaryColor,
@@ -237,8 +242,7 @@ class _ListItemState extends State<ListItem> {
     );
   }
 
-  Future<void> itemClicked(BuildContext context) async {
-    employees = await loadEmployees(widget.barber.id);
+  void itemClicked(BuildContext context) {
     widget.barber.setEmployees(employees);
 
     Navigator.push(
@@ -249,10 +253,10 @@ class _ListItemState extends State<ListItem> {
                 )));
   }
 
-  loadEmployees(int? id) async {
+  void loadEmployees(int? id) async {
     EmployeesDatabase empDb = EmployeesDatabase();
-    var result = await empDb.getEmployeesFromBarber(id!);
-    return result;
+    employees = await empDb.getEmployeesFromBarber(id!);
+    getEarliestDateTime();
   }
 
   Future<void> checkFavoriteStatus() async {
@@ -262,5 +266,82 @@ class _ListItemState extends State<ListItem> {
     setState(() {
       isFavorite = isFavorite;
     });
+  }
+
+  Future<DateTime> getEarliestEmployeeId() async {
+    Map<int,TimeOfDay> earliestTimeOfEmployees = {};
+    TimeOfDay? earliestEmployeeTime;
+
+    for(int i=0; i<employees.length; i++){
+      var result = await loadWorkingHoursForEmployee(employees[i].id!);
+      for(int j=0; j<result.length; j++){
+        if(result[j].available!&&timeOfDayToDouble(result[j].timeOfDay!)>timeOfDayToDouble(TimeOfDay.now())){
+          earliestTimeOfEmployees[i]=result[j].timeOfDay!;
+          break;
+        }
+      }
+    }
+
+    for(var m in earliestTimeOfEmployees.keys.toList()){
+      if(earliestEmployeeTime==null){
+        earliestEmployeeTime = earliestTimeOfEmployees[m];
+
+      }else{
+        if(timeOfDayToDouble(earliestTimeOfEmployees[m]!)<timeOfDayToDouble(earliestEmployeeTime)){
+          earliestEmployeeTime = earliestTimeOfEmployees[m];
+        }
+      }
+    }
+
+    if(earliestEmployeeTime!=null){
+      return DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, earliestEmployeeTime.hour, earliestEmployeeTime.minute);
+    }else{
+      return DateTime(0,0,0,0,0);
+    }
+  }
+
+  Future<List<TimeOfDayModel>> loadWorkingHoursForEmployee(int employeeId) async {
+    WorkingHoursDatabase wHDb = WorkingHoursDatabase();
+     WorkingHoursModel workingHoursOfSelectedEmployee =
+    await wHDb.getWorkingHoursByEmployeeId(employeeId);
+    int startOfTime = workingHoursOfSelectedEmployee.open!.hour * 60 +
+        workingHoursOfSelectedEmployee.open!.minute;
+    int endOfTime = workingHoursOfSelectedEmployee.close!.hour * 60 +
+        workingHoursOfSelectedEmployee.close!.minute;
+
+    List<TimeOfDayModel> timeList = [];
+    for (int i = startOfTime; i <= endOfTime; i += 30) {
+      timeList.add(TimeOfDayModel(
+          timeOfDay: TimeOfDay(hour: i ~/ 60, minute: i % 60),
+          available: true));
+    }
+    AppointmentDatabase appDb = AppointmentDatabase();
+    List<AppointmentModel> appointmentsOfDay = await appDb.getAppointmentsOfDayAndEmployee(
+        DateTime.now(), employeeId);
+
+    for (int i = 0; i < timeList.length; i++) {
+      for (int j = 0; j < appointmentsOfDay.length; j++) {
+        if (timeList[i].timeOfDay ==
+            TimeOfDay.fromDateTime(appointmentsOfDay[j].dateTime!)) {
+          setState(() {
+            timeList[i].available = false;
+          });
+        }
+      }
+    }
+
+    return timeList;
+  }
+
+  double timeOfDayToDouble(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+
+  void getEarliestDateTime() async{
+    var result = await getEarliestEmployeeId();
+    if(result.year>0){
+      earliestDateTime = result;
+      setState(() {
+        earliestDateTime = earliestDateTime;
+      });
+    }
   }
 }

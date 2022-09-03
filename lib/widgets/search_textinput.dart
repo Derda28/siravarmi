@@ -3,17 +3,22 @@ import 'package:flutter/material.dart';
 
 import '../utilities/consts.dart';
 
-class SearchTextinput extends StatelessWidget {
+class SearchTextinput extends StatefulWidget {
   const SearchTextinput({Key? key}) : super(key: key);
 
+  @override
+  State<SearchTextinput> createState() => _SearchTextinputState();
+}
+
+class _SearchTextinputState extends State<SearchTextinput> {
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-            height: 50,
-            width: screenWidth! * 350 / designWidth,
+            height: getSize(50),
+            width: getSize(300),
             margin: EdgeInsets.only(top: 15),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -34,14 +39,16 @@ class SearchTextinput extends StatelessWidget {
                       hintText: 'Arama yap',
                       hintStyle: TextStyle(
                         color: fontColor,
-                        fontSize: 12,
+                        fontSize: getSize(12),
                       )),
                   style:
-                  TextStyle(fontSize: 14, fontFamily: secondaryFontFamily),
+                  TextStyle(fontSize: getSize(14), fontFamily: secondaryFontFamily),
                 ),
               ),
             ]))
       ],
     );
   }
+
+
 }

@@ -58,6 +58,16 @@ class BarbersDatabase {
     return BarberModel(id: 0, name: "", address: "", minPrice: 0, profileURL: "", open: false, averageStars: 0, assessmentCount: 0);
   }
 
+  Future<List<BarberModel>> getBarberByRawQuery(String sql) async{
+    if(database==null) await open();
+    var result = await database!.rawQuery(sql);
+    List<BarberModel> barbers = [];
+    for(var r in result){
+      barbers.add(BarberModel.fromJson(r));
+    }
+    return barbers;
+  }
+
   Future<void> getBarbersFromMysql() async{
     if(database==null) await open();
     DbHelperHttp dbHelper = DbHelperHttp();

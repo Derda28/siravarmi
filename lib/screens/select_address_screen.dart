@@ -17,9 +17,6 @@ class SelectAddressScreen extends StatefulWidget {
   }
 }
 
-const String _heroCity = 'city-hero';
-const String _heroDistrict = 'district-hero';
-
 class _SelectAddressState extends State {
   IconData iconData = Icons.arrow_drop_down;
 
@@ -187,63 +184,60 @@ class _SelectAddressState extends State {
       ),
         Visibility(
           visible: isCitySelected,
-            child: Hero(
-              tag: _heroDistrict,
-              child: OutlinedButton(
-                style: ButtonStyle(
-                  overlayColor: MaterialStateColor.resolveWith((states) => primaryColor.withOpacity(0.2)),
-                  side: MaterialStateProperty.all(
-                    BorderSide(
-                      color: Colors.transparent,
-                    ),
+            child: OutlinedButton(
+              style: ButtonStyle(
+                overlayColor: MaterialStateColor.resolveWith((states) => primaryColor.withOpacity(0.2)),
+                side: MaterialStateProperty.all(
+                  BorderSide(
+                    color: Colors.transparent,
                   ),
-                  padding: MaterialStateProperty.resolveWith((states) => EdgeInsets.only(left: 0)),
                 ),
-
-                onPressed: (){openDistrictList(context);},
-                child: Stack(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              titleDistrict,
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontFamily: secondaryFontFamily,
-                                  color: primaryColor
-                              ),
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              selectedDistrict,
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: secondaryFontFamily,
-                                  color: fontColor
-                              ),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(right: 5,top: 7.5),
-                      alignment: Alignment.centerRight,
-                      child: Icon(
-                        iconData,
-                        color: primaryColor,
-                      ),
-                    )
-                  ],
-                ),
-
+                padding: MaterialStateProperty.resolveWith((states) => EdgeInsets.only(left: 0)),
               ),
+
+              onPressed: (){openDistrictList(context);},
+              child: Stack(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            titleDistrict,
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontFamily: secondaryFontFamily,
+                                color: primaryColor
+                            ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            selectedDistrict,
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: secondaryFontFamily,
+                                color: fontColor
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(right: 5,top: 7.5),
+                    alignment: Alignment.centerRight,
+                    child: Icon(
+                      iconData,
+                      color: primaryColor,
+                    ),
+                  )
+                ],
+              ),
+
             ),
 
           ),
@@ -262,15 +256,17 @@ class _SelectAddressState extends State {
                 MaterialStateColor.resolveWith((states) => primaryColor),
             overlayColor: MaterialStateColor.resolveWith(
                 (states) => secondaryColor.withOpacity(0.5))),
-        onPressed: () {},
+        onPressed: () {
+          confirmBtnIsClicked(context);
+        },
         child: Container(
-          width: 404,
-          height: 50,
+          width: getSize(404),
+          height: getSize(50),
           alignment: Alignment.center,
           child: Text(
             "Uygula",
             style: TextStyle(
-              fontSize: 16,
+              fontSize: getSize(16),
               fontFamily: primaryFontFamily,
               color: Colors.white,
             ),
@@ -308,14 +304,16 @@ class _SelectAddressState extends State {
   }
 
   openDistrictList(BuildContext context) async {
-    selectedDistrict = await Navigator.push(context,
-        HeroDialogRoute(builder: (context)=>FilterPopupScreen(
+    selectedDistrict = await showDialog(
+        context: context,
+        builder: (_)=>FilterPopupScreen(
           whichOne: "district",
           selectedCity: selectedCity,
           isLoaded: isLoaded,
-          districts: districts,)));
-    updateSelectedDistrict();
+          districts: districts,)
+    );
 
+    updateSelectedDistrict();
   }
 
   openCityList(BuildContext context) async {
@@ -357,6 +355,10 @@ class _SelectAddressState extends State {
     setState((){
       selectedDistrict=selectedDistrict;
     });
+  }
+
+  void confirmBtnIsClicked(BuildContext context) {
+    Navigator.pop(context, {'city' : selectedCity, 'district' : selectedDistrict});
   }
 
 

@@ -44,7 +44,7 @@ class _TimeListPopupState extends State<TimeListPopup> {
                               "${formateTime(widget.selectableTimes[index].timeOfDay!.hour, widget.selectableTimes[index].timeOfDay!.minute, null)}",
                               style: TextStyle(
                                 color:
-                                    widget.selectableTimes[index].available ==
+                                    widget.selectableTimes[index].available==
                                             true
                                         ? Colors.green
                                         : Colors.red,

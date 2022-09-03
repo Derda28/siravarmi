@@ -26,7 +26,7 @@ import '../utilities/custom_rect_tween.dart';
 
 class BarberScreen extends StatefulWidget {
   BarberModel barberModel;
-  BarberScreen({ required this.barberModel, Key? key}) : super(key: key);
+  BarberScreen({required this.barberModel, Key? key}) : super(key: key);
 
   @override
   State<BarberScreen> createState() => _BarberScreenState();
@@ -99,7 +99,7 @@ class _BarberScreenState extends State<BarberScreen> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Sira Var Mi"),
-        ),//
+        ), //
         body: frontBody(context));
   }
 
@@ -109,7 +109,8 @@ class _BarberScreenState extends State<BarberScreen> {
         Container(
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: NetworkImage(widget.barberModel.profileURL!), fit: BoxFit.cover)),
+                  image: NetworkImage(widget.barberModel.profileURL!),
+                  fit: BoxFit.cover)),
           height: profileHeigt,
           width: screenWidth,
         ),
@@ -117,16 +118,30 @@ class _BarberScreenState extends State<BarberScreen> {
           margin: EdgeInsets.only(left: getSize(365), top: getSize(10)),
           height: getSize(35),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(getSize(20)), bottomLeft: Radius.circular(getSize(20)))
-          ),
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(getSize(20)),
+                  bottomLeft: Radius.circular(getSize(20)))),
           child: OutlinedButton(
             style: OutlinedButton.styleFrom(
               side: BorderSide.none,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(getSize(20)), bottomLeft: Radius.circular(getSize(20)))),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(getSize(20)),
+                      bottomLeft: Radius.circular(getSize(20)))),
               padding: EdgeInsets.only(right: getSize(0)),
             ),
-            child: isFavorite?Icon(Icons.favorite, size: getSize(30), color: secondaryColor,):Icon(Icons.favorite_border, size: getSize(30), color: primaryColor,),
+            child: isFavorite
+                ? Icon(
+                    Icons.favorite,
+                    size: getSize(30),
+                    color: secondaryColor,
+                  )
+                : Icon(
+                    Icons.favorite_border,
+                    size: getSize(30),
+                    color: primaryColor,
+                  ),
             onPressed: () {
               favoriteBtnIsClicked();
             },
@@ -165,18 +180,26 @@ class _BarberScreenState extends State<BarberScreen> {
           height: getSize(25),
           width: getSize(85),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(topRight: Radius.circular(getSize(20)), bottomRight: Radius.circular(getSize(20)))
-          ),
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(getSize(20)),
+                  bottomRight: Radius.circular(getSize(20)))),
           child: OutlinedButton(
             style: OutlinedButton.styleFrom(
               side: BorderSide.none,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topRight: Radius.circular(getSize(20)), bottomRight: Radius.circular(getSize(20)))),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(getSize(20)),
+                      bottomRight: Radius.circular(getSize(20)))),
               padding: EdgeInsets.only(left: getSize(10)),
             ),
             child: Row(
               children: [
-                Icon(Icons.star_purple500_sharp, color: secondaryColor,size: getSize(20),),
+                Icon(
+                  Icons.star_purple500_sharp,
+                  color: secondaryColor,
+                  size: getSize(20),
+                ),
                 Container(
                   margin: EdgeInsets.only(left: getSize(2)),
                   alignment: Alignment.center,
@@ -193,18 +216,21 @@ class _BarberScreenState extends State<BarberScreen> {
                 ),
               ],
             ),
-            onPressed: (){
+            onPressed: () {
               pageController.animateToPage(2,
-                  duration: Duration(milliseconds: 100),
-                  curve: Curves.ease);
+                  duration: Duration(milliseconds: 100), curve: Curves.ease);
               _toggleThird();
             },
           ),
         ),
+
+        //Menu Toggle
+
         Padding(
-          padding: EdgeInsets.only(
-              top: getSize(335), left: getSize(45), right: getSize(45)),
+          padding: EdgeInsets.only(top: getSize(335), left: getSize(45)),
           child: Container(
+            height: getSize(50),
+            width: getSize(325),
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(getSize(25))),
@@ -220,7 +246,7 @@ class _BarberScreenState extends State<BarberScreen> {
                       borderRadius:
                           BorderRadius.all(Radius.circular(getSize(25))),
                     ),
-                    height: getSize(48),
+                    height: getSize(50),
                   ),
                 ),
                 Row(
@@ -315,8 +341,21 @@ class _BarberScreenState extends State<BarberScreen> {
               right: getSize(40),
               bottom: getSize(60)),
           child: PageView(
-            physics: NeverScrollableScrollPhysics(),
+            physics: PageScrollPhysics(),
             controller: pageController,
+            onPageChanged: (initialPage){
+              switch(initialPage){
+                case 0:
+                  _toggleFirst();
+                  break;
+                case 1:
+                  _toggleSecond();
+                  break;
+                case 2:
+                  _toggleThird();
+                  break;
+              }
+            },
             children: [
               Container(
                 height: getSize(50),
@@ -330,63 +369,101 @@ class _BarberScreenState extends State<BarberScreen> {
                       child: Container(
                         padding: EdgeInsets.only(),
                         decoration: BoxDecoration(border: Border.all()),
-                        child: ExpansionTile(
-                            title: Text("ERKEK"),
-                            children: [ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              itemCount: menServicesByCategories.keys.toList().length,
-                              itemBuilder: (BuildContext context, int index) => Card(
-                                color: Colors.white,
-                                margin: EdgeInsets.only(bottom: getSize(15)),
-                                child: Container(
-                                  padding: EdgeInsets.only(),
-                                  child: ExpansionTile(
-                                    title: Text(menServicesByCategories.keys.toList()[index]),
-                                    children: [
-                                      ListView.builder(
-                                          shrinkWrap: true,
-                                          physics: NeverScrollableScrollPhysics(),
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: menServicesByCategories[menServicesByCategories.keys.toList()[index]]?.length,
-                                          itemBuilder: (BuildContext context, int index2){
-                                            return ListTile(
-                                              title: Text(menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].name!),
-                                              trailing: Row(
-                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text("₺${menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].price!.toString()}"),
-                                                  Checkbox(
-                                                      value: menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].selected,
-                                                      onChanged: (value){
-                                                        setState((){
-                                                          if(menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].selected==true){
-                                                            menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].selected=false;
-                                                            selectedServices.remove(menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2]);
-                                                          }else{
-                                                            menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].selected=true;
-                                                            selectedServices.add(menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2]);
-                                                          }
-                                                        });
-                                                      },
-                                                  ),
-                                                ],
-                                              ),
-
-
-                                            );
-
-                                          }
-                                      )
-                                    ],
-                                  ),
+                        child: ExpansionTile(title: Text("ERKEK"), children: [
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            scrollDirection: Axis.vertical,
+                            itemCount:
+                                menServicesByCategories.keys.toList().length,
+                            itemBuilder: (BuildContext context, int index) =>
+                                Card(
+                              color: Colors.white,
+                              margin: EdgeInsets.only(bottom: getSize(15)),
+                              child: Container(
+                                padding: EdgeInsets.only(),
+                                child: ExpansionTile(
+                                  title: Text(menServicesByCategories.keys
+                                      .toList()[index]),
+                                  children: [
+                                    ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: menServicesByCategories[
+                                                menServicesByCategories.keys
+                                                    .toList()[index]]
+                                            ?.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index2) {
+                                          return ListTile(
+                                            title: Text(menServicesByCategories[
+                                                    menServicesByCategories.keys
+                                                            .toList()[
+                                                        index]]![index2]
+                                                .name!),
+                                            trailing: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                    "₺${menServicesByCategories[menServicesByCategories.keys.toList()[index]]![index2].price!.toString()}"),
+                                                Checkbox(
+                                                  value: menServicesByCategories[
+                                                          menServicesByCategories
+                                                                  .keys
+                                                                  .toList()[
+                                                              index]]![index2]
+                                                      .selected,
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      if (menServicesByCategories[
+                                                                  menServicesByCategories
+                                                                          .keys
+                                                                          .toList()[
+                                                                      index]]![index2]
+                                                              .selected ==
+                                                          true) {
+                                                        menServicesByCategories[
+                                                                menServicesByCategories
+                                                                        .keys
+                                                                        .toList()[
+                                                                    index]]![index2]
+                                                            .selected = false;
+                                                        selectedServices.remove(
+                                                            menServicesByCategories[
+                                                                menServicesByCategories
+                                                                        .keys
+                                                                        .toList()[
+                                                                    index]]![index2]);
+                                                      } else {
+                                                        menServicesByCategories[
+                                                                menServicesByCategories
+                                                                        .keys
+                                                                        .toList()[
+                                                                    index]]![index2]
+                                                            .selected = true;
+                                                        selectedServices.add(
+                                                            menServicesByCategories[
+                                                                menServicesByCategories
+                                                                        .keys
+                                                                        .toList()[
+                                                                    index]]![index2]);
+                                                      }
+                                                    });
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        })
+                                  ],
                                 ),
                               ),
                             ),
-                            ]
-                        ),
+                          ),
+                        ]),
                       ),
                     ),
                     Container(
@@ -395,61 +472,103 @@ class _BarberScreenState extends State<BarberScreen> {
                       child: Container(
                         padding: EdgeInsets.only(),
                         decoration: BoxDecoration(border: Border.all()),
-                        child: ExpansionTile(
-                            title: Text("KADIN"),
-                            children: [ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              itemCount: womenServicesByCategories.keys.toList().length,
-                              itemBuilder: (BuildContext context, int index) => Card(
-                                color: Colors.white,
-                                margin: EdgeInsets.only(bottom: getSize(15)),
-                                child: Container(
-                                  padding: EdgeInsets.only(),
-                                  child: ExpansionTile(
-                                    title: Text(womenServicesByCategories.keys.toList()[index]),
-                                    children: [
-                                      ListView.builder(
-                                          shrinkWrap: true,
-                                          physics: NeverScrollableScrollPhysics(),
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]?.length,
-                                          itemBuilder: (BuildContext context, int index2){
-                                            return ListTile(
-                                              title: Text(womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].name!),
-                                              trailing: Row(
-                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text("₺${womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].price!.toString()}"),
-                                                  Checkbox(
-                                                    value: womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].selected,
-                                                    onChanged: (value)=>{
-                                                      setState((){
-                                                        if(womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].selected==true){
-                                                          womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].selected=false;
-                                                          selectedServices.remove(womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2]);
-                                                        }else{
-                                                          womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].selected=true;
-                                                          selectedServices.add(womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2]);
-                                                        }
-                                                      })
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-
-                                          }
-                                      )
-                                    ],
-                                  ),
+                        child: ExpansionTile(title: Text("KADIN"), children: [
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            scrollDirection: Axis.vertical,
+                            itemCount:
+                                womenServicesByCategories.keys.toList().length,
+                            itemBuilder: (BuildContext context, int index) =>
+                                Card(
+                              color: Colors.white,
+                              margin: EdgeInsets.only(bottom: getSize(15)),
+                              child: Container(
+                                padding: EdgeInsets.only(),
+                                child: ExpansionTile(
+                                  title: Text(womenServicesByCategories.keys
+                                      .toList()[index]),
+                                  children: [
+                                    ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: womenServicesByCategories[
+                                                womenServicesByCategories.keys
+                                                    .toList()[index]]
+                                            ?.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index2) {
+                                          return ListTile(
+                                            title: Text(
+                                                womenServicesByCategories[
+                                                        womenServicesByCategories
+                                                                .keys
+                                                                .toList()[
+                                                            index]]![index2]
+                                                    .name!),
+                                            trailing: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                    "₺${womenServicesByCategories[womenServicesByCategories.keys.toList()[index]]![index2].price!.toString()}"),
+                                                Checkbox(
+                                                  value: womenServicesByCategories[
+                                                          womenServicesByCategories
+                                                                  .keys
+                                                                  .toList()[
+                                                              index]]![index2]
+                                                      .selected,
+                                                  onChanged: (value) => {
+                                                    setState(() {
+                                                      if (womenServicesByCategories[
+                                                                  womenServicesByCategories
+                                                                          .keys
+                                                                          .toList()[
+                                                                      index]]![index2]
+                                                              .selected ==
+                                                          true) {
+                                                        womenServicesByCategories[
+                                                                womenServicesByCategories
+                                                                        .keys
+                                                                        .toList()[
+                                                                    index]]![index2]
+                                                            .selected = false;
+                                                        selectedServices.remove(
+                                                            womenServicesByCategories[
+                                                                womenServicesByCategories
+                                                                        .keys
+                                                                        .toList()[
+                                                                    index]]![index2]);
+                                                      } else {
+                                                        womenServicesByCategories[
+                                                                womenServicesByCategories
+                                                                        .keys
+                                                                        .toList()[
+                                                                    index]]![index2]
+                                                            .selected = true;
+                                                        selectedServices.add(
+                                                            womenServicesByCategories[
+                                                                womenServicesByCategories
+                                                                        .keys
+                                                                        .toList()[
+                                                                    index]]![index2]);
+                                                      }
+                                                    })
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        })
+                                  ],
                                 ),
                               ),
                             ),
-                            ]
-                        ),
+                          ),
+                        ]),
                       ),
                     )
                   ],
@@ -716,51 +835,46 @@ class _BarberScreenState extends State<BarberScreen> {
               ),
               ListView.builder(
                 itemCount: assessments.length,
-                  itemBuilder: (context, index){
-                    return CommentsListItem(assessment: assessments[index],);
-                  },
+                itemBuilder: (context, index) {
+                  return CommentsListItem(
+                    assessment: assessments[index],
+                  );
+                },
               )
             ],
           ),
         ),
-        Container(
-          color: primaryColor,
-          width: screenWidth,
-          height: getSize(50),
-          margin: EdgeInsets.only(top: getSize(screenHeight! - 130)),
-          child: Row(
-            children: [
-              Hero(
-                tag: _heroselectedService,
-                createRectTween: (begin, end) {
-                  return CustomRectTween(begin: begin!, end: end!);
-                },
-                child: Container(
-                    color: primaryColor,
-                    margin: EdgeInsets.only(left: getSize(22)),
-                    child: TextButton(
-                      child: Text(
-                          style: TextStyle(
-                              color: Colors.white, fontSize: getSize(16)),
-                          "${selectedServices.length} Hizmet Seçili"),
-                      onPressed: () {
-                        selectedServiceBtnClicked(context);
-                      },
-                    )),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: getSize(104)),
-                child: TextButton(
-                    child: Text(
-                      "Randevu Al >",
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            color: primaryColor,
+            width: screenWidth,
+            height: getSize(50),
+            child: Stack(
+              children: [
+                TextButton(
+                  child: Text(
                       style: TextStyle(
-                          color: secondaryColor, fontSize: getSize(16)),
-                    ),
-                    onPressed: () {
-                      appointmentBtnClicked();
-                    }),
-              )
-            ],
+                          color: Colors.white, fontSize: getSize(16)),
+                      "${selectedServices.length} Hizmet Seçili"),
+                  onPressed: () {
+                    selectedServiceBtnClicked(context);
+                  },
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: TextButton(
+                      child: Text(
+                        "Randevu Al >",
+                        style: TextStyle(
+                            color: secondaryColor, fontSize: getSize(16)),
+                      ),
+                      onPressed: () {
+                        appointmentBtnClicked();
+                      }),
+                )
+              ],
+            ),
           ),
         ),
         SlidingUpPanel(
@@ -780,7 +894,8 @@ class _BarberScreenState extends State<BarberScreen> {
           controller: panelController,
           padding: EdgeInsets.only(
               left: getSize(20), right: getSize(20), top: getSize(20)),
-          panelBuilder: (builder) => BarberSlidingUpPanel(employees,selectedServices),
+          panelBuilder: (builder) =>
+              BarberSlidingUpPanel(employees, selectedServices),
         )
       ],
     );
@@ -793,29 +908,31 @@ class _BarberScreenState extends State<BarberScreen> {
   }
 
   Future<void> selectedServiceBtnClicked(BuildContext context) async {
-    final result =
-        await showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (_)=> CustomDialog(selectedServices));/*Navigator.push(context, HeroDialogRoute(builder: (context) {
+    final result = await showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (_) => CustomDialog(
+            selectedServices)); /*Navigator.push(context, HeroDialogRoute(builder: (context) {
       return SelectedServicePopupScreen(selectedServices: selectedServices);
     }));*/
-    setState((){
-      if(result!=null){
+    setState(() {
+      if (result != null) {
         selectedServices = result;
-        for(var e in menServicesByCategories.keys){
-          for(int i=0; i<menServicesByCategories[e]!.length; i++){
+        for (var e in menServicesByCategories.keys) {
+          for (int i = 0; i < menServicesByCategories[e]!.length; i++) {
             menServicesByCategories[e]![i].selected = false;
           }
         }
-        for(var e in womenServicesByCategories.keys){
-          for(int i=0; i<womenServicesByCategories[e]!.length; i++){
+        for (var e in womenServicesByCategories.keys) {
+          for (int i = 0; i < womenServicesByCategories[e]!.length; i++) {
             womenServicesByCategories[e]![i].selected = false;
           }
         }
-        for(var e in selectedServices){
-          if(e.gender!){
-            menServicesByCategories[e.category]![menServicesByCategories[e.category]!.indexOf(e)].selected =true;
+        for (var e in selectedServices) {
+          if (e.gender!) {
+            menServicesByCategories[e.category]![
+                    menServicesByCategories[e.category]!.indexOf(e)]
+                .selected = true;
           }
         }
       }
@@ -858,7 +975,7 @@ class _BarberScreenState extends State<BarberScreen> {
     });
   }
 
-  Future<void> loadData() async{
+  Future<void> loadData() async {
     AssessmentDatabase assDb = AssessmentDatabase();
     EmployeesDatabase empDb = EmployeesDatabase();
     ServicesDatabase servicesDb = ServicesDatabase();
@@ -867,93 +984,120 @@ class _BarberScreenState extends State<BarberScreen> {
     final assessmentResult = await assDb.getAssessments();
     getAssessmentOnlyForThisBarber(assessmentResult);
 
-    final employeeResult = await empDb.getEmployeesFromBarber(widget.barberModel.id!);
-    setState((){
+    final employeeResult =
+        await empDb.getEmployeesFromBarber(widget.barberModel.id!);
+    setState(() {
       employees = employeeResult;
     });
 
     final servicesResult = await servicesDb.getServices();
     getServicesOnlyForThisBarber(servicesResult);
 
-    final workingHoursResult = await wHDb.getWorkingHourByBarberId(widget.barberModel.id!);
+    final workingHoursResult =
+        await wHDb.getWorkingHourByBarberId(widget.barberModel.id!);
     placingTheWorkingHours(workingHoursResult);
 
     checkIfFavorite();
   }
 
   void getAssessmentOnlyForThisBarber(List<AssessmentModel> result) {
-    for(var element in result){
-      if(element.barberId == widget.barberModel.id){
+    for (var element in result) {
+      if (element.barberId == widget.barberModel.id) {
         assessments.add(element);
       }
     }
-    setState((){
+    setState(() {
       assessments = assessments;
     });
-
   }
 
   void getServicesOnlyForThisBarber(List<ServiceModel> result) {
-    for(var element in result){
-      if(element.barberId == widget.barberModel.id){
+    for (var element in result) {
+      if (element.barberId == widget.barberModel.id) {
         services.add(element);
       }
     }
 
-    for(var element in services){
-      if(element.gender!){
-        if(!menServicesByCategories.containsKey(element.category)){
+    for (var element in services) {
+      if (element.gender!) {
+        if (!menServicesByCategories.containsKey(element.category)) {
           element.selected = false;
           List<ServiceModel> thisList = [element];
           menServicesByCategories[element.category!] = thisList;
-        }else{
-          element.selected =false;
+        } else {
+          element.selected = false;
           menServicesByCategories[element.category]?.add(element);
         }
-      }else{
-        if(!womenServicesByCategories.containsKey(element.category)){
-          element.selected =false;
+      } else {
+        if (!womenServicesByCategories.containsKey(element.category)) {
+          element.selected = false;
           List<ServiceModel> thisList = [element];
           womenServicesByCategories[element.category!] = thisList;
-        }else{
-          element.selected =false;
+        } else {
+          element.selected = false;
           womenServicesByCategories[element.category]?.add(element);
         }
       }
-
     }
-
   }
 
   void placingTheWorkingHours(List<WorkingHoursModel> workingHoursResult) {
-    setState((){
+    setState(() {
       workingHoursList = workingHoursResult;
-      for(var w in workingHoursResult){
-        if(w.type=="shp"){
-          workingHoursInWeek[w.day!]=w;
+      for (var w in workingHoursResult) {
+        if (w.type == "shp") {
+          workingHoursInWeek[w.day!] = w;
         }
       }
-      areWorkingHoursLoaded =true;
+      areWorkingHoursLoaded = true;
     });
 
     writingDownWorkingHours();
   }
 
   void writingDownWorkingHours() {
-      setState((){
-        mondayTime = formateTime(workingHoursInWeek['mon']!.open!.hour, workingHoursInWeek['mon']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['mon']!.close!.hour, workingHoursInWeek['mon']!.open!.minute, null);
-        tuesdayTime = formateTime(workingHoursInWeek['tue']!.open!.hour, workingHoursInWeek['tue']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['tue']!.close!.hour, workingHoursInWeek['tue']!.open!.minute, null);
-        wednesdayTime = formateTime(workingHoursInWeek['wed']!.open!.hour, workingHoursInWeek['wed']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['wed']!.close!.hour, workingHoursInWeek['wed']!.open!.minute, null);
-        thursdayTime = formateTime(workingHoursInWeek['thu']!.open!.hour, workingHoursInWeek['thu']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['thu']!.close!.hour, workingHoursInWeek['thu']!.open!.minute, null);
-        fridayTime = formateTime(workingHoursInWeek['fri']!.open!.hour, workingHoursInWeek['fri']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['fri']!.close!.hour, workingHoursInWeek['fri']!.open!.minute, null);
-        saturdayTime = formateTime(workingHoursInWeek['sat']!.open!.hour, workingHoursInWeek['sat']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['sat']!.close!.hour, workingHoursInWeek['sat']!.open!.minute, null);
-        sundayTime = formateTime(workingHoursInWeek['sun']!.open!.hour, workingHoursInWeek['sun']!.open!.minute, null)+" - "+ formateTime(workingHoursInWeek['sun']!.close!.hour, workingHoursInWeek['sun']!.open!.minute, null);
-      });
+    setState(() {
+      mondayTime = formateTime(workingHoursInWeek['mon']!.open!.hour,
+              workingHoursInWeek['mon']!.open!.minute, null) +
+          " - " +
+          formateTime(workingHoursInWeek['mon']!.close!.hour,
+              workingHoursInWeek['mon']!.open!.minute, null);
+      tuesdayTime = formateTime(workingHoursInWeek['tue']!.open!.hour,
+              workingHoursInWeek['tue']!.open!.minute, null) +
+          " - " +
+          formateTime(workingHoursInWeek['tue']!.close!.hour,
+              workingHoursInWeek['tue']!.open!.minute, null);
+      wednesdayTime = formateTime(workingHoursInWeek['wed']!.open!.hour,
+              workingHoursInWeek['wed']!.open!.minute, null) +
+          " - " +
+          formateTime(workingHoursInWeek['wed']!.close!.hour,
+              workingHoursInWeek['wed']!.open!.minute, null);
+      thursdayTime = formateTime(workingHoursInWeek['thu']!.open!.hour,
+              workingHoursInWeek['thu']!.open!.minute, null) +
+          " - " +
+          formateTime(workingHoursInWeek['thu']!.close!.hour,
+              workingHoursInWeek['thu']!.open!.minute, null);
+      fridayTime = formateTime(workingHoursInWeek['fri']!.open!.hour,
+              workingHoursInWeek['fri']!.open!.minute, null) +
+          " - " +
+          formateTime(workingHoursInWeek['fri']!.close!.hour,
+              workingHoursInWeek['fri']!.open!.minute, null);
+      saturdayTime = formateTime(workingHoursInWeek['sat']!.open!.hour,
+              workingHoursInWeek['sat']!.open!.minute, null) +
+          " - " +
+          formateTime(workingHoursInWeek['sat']!.close!.hour,
+              workingHoursInWeek['sat']!.open!.minute, null);
+      sundayTime = formateTime(workingHoursInWeek['sun']!.open!.hour,
+              workingHoursInWeek['sun']!.open!.minute, null) +
+          " - " +
+          formateTime(workingHoursInWeek['sun']!.close!.hour,
+              workingHoursInWeek['sun']!.open!.minute, null);
+    });
   }
 
   Future<void> checkIfFavorite() async {
     isFavorite = await isBarberFavorite(widget.barberModel.id!);
-    setState((){
+    setState(() {
       isFavorite = isFavorite;
     });
   }
@@ -962,19 +1106,18 @@ class _BarberScreenState extends State<BarberScreen> {
     //BURADAN DEVAAAAAAMMM
     FavoritesDatabase favDb = FavoritesDatabase();
     favDb.negateIt(widget.barberModel.id!);
-    setState((){
-      isFavorite=!isFavorite;
+    setState(() {
+      isFavorite = !isFavorite;
     });
   }
-
-
 }
 
-class CustomDialog extends StatefulWidget{
+class CustomDialog extends StatefulWidget {
   final List<ServiceModel> selectedServicesPop = [];
 
-  CustomDialog(List<ServiceModel> selectedServices, {Key? key}) : super(key: key){
-    for(var i in selectedServices){
+  CustomDialog(List<ServiceModel> selectedServices, {Key? key})
+      : super(key: key) {
+    for (var i in selectedServices) {
       selectedServicesPop.add(i);
     }
   }
@@ -997,8 +1140,7 @@ class _CustomDialogState extends State<CustomDialog> {
                 style: TextStyle(
                     fontSize: 20,
                     fontFamily: primaryFontFamily,
-                    color: primaryColor
-                ),
+                    color: primaryColor),
               ),
               Container(
                 height: 300,
@@ -1007,22 +1149,26 @@ class _CustomDialogState extends State<CustomDialog> {
                   itemCount: widget.selectedServicesPop.length,
                   itemBuilder: (context, index) => OutlinedButton(
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateColor.resolveWith((states) => primaryColor),
-                        overlayColor: MaterialStateColor.resolveWith((states) => secondaryColor),
+                        backgroundColor: MaterialStateColor.resolveWith(
+                            (states) => primaryColor),
+                        overlayColor: MaterialStateColor.resolveWith(
+                            (states) => secondaryColor),
                       ),
-                      onPressed: (){
-                        setState((){
-                          widget.selectedServicesPop.remove(widget.selectedServicesPop[index]);//TODO: Service becomes -1 even if cancled
+                      onPressed: () {
+                        setState(() {
+                          widget.selectedServicesPop.remove(widget
+                                  .selectedServicesPop[
+                              index]); //TODO: Service becomes -1 even if cancled
                         });
                       },
                       child: ListTile(
                         title: Text(
-                          (index+1).toString()+". ${widget.selectedServicesPop[index].name}",
+                          (index + 1).toString() +
+                              ". ${widget.selectedServicesPop[index].name}",
                           style: TextStyle(
                               fontSize: 16,
                               fontFamily: secondaryFontFamily,
-                              color: Colors.white
-                          ),
+                              color: Colors.white),
                         ),
                         trailing: Text(
                           "₺${widget.selectedServicesPop[index].price}",
@@ -1032,33 +1178,25 @@ class _CustomDialogState extends State<CustomDialog> {
                             color: Colors.white,
                           ),
                         ),
-                      )
-                  ),
+                      )),
                 ),
               ),
               Row(
                 children: [
                   ElevatedButton(
-                      onPressed: (){
+                      onPressed: () {
                         Navigator.pop(context, null);
                       },
-                      child: Text(
-                        "IPTAL"
-                      )
-                  ),
+                      child: Text("IPTAL")),
                   ElevatedButton(
-                      onPressed: (){
+                      onPressed: () {
                         Navigator.pop(context, widget.selectedServicesPop);
                       },
-                      child: Text(
-                          "TAMAM"
-                      )
-                  ),
+                      child: Text("TAMAM")),
                 ],
               )
             ],
-          )
-      ),
+          )),
     );
   }
 }

@@ -23,9 +23,9 @@ class _SelectAddressState extends State {
   String titleCity = "Sehir";
   String titleDistrict = "Ilce";
 
-  String countryValue="";
-  String selectedCity="Tümü";
-  String selectedDistrict="Tümü";
+  String? countryValue;
+  String? selectedCity;
+  String? selectedDistrict;
   bool isCitySelected = false;
 
   Map<String,List<String>> data = {};
@@ -159,7 +159,7 @@ class _SelectAddressState extends State {
                 Row(
                   children: [
                     Text(
-                      selectedCity,
+                      selectedCity==null?"TÜMÜ":selectedCity!,
                       style: TextStyle(
                           fontSize: 14,
                           fontFamily: secondaryFontFamily,
@@ -216,7 +216,7 @@ class _SelectAddressState extends State {
                       Row(
                         children: [
                           Text(
-                            selectedDistrict,
+                            selectedDistrict==null?"TÜMÜ":selectedDistrict!,
                             style: TextStyle(
                                 fontSize: 14,
                                 fontFamily: secondaryFontFamily,
@@ -340,7 +340,7 @@ class _SelectAddressState extends State {
   updateSelectedCity() {
     setState(() {
       selectedCity=selectedCity;
-      selectedDistrict="TÜMÜ";
+      selectedDistrict=null;
     });
     convertDistrictsToList();
   }

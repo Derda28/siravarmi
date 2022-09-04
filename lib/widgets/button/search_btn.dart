@@ -1,51 +1,54 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:siravarmi/screens/barberList_screen.dart';
 
-import '../../screens/barberList_screen.dart';
-import '../../screens/barber_screen.dart';
 import '../../utilities/consts.dart';
 
-class SearchBtn{
-  Widget build({required double height,double? topMargin, required BuildContext btnClick, required String whichScreen}){
+class SearchBtn extends StatelessWidget {
+  const SearchBtn({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      height: height,
-      width: screenWidth!*350/designWidth,
-      margin: EdgeInsets.only(
-          top: topMargin??0),
-      child: OutlinedButton(
+        height: getSize(50),
+        width: getSize(350),
+        margin: EdgeInsets.only(top: 15),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: ElevatedButton(
           style: ButtonStyle(
-            animationDuration: Duration(milliseconds: 100),
             backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
+            overlayColor: MaterialStateColor.resolveWith((states) => fontColor.withOpacity(0.1))
           ),
-          onPressed: () => whichScreenNavigate(btnClick, whichScreen),
+          onPressed: (){btnIsClicked(context);},
           child: Stack(
-            children: const [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Icon(
-                  Icons.search,
-                  color: fontColor,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                      child: Icon(
+                        Icons.search_rounded,
+                        color: fontColor,
+                      )
+                  ),
                 ),
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  "Berber bul",
-                  style: TextStyle(color: fontColor),
+                Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Berber bul",
+                    style: TextStyle(
+                      fontSize: getSize(14),
+                      color: fontColor,
+                    ),
+                  ),
                 ),
-              )
-            ],
-          )
-      ),
-    );
+          ]),
+        ));
   }
 
-  whichScreenNavigate(btnClick, String whichScreen) {
-    switch(whichScreen){
-      case "list":
-        return Navigator.push(btnClick, MaterialPageRoute(builder: (context)=>BarberListScreen()));
-        break;
-      default: print("No Screen Selected!");
-    }
+  void btnIsClicked(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>BarberListScreen(whichBtn: "search",)));
   }
 }

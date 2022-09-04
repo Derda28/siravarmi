@@ -28,10 +28,8 @@ class HomeScreenBtn {
         }){
     return Container(
         margin: EdgeInsets.only(
-            top: btnTopMargin ?? 0,
-            left: btnLeftMargin ?? 0,
-            right: btnRightMargin ?? 0,
-            bottom: btnBottomMargin ?? 0),
+            top: getSize(15),
+            right: 0,),
         height: btnHeigth,
         width: btnWidth,
         padding: EdgeInsets.only(bottom : btnBottomPadding??0),
@@ -49,7 +47,7 @@ class HomeScreenBtn {
             animationDuration: Duration(milliseconds: 100),
 
           ),
-          onPressed: () => Navigator.push(btnClick, MaterialPageRoute(builder: (context) => BarberListScreen())),
+          onPressed: () => Navigator.push(btnClick, MaterialPageRoute(builder: (context) => BarberListScreen(whichBtn: 'regular',))),
           child: Stack(
             children: [
               Container(

@@ -40,22 +40,10 @@ class SortPopupScreen extends StatelessWidget{
                 thickness: 0.2,
               ),
 
-              //SIKINTII!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-              RadioListTile(
-                value: "gelismis",
-                title: Text("Gelismis", style: TextStyle(fontSize: 12),),
-                groupValue: sortType,
-                activeColor: primaryColor,
-                onChanged: (val) {
-                  Navigator.pop(context, val);
-                },
-
-              ),
               RadioListTile(
                   value: "Fiyata göre>",
                   groupValue: sortType,
-                  title: Text("A", style: TextStyle(fontSize: 12),),
+                  title: Text("Fiyata göre (önce en pahalisi)", style: TextStyle(fontSize: 12),),
                   activeColor: primaryColor,
                   onChanged: (val){
                     Navigator.pop(context, val);
@@ -63,7 +51,7 @@ class SortPopupScreen extends StatelessWidget{
               RadioListTile(
                   value: "Fiyata göre<",
                   groupValue: sortType,
-                  title: Text("B", style: TextStyle(fontSize: 12),),
+                  title: Text("Fiyata göre (önce en ucuzu)", style: TextStyle(fontSize: 12),),
                   activeColor: primaryColor,
                   onChanged: (val){
                     Navigator.pop(context, val);
@@ -71,7 +59,7 @@ class SortPopupScreen extends StatelessWidget{
               RadioListTile(
                   value: "Tarihe göre>",
                   groupValue: sortType,
-                  title: Text("C", style: TextStyle(fontSize: 12),),
+                  title: Text("Tarihe Göre (önce en eskisi)", style: TextStyle(fontSize: 12),),
                   activeColor: primaryColor,
                   onChanged: (val){
                     Navigator.pop(context, val);
@@ -79,42 +67,27 @@ class SortPopupScreen extends StatelessWidget{
               RadioListTile(
                   value: "Tarihe göre<",
                   groupValue: sortType,
-                  title: Text("D", style: TextStyle(fontSize: 12),),
+                  title: Text("Tarihe Göre (önce en yenisi)", style: TextStyle(fontSize: 12),),
                   activeColor: primaryColor,
                   onChanged: (val){
                     Navigator.pop(context, val);
-                  })
-              /*SortPopupBtn(value: "gelismis", title: "Gelismis"),
-              const Divider(
-                color: Colors.white,
-                thickness: 0.2,
-              ),
-              SortPopupBtn(value: "fiyatY", title: "Fiyata göre (Önce en yüksek)"),
-              const Divider(
-                color: Colors.white,
-                thickness: 0.2,
-              ),
-              SortPopupBtn(value: "fiyatD", title: "Fiyata göre (Önce en düsük)"),
-              const Divider(
-                color: Colors.white,
-                thickness: 0.2,
-              ),
-              SortPopupBtn(value: "tarihE", title: "Tarihe göre (Önce en erken)"),
-              const Divider(
-                color: Colors.white,
-                thickness: 0.2,
-              ),
-              SortPopupBtn(value: "tarihG", title: "Tarihe göre (Önce en gec)"),
-              const Divider(
-                color: Colors.white,
-                thickness: 0.2,
-              ),
-              SortPopupBtn(value: "a-z", title: "Isime göre (A-Z)"),
-              const Divider(
-                color: Colors.white,
-                thickness: 0.2,
-              ),
-              SortPopupBtn(value: "z-a", title: "Isime göre (Z-A)"),*/
+                  }),
+              RadioListTile(
+                  value: "Degerlendirmeye göre>",
+                  groupValue: sortType,
+                  title: Text("Degerlendirmeye Göre (önce en yüksek)", style: TextStyle(fontSize: 12),),
+                  activeColor: primaryColor,
+                  onChanged: (val){
+                    Navigator.pop(context, val);
+                  }),
+              RadioListTile(
+                  value: "Degerlendirmeye göre<",
+                  groupValue: sortType,
+                  title: Text("Degerlendirmeye Göre (önce en düsük)", style: TextStyle(fontSize: 12),),
+                  activeColor: primaryColor,
+                  onChanged: (val){
+                    Navigator.pop(context, val);
+                  }),
             ],
           ),
         ),

@@ -2,11 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:siravarmi/utilities/consts.dart';
 
 import '../routes/hero_dialog_route.dart';
 import '../widgets/button/filter_btn.dart';
-import 'select_address_popup_screen.dart';
+import '../widgets/popups/select_address_popup_screen.dart';
 
 class SelectAddressScreen extends StatefulWidget {
   const SelectAddressScreen({Key? key}) : super(key: key);
@@ -60,7 +61,9 @@ class _SelectAddressState extends State {
       actions: [
         IconButton(
           icon : Icon(Icons.gps_fixed),
-          onPressed: (){},
+          onPressed: (){
+            locationBtnIsClicked();
+          },
         )
       ],
     );
@@ -359,6 +362,10 @@ class _SelectAddressState extends State {
 
   void confirmBtnIsClicked(BuildContext context) {
     Navigator.pop(context, {'city' : selectedCity, 'district' : selectedDistrict});
+  }
+
+  void locationBtnIsClicked() {
+    Geolocator
   }
 
 

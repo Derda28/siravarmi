@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siravarmi/routes/hero_dialog_route.dart';
-import 'package:siravarmi/screens/select_address_popup_screen.dart';
+import 'package:siravarmi/widgets/popups/select_address_popup_screen.dart';
 
 import '../../utilities/consts.dart';
 

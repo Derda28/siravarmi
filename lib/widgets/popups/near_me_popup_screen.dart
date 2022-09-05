@@ -26,16 +26,15 @@ class _NearMePopupState extends State{
         shape:
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.only(left: getSize(10), right: getSize(10), top: getSize(10)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Row(
                 children: [
                   Icon(Icons.location_on_outlined, color: primaryColor),
-                  Divider(
-                    indent:2.5,
-                    endIndent: 2.5,
+                  SizedBox(
+                    width: getSize(10),
                   ),
                   Text(
                     "Yakinimda ara",
@@ -46,18 +45,15 @@ class _NearMePopupState extends State{
                     ),)
                 ],
               ),
-              const Divider(
-                color: Colors.white,
-                thickness: 0.2,
+              SizedBox(
+                height: getSize(10),
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     Icons.house,
                     color: fontColor,
-                    size: 40,
+                    size: getSize(40),
                   ),
                   SfSlider(
                       value: _distance ?? 25.0,
@@ -70,7 +66,6 @@ class _NearMePopupState extends State{
                       min: 0,
                       showTicks: true,
                       showLabels: false,
-
                       onChanged: (newDistance){
                         setState((){
                           _distance = newDistance;
@@ -80,7 +75,7 @@ class _NearMePopupState extends State{
                   Icon(
                     Icons.location_on,
                     color: fontColor,
-                    size: 40,
+                    size: getSize(40),
                   )
                 ],
               ),
@@ -89,17 +84,30 @@ class _NearMePopupState extends State{
                 children: [
                   TextButton(
                       onPressed: () {
-                        btnIsClicked(context);
+                        btnIsClicked(context, false);
+                      },
+                      child: Text(
+                        "IPTAL",
+                        style: TextStyle(
+                            fontFamily: primaryFontFamily,
+                            fontSize: getSize(18),
+                            color: primaryColor
+                        ),
+                      )
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        btnIsClicked(context, true);
                       },
                       child: Text(
                         "TAMAM",
                         style: TextStyle(
                           fontFamily: primaryFontFamily,
-                          fontSize: 18,
+                          fontSize: getSize(18),
                           color: primaryColor
                         ),
                       )
-                  )
+                  ),
                 ],
               )
 
@@ -111,12 +119,16 @@ class _NearMePopupState extends State{
     );
   }
 
-  void btnIsClicked(BuildContext context) {
-    if(_distance==null){
-      Navigator.pop(context);
+  void btnIsClicked(BuildContext context, bool isOk) {
+    if(isOk){
+      if(_distance==null){
+        Navigator.pop(context);
+      }else{
+        int result = _distance!.toInt();
+        Navigator.pop(context, result);
+      }
     }else{
-      int result = _distance!.toInt();
-      Navigator.pop(context, result);
+      Navigator.pop(context);
     }
   }
 

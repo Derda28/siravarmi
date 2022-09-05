@@ -22,7 +22,7 @@ class BarberListScreen extends StatefulWidget {
 
 class _BarberListState extends State<BarberListScreen> {
   String sortType = "Tarihe göre<";
-  double _panelHeightOpen = getSize(550);
+  final double _panelHeightOpen = getSize(320);
   final double _panelHeightClosed = 0;
   final panelController = PanelController();
   TextEditingController searchTextController = TextEditingController();
@@ -57,7 +57,6 @@ class _BarberListState extends State<BarberListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _panelHeightOpen = screenHeight! * 0.35;
     return Scaffold(
         appBar: AppBar(
           title: Text("Sira Var Mi"),
@@ -77,22 +76,24 @@ class _BarberListState extends State<BarberListScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-            height: 50,
-            width: screenWidth! * 350 / designWidth,
+            height: getSize(50),
+            width: getSize(350),
             margin: EdgeInsets.only(top: 15),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Stack(children: [
+            child: Stack(
+                children: [
               Container(
-                  padding: EdgeInsets.only(left: 13, top: 13),
+                margin: EdgeInsets.only(left: getSize(10)),
+                alignment: Alignment.centerLeft,
                   child: Icon(
                     Icons.search_rounded,
                     color: fontColor,
                   )),
               Container(
-                padding: EdgeInsets.only(left: 50, bottom: 10, right: 50),
+                margin: EdgeInsets.only(left: getSize(50), bottom: getSize(11)),
                 child: TextField(
                   focusNode: focusNode,
                   controller: searchTextController,
@@ -101,10 +102,10 @@ class _BarberListState extends State<BarberListScreen> {
                       hintText: 'Arama yap',
                       hintStyle: TextStyle(
                         color: fontColor,
-                        fontSize: 12,
+                        fontSize: getSize(12),
                       )),
                   style:
-                  TextStyle(fontSize: 14, fontFamily: secondaryFontFamily),
+                  TextStyle(fontSize: getSize(14), fontFamily: secondaryFontFamily),
                   onChanged: (searchText) {
                     searchFor(searchText);
                   },
@@ -159,7 +160,7 @@ class _BarberListState extends State<BarberListScreen> {
   buildList() {
     return Padding(
       padding: EdgeInsets.only(
-          top: getSize(130),
+          top: getSize(150),
           bottom: getSize(10),
           left: getSize(30),
           right: getSize(30)),
@@ -215,7 +216,7 @@ class _BarberListState extends State<BarberListScreen> {
       parallaxEnabled: true,
       parallaxOffset: .5,
       backdropEnabled: true,
-      padding: EdgeInsets.only(top: 30, left: 30, right: 30, bottom: 20),
+      padding: EdgeInsets.only(top: 20, left: 30, right: 30),
       panelBuilder: (sc) => buildBodyOfSUP(context),
       color: Colors.white,
       borderRadius: BorderRadius.only(
@@ -462,11 +463,9 @@ class _BarberListState extends State<BarberListScreen> {
     final result =
         await showDialog(context: context, builder: (_) => NearMePopupScreen());
 
-    if (result != null) {
-      setState(() {
-        distance = result;
-      });
-    }
+    setState(() {
+      distance = result;
+    });
   }
 
   Future<void> priceBtnClicked(BuildContext context) async {

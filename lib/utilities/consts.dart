@@ -2,6 +2,7 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:siravarmi/cloud_functions/favorites_database.dart';
 import 'package:siravarmi/models/favorite_model.dart';
 
@@ -84,6 +85,34 @@ isBarberFavorite(int barberId) async {
   }else{
     return false;
   }
+}
+
+Future<LocationPermission> determinePosition() async {
+  LocationPermission permission;
+
+  permission = await Geolocator.checkPermission();
+
+  if(permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if(permission == LocationPermission.denied) {
+      return Future.error('Location Permissions are denied');
+    }
+  }
+
+  return permission;
+}
+
+Future<Position?> getLocation () async {
+  LocationPermission permission = await determinePosition();
+  Position? position;
+  if(permission!=LocationPermission.denied){
+    //Getting Position
+    position = await Geolocator.getCurrentPosition();
+
+
+  }
+
+  return position;
 }
 
 

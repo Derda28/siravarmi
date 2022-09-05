@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:siravarmi/utilities/consts.dart';
 
@@ -364,10 +365,32 @@ class _SelectAddressState extends State {
     Navigator.pop(context, {'city' : selectedCity, 'district' : selectedDistrict});
   }
 
-  void locationBtnIsClicked() {
-    Geolocator
+  Future<void> locationBtnIsClicked() async {
+    Position? position = await getLocation();
+    if(position!=null){
+      //Get Adress From Lat AND Long
+      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+
+      autoSelection(placemarks[2].administrativeArea.toString(), placemarks[2].subAdministrativeArea.toString());
+
+      /*for(var p in placemarks){
+        print("${p.toString()} \n \n");
+      }*/
+    }
+
   }
 
+  void autoSelection(String city, String district) {
+    selectedCity = city;
+    selectedDistrict = district;
+    isCitySelected = true;
+
+    setState(() {
+      isCitySelected = isCitySelected;
+      selectedCity = selectedCity;
+      selectedDistrict = selectedDistrict;
+    });
+  }
 
 
 }

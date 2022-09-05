@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:siravarmi/cloud_functions/barbers_database.dart';
 import 'package:siravarmi/models/barber_model.dart';
 import 'package:siravarmi/screens/select_address_screen.dart';
@@ -597,9 +599,30 @@ class _BarberListState extends State<BarberListScreen> {
     //Find a way to notificate the barberlistscreen that confirm btn is clicked in the sliding up panel
   }
 
-  void checkIfLocationIsNull() {
+  Future<void> checkIfLocationIsNull() async {
     if (distance != null) {
       //GET LOCATION AND GET ONLY BARBERS IN DISTANCE KM
+      Position? position = await getLocation();
+      if(position!=null){
+        //40.694597, 29.510561
+        double salonAsLat = 40.694597;
+        double salonAsLong = 29.510561;
+
+        String myAddress = "merkez mahallesi esentepe caddesi no 15 altinova yalova";
+
+        List<Location> locations = await locationFromAddress(myAddress);
+
+        double distance2 = Geolocator.distanceBetween(position.latitude, position.longitude, locations[0].latitude, locations[0].longitude);
+
+        print("Distance between Home and home : $distance2");
+
+        final double meter = Geolocator.distanceBetween(
+            position.latitude, position.longitude, salonAsLat, salonAsLong);
+
+        final double km = meter/1000;
+
+        print("Km : $km, Meter : $meter");
+      }
       setState(() {
         listItems = listItems;
       });

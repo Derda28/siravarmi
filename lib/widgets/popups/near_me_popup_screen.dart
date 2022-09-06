@@ -68,7 +68,9 @@ class _NearMePopupState extends State{
                       showLabels: false,
                       onChanged: (newDistance){
                         setState((){
-                          _distance = newDistance;
+                          double d = newDistance;
+                          String number = d.toStringAsFixed(0);
+                          _distance = double.tryParse(number);
                         });
                       }
                   ),
@@ -124,7 +126,7 @@ class _NearMePopupState extends State{
       if(_distance==null){
         Navigator.pop(context);
       }else{
-        int result = _distance!.toInt();
+        double result = _distance!;
         Navigator.pop(context, result);
       }
     }else{

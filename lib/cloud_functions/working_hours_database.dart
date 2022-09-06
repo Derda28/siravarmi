@@ -93,4 +93,9 @@ class WorkingHoursDatabase{
       }
     }
   }
+
+  deleteTables() async {
+    if(database==null)await open();
+    await database!.delete(workingHoursTableName);
+  }
 }

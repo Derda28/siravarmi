@@ -92,4 +92,9 @@ class UsersDatabase {
   Future close() async {
     database!.close();
   }
+
+  deleteTables() async {
+    if(database==null)await open();
+    await database!.delete(usersTableName);
+  }
 }

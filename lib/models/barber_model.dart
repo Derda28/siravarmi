@@ -28,7 +28,7 @@ class BarberModel{
   BarberModel.fromJson(Map json){
     id = json['id'];
     name = json['name'];
-    address = json['address'];
+    address = json['location'];
     minPrice = json['minPrice'];
     profileURL = json['profileUrl'];
     phoneNumber = json['phoneNumber'];

@@ -67,4 +67,10 @@ class ServicesDatabase {
   Future close() async {
 
   }
+
+  deleteTables() async {
+    if(database==null)await open();
+    await database!.delete(servicesTableName);
+  }
+
 }

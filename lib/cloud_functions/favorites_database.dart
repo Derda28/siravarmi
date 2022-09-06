@@ -99,4 +99,9 @@ class FavoritesDatabase {
   Future close() async {
 
   }
+
+  deleteTables() async {
+    if(database==null)await open();
+    await database!.delete(favoritesTableName);
+  }
 }

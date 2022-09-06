@@ -20,6 +20,18 @@ class DbHelperHttp {
     return data;
   }
 
+  /*Future isThereBarberWithId(int barberId) async {
+    var url =
+    Uri.parse('https://yadetemizlik.com/isThereBarberWithId.php');
+    http.Response response = await http.post(url, body: {
+      'barberId' : barberId.toString(),
+    });
+
+    var data = jsonDecode(response.body);
+
+    return data;
+  }*/
+
   Future<LinkedHashMap<String, dynamic>> tryLogin(
       String mail, String pass) async {
     String url = 'https://yadetemizlik.com/login.php';

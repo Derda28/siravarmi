@@ -26,4 +26,6 @@ class DbHelperMySql {
         ['Bob', 'bob@bob.com', 25]);
     print('Inserted row id=${result.insertId}');
   }
+
+
 }

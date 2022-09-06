@@ -79,4 +79,9 @@ class EmployeesDatabase {
 
     }
   }
+
+  deleteTables() async {
+    if(database==null)await open();
+    await database!.delete(employeesTableName);
+  }
 }

@@ -37,7 +37,7 @@ class HomeScreen extends StatefulWidget {
   }
 }
 
-class _HomeScreenState extends State {
+class _HomeScreenState extends State{
 
   List<AppointmentModel>? commingAppointments;
   List<BarberModel>? barbers;
@@ -48,12 +48,6 @@ class _HomeScreenState extends State {
   void initState() {
     super.initState();
     loadData();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    //closeData();
   }
 
   @override
@@ -119,13 +113,8 @@ class _HomeScreenState extends State {
             )
         ),
         areDataLoaded?Padding(
-                padding: EdgeInsets.only(top: getSize(15)),
-                  child: commingAppointments!.length==1?AppointmentListItem(
-                    itemHeigth: getSize(60),
-                    itemWidth: getSize(350),
-                    itemBgColor: Colors.white,
-                    profileHeigth: 50,
-                    profileWidth: 50,
+                padding: EdgeInsets.only(top: getSize(75)),
+                  child: commingAppointments!.isNotEmpty?AppointmentListItem(
                     date: getDate(commingAppointments![0].dateTime!),
                     time: getTime(commingAppointments![0].dateTime!),
                     itemClicked: (){
@@ -134,7 +123,10 @@ class _HomeScreenState extends State {
                     },
                     barberModel: getBarberById(commingAppointments![0].barberId),
                   ):SizedBox(width: getSize(5),),
-                ):Text("LOADING..."),
+                ):Padding(
+                    padding: EdgeInsets.only(top: getSize(75), left: getSize(30)),
+                  child: Text("LOADING..."),
+                ),
       ],
     );
   }
@@ -150,14 +142,23 @@ class _HomeScreenState extends State {
     WorkingHoursDatabase wHDb = WorkingHoursDatabase();
 
 
-    appDb.getAppointmentsFromMySql(user.id!);
-    assDb.getAssessmentsFromMySql();
-    barbersDb.getBarbersFromMysql();
-    empDb.getEmployeesFromMysql();
-    favDb.getFavoritesFromMysql();
-    servicesDb.getEmployeesFromMysql();
-    usersDb.getUsersFromMySql();
-    wHDb.getWorkingHoursFromMysql();
+    await appDb.deleteTables();
+    await assDb.deleteTables();
+    await barbersDb.deleteTables();
+    await empDb.deleteTables();
+    await favDb.deleteTables();
+    await servicesDb.deleteTables();
+    await usersDb.deleteTables();
+    await wHDb.deleteTables();
+
+    await appDb.getAppointmentsFromMySql(user.id!);
+    await assDb.getAssessmentsFromMySql();
+    await barbersDb.getBarbersFromMysql();
+    await empDb.getEmployeesFromMysql();
+    await favDb.getFavoritesFromMysql();
+    await servicesDb.getEmployeesFromMysql();
+    await usersDb.getUsersFromMySql();
+    await wHDb.getWorkingHoursFromMysql();
 
     favorites = await favDb.getFavorites();
 
@@ -170,8 +171,6 @@ class _HomeScreenState extends State {
     });
   }
 
-  void closeData() {
-  }
 
   getBarberById(int? barberId) {
     for(var barber in barbers!) {

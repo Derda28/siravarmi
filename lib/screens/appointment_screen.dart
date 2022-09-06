@@ -51,7 +51,7 @@ class _AppointmentState extends State {
   @override
   void initState() {
     super.initState();
-    if(isLoggedIn){
+    if (isLoggedIn) {
       loadAppointments();
       loadBarbers();
     }
@@ -64,51 +64,52 @@ class _AppointmentState extends State {
 
   @override
   Widget build(BuildContext context) {
-    return isLoggedIn?Scaffold(
-      appBar: Appbar(
-        label: "Randevular",
-        labelHome: "",
-        fromHome: false,
-      ),
-      body: buildSUP(),
-      bottomNavigationBar: Navbar(1, context),
-    ):
-    Scaffold(
-      appBar: Appbar(label: "Randevular", fromHome: false, labelHome: ""),
-      body: Text("Giris Yapin"),
-      bottomNavigationBar: Navbar(1, context),
-    );
+    return isLoggedIn
+        ? Scaffold(
+            appBar: Appbar(
+              label: "Randevular",
+              labelHome: "",
+              fromHome: false,
+            ),
+            body: buildSUP(),
+            bottomNavigationBar: Navbar(1, context),
+          )
+        : Scaffold(
+            appBar: Appbar(label: "Randevular", fromHome: false, labelHome: ""),
+            body: Text("Giris Yapin"),
+            bottomNavigationBar: Navbar(1, context),
+          );
   }
 
   buildSUP() {
-    return areAppointmentsLoaded?SlidingUpPanel(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            buildComingTxt(),
-            buildComingAppointment(),
-            buildLastTxt(),
-            buildLastAppointments(),
-          ],
-        ),
-      ),
-      backdropEnabled: true,
-      color: Colors.white,
-      borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(50), topRight: Radius.circular(50)),
-      maxHeight: 650,
-      minHeight: 0,
-      controller: panelController,
-      /*body: _body(),*/
-      panelBuilder: (sc) => AppointmentSlidingUpPanel(
-        scrollController: sc,
-        isLastAppointment: isLastAppointment,
-        appointment: selectedAppointment,
-        barber : selectedBarber,
-        employee : selectedEmployee,
-        assessment : selectedAssessment,
-      ),
-    ):Text("Yükleniyor...");
+    return areAppointmentsLoaded
+        ? SlidingUpPanel(
+            body: ListView(
+              children: [
+                //buildComingTxt(),
+                buildComingAppointment(),
+                //buildLastTxt(),
+                //buildLastAppointments(),
+              ],
+            ),
+            backdropEnabled: true,
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(50), topRight: Radius.circular(50)),
+            maxHeight: 650,
+            minHeight: 0,
+            controller: panelController,
+            /*body: _body(),*/
+            panelBuilder: (sc) => AppointmentSlidingUpPanel(
+              scrollController: sc,
+              isLastAppointment: isLastAppointment,
+              appointment: selectedAppointment,
+              barber: selectedBarber,
+              employee: selectedEmployee,
+              assessment: selectedAssessment,
+            ),
+          )
+        : Text("Yükleniyor...");
   }
 
   buildComingTxt() {
@@ -131,34 +132,61 @@ class _AppointmentState extends State {
   }
 
   buildComingAppointment() {
-    return areAppointmentsLoaded?SizedBox(
-      height: getSize((65 * commingAppointments.length.toDouble())),
-      child: ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: commingAppointments.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.only(top: getSize(5)),
-            child: AppointmentListItem(
-              itemHeigth: 60,
-              itemWidth: 350,
-              itemBgColor: Colors.white,
-              profileHeigth: 50,
-              profileWidth: 50,
-              date: getDate(commingAppointments[index].dateTime!),
-              time: getTime(commingAppointments[index].dateTime!),
-              itemClicked: (){
-                setState((){
-                  isLastAppointment = false;
-                });
-                return itemClicked(index);
+    return areAppointmentsLoaded
+        ? SizedBox(
+            height: getSize(715),
+            child: ListView.builder(
+              physics: PageScrollPhysics(),
+              itemCount: commingAppointments.length+lastAppointments.length+2,
+              itemBuilder: (context, index) {
+                if(index==0){
+                 return buildComingTxt();
+                }
+                int index3 = index-1;
+                if(index<commingAppointments.length+1){
+                  return Padding(
+                    padding: EdgeInsets.only(top: getSize(5)),
+                    child: AppointmentListItem(
+                      date: getDate(commingAppointments[index3].dateTime!),
+                      time: getTime(commingAppointments[index3].dateTime!),
+                      itemClicked: () {
+                        setState(() {
+                          isLastAppointment = false;
+                        });
+                        return itemClicked(index3);
+                      },
+                      barberModel:
+                      getBarberById(commingAppointments[index3].barberId),
+                    ),
+                  );
+                }else{
+                  if(index==commingAppointments.length+1){
+
+                  }else{
+                    int index2 = (index-commingAppointments.length-2);
+                    return Padding(
+                      padding: EdgeInsets.only(top: getSize(5)),
+                      child: AppointmentListItem(
+                        date: getDate(lastAppointments[index2].dateTime!),
+                        time: getTime(lastAppointments[index2].dateTime!),
+                        itemClicked: () {
+                          setState(() {
+                            isLastAppointment = true;
+                          });
+                          return itemClicked(index2);
+                        },
+                        barberModel:
+                        getBarberById(lastAppointments[index2].barberId),
+                      ),
+                    );
+                  }
+                  return buildLastTxt();
+
+                }
               },
-              barberModel: getBarberById(commingAppointments[index].barberId),
             ),
-          );
-        },
-      ),
-    ):Text("YÜKLENIYOR...");
+          )
+        : Text("YÜKLENIYOR...");
   }
 
   buildLastTxt() {
@@ -167,7 +195,8 @@ class _AppointmentState extends State {
       children: [
         Container(
           color: Colors.black12,
-          margin: EdgeInsets.only(left: getSize(25), top: getSize(10), bottom: getSize(5)),
+          margin: EdgeInsets.only(
+              left: getSize(25), top: getSize(10), bottom: getSize(5)),
           child: Text(
             lastAppointmentTxt,
             style: TextStyle(
@@ -181,63 +210,58 @@ class _AppointmentState extends State {
   }
 
   buildLastAppointments() {
-    return areAppointmentsLoaded?SizedBox(
-      height: getSize(65 * lastAppointments.length.toDouble()),
-      child: ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: lastAppointments.length,
-
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.only(top: getSize(5)),
-            child: AppointmentListItem(
-              itemHeigth: 60,
-              itemWidth: 350,
-              itemBgColor: Colors.white,
-              profileHeigth: 50,
-              profileWidth: 50,
-              date: getDate(lastAppointments[index].dateTime!),
-              time: getTime(lastAppointments[index].dateTime!),
-              itemClicked: (){
-                setState((){
-                  isLastAppointment = true;
-                });
-                return itemClicked(index);
+    return areAppointmentsLoaded
+        ? SizedBox(
+            height: getSize(65 * lastAppointments.length.toDouble()),
+            child: ListView.builder(
+              physics: PageScrollPhysics(),
+              itemCount: lastAppointments.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.only(top: getSize(5)),
+                  child: AppointmentListItem(
+                    date: getDate(lastAppointments[index].dateTime!),
+                    time: getTime(lastAppointments[index].dateTime!),
+                    itemClicked: () {
+                      setState(() {
+                        isLastAppointment = true;
+                      });
+                      return itemClicked(index);
+                    },
+                    barberModel:
+                        getBarberById(lastAppointments[index].barberId),
+                  ),
+                );
               },
-              barberModel: getBarberById(lastAppointments[index].barberId),
             ),
-          );
-        },
-      ),
-    ):Text("YÜKLENIYOR...");
+          )
+        : Text("YÜKLENIYOR...");
   }
 
-  Future<void> loadAppointments() async{
+  Future<void> loadAppointments() async {
     lastAppointments = await appDbHelper.getLastAppointments(user.id!);
     commingAppointments = await appDbHelper.getCommingAppointments(user.id!);
 
-    setState((){
+    setState(() {
       lastAppointments = lastAppointments;
       commingAppointments = commingAppointments;
       areAppointmentsLoaded = true;
     });
   }
 
-  Future<void> loadBarbers() async{
+  Future<void> loadBarbers() async {
     /*DbHelperHttp dbHelper = DbHelperHttp();*/
     BarbersDatabase barbersDbHelper = BarbersDatabase();
     final itemsData = barbersDbHelper.getBarbers();
     var result = await itemsData;
 
-    setState((){
+    setState(() {
       _barbers = result;
     });
   }
 
-
-
   Future<void> itemClicked(int index) async {
-    if(isLastAppointment){
+    if (isLastAppointment) {
       selectedAppointment = AppointmentModel(
           userId: lastAppointments[index].userId,
           dateTime: lastAppointments[index].dateTime,
@@ -245,10 +269,10 @@ class _AppointmentState extends State {
           barberId: lastAppointments[index].barberId,
           employeeId: lastAppointments[index].employeeId,
           id: lastAppointments[index].id,
-          totalPrice: lastAppointments[index].totalPrice
-      );
-      selectedAssessment = await assDbHelper.getAssessmentById(selectedAppointment!.assessmentId!);
-    }else{
+          totalPrice: lastAppointments[index].totalPrice);
+      selectedAssessment = await assDbHelper
+          .getAssessmentById(selectedAppointment!.assessmentId!);
+    } else {
       selectedAppointment = AppointmentModel(
           userId: commingAppointments[index].userId,
           dateTime: commingAppointments[index].dateTime,
@@ -256,11 +280,12 @@ class _AppointmentState extends State {
           barberId: commingAppointments[index].barberId,
           employeeId: commingAppointments[index].employeeId,
           id: commingAppointments[index].id,
-          totalPrice: commingAppointments[index].totalPrice
-      );
+          totalPrice: commingAppointments[index].totalPrice);
     }
-    selectedBarber = await barbersDbHelper.getBarberById(selectedAppointment!.barberId!);
-    selectedEmployee = await empDbHelper.getEmployeeById(selectedAppointment!.employeeId!);
+    selectedBarber =
+        await barbersDbHelper.getBarberById(selectedAppointment!.barberId!);
+    selectedEmployee =
+        await empDbHelper.getEmployeeById(selectedAppointment!.employeeId!);
     setState(() {
       selectedAppointment = selectedAppointment;
       selectedAssessment = selectedAssessment;
@@ -268,17 +293,17 @@ class _AppointmentState extends State {
       selectedBarber = selectedBarber;
     });
 
-    if(panelController.isPanelClosed){
+    if (panelController.isPanelClosed) {
       panelController.open();
-    }else{
+    } else {
       panelController.close();
     }
   }
 
   getBarberById(int? barberId) {
     BarberModel? res;
-    for(var value in _barbers){
-      if(value.id==barberId){
+    for (var value in _barbers) {
+      if (value.id == barberId) {
         res = value;
       }
     }

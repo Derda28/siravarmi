@@ -34,7 +34,7 @@ class _BarberListState extends State<BarberListScreen> {
   List<ListItem> allListItems = [];
   List<ListItem> listItems = [];
 
-  int? distance;
+  double? distance;
   int? minPrice;
   int? maxPrice;
   String? district;
@@ -54,7 +54,6 @@ class _BarberListState extends State<BarberListScreen> {
     super.initState();
     checkFromWhichBtn();
     loadBarbers();
-    sortTheList();
   }
 
   @override
@@ -187,6 +186,8 @@ class _BarberListState extends State<BarberListScreen> {
       _barbers = _barbers;
       listItems = allListItems;
     });
+
+    sortTheList();
   }
 
   Future<void> sortBtnClicked(BuildContext context) async {
@@ -233,7 +234,7 @@ class _BarberListState extends State<BarberListScreen> {
     });
     BarbersDatabase barbersDb = BarbersDatabase();
     String sql =
-        "SELECT * FROM barbers WHERE name LIKE '%$searchText%' OR address LIKE '%$searchText%'";
+        "SELECT * FROM barbers WHERE name LIKE '%$searchText%' OR location LIKE '%$searchText%'";
     var result = await barbersDb.getBarberByRawQuery(sql);
     for (var r in result) {
       listItems.add(ListItem(barber: r));
@@ -516,13 +517,13 @@ class _BarberListState extends State<BarberListScreen> {
         maxPrice == null) {
       //List all barbers which are in $city AND $district
       sql =
-          "SELECT * FROM `barbers` WHERE address LIKE '%$city%' AND address LIKE '%$district%'";
+          "SELECT * FROM `barbers` WHERE location LIKE '%$city%' AND location LIKE '%$district%'";
     } else if (city != null &&
         district == null &&
         minPrice == null &&
         maxPrice == null) {
       //List all barbers which are in $city
-      sql = "SELECT * FROM `barbers` WHERE address LIKE '%$city%'";
+      sql = "SELECT * FROM `barbers` WHERE location LIKE '%$city%'";
     } else if (city == null &&
         district == null &&
         minPrice != null &&
@@ -548,42 +549,42 @@ class _BarberListState extends State<BarberListScreen> {
         maxPrice != null) {
       //List all barbers which are in $city AND minPrices minimum $minPrice AND maximum $maxPrice
       sql =
-          "SELECT * FROM `barbers` WHERE address LIKE '%$city%' AND minPrice<=$maxPrice AND minPrice>=$minPrice";
+          "SELECT * FROM `barbers` WHERE location LIKE '%$city%' AND minPrice<=$maxPrice AND minPrice>=$minPrice";
     } else if (city != null &&
         district == null &&
         minPrice != null &&
         maxPrice == null) {
       //List all barbers which are in $city AND minPrices minimum $minPrice
       sql =
-          "SELECT * FROM `barbers` WHERE address LIKE '%$city%' AND minPrice>=$minPrice";
+          "SELECT * FROM `barbers` WHERE location LIKE '%$city%' AND minPrice>=$minPrice";
     } else if (city != null &&
         district == null &&
         minPrice == null &&
         maxPrice != null) {
       //List all barbers which are in $city AND minPrices maximum $maxPrice
       sql =
-          "SELECT * FROM `barbers` WHERE address LIKE '%$city%' AND minPrice<=$maxPrice";
+          "SELECT * FROM `barbers` WHERE location LIKE '%$city%' AND minPrice<=$maxPrice";
     } else if (city != null &&
         district != null &&
         minPrice != null &&
         maxPrice != null) {
       //List all barbers which city is $city AND district is $district AND minPrices are minimum $minPrice AND minPrices are maximum $maxPrice
       sql =
-          "SELECT * FROM `barbers` WHERE address LIKE '%$city%' AND address LIKE '%$district%' AND minPrice<=$maxPrice AND minPrice>=$minPrice";
+          "SELECT * FROM `barbers` WHERE location LIKE '%$city%' AND location LIKE '%$district%' AND minPrice<=$maxPrice AND minPrice>=$minPrice";
     } else if (city != null &&
         district != null &&
         minPrice != null &&
         maxPrice == null) {
       //List all barbers which city is $city AND district is $district AND minPrices are minimum $minPrice
       sql =
-          "SELECT * FROM `barbers` WHERE address LIKE '%$city%' AND address LIKE '%$district%' AND minPrice>=$minPrice";
+          "SELECT * FROM `barbers` WHERE location LIKE '%$city%' AND location LIKE '%$district%' AND minPrice>=$minPrice";
     } else if (city != null &&
         district != null &&
         minPrice == null &&
         maxPrice != null) {
       //List all barbers which city is $city AND district is $district AND minPrices are maximum $maxPrice
       sql =
-          "SELECT * FROM `barbers` WHERE address LIKE '%$city%' AND address LIKE '%$district%' AND minPrice<=$maxPrice";
+          "SELECT * FROM `barbers` WHERE location LIKE '%$city%' AND location LIKE '%$district%' AND minPrice<=$maxPrice";
     } else {
       //List all barbers without filter
       sql = "SELECT * FROM `barbers`";
@@ -605,23 +606,39 @@ class _BarberListState extends State<BarberListScreen> {
       Position? position = await getLocation();
       if(position!=null){
         //40.694597, 29.510561
-        double salonAsLat = 40.694597;
-        double salonAsLong = 29.510561;
+        /*double salonAsLat = 40.694597;
+        double salonAsLong = 29.510561;*/
 
-        String myAddress = "merkez mahallesi esentepe caddesi no 15 altinova yalova";
+        //String myAddress = "merkez mahallesi esentepe caddesi no 15 altinova yalova";
 
-        List<Location> locations = await locationFromAddress(myAddress);
+        List<ListItem> listForDistanceFilter = [];
+        for(var item in listItems){
+          listForDistanceFilter.add(item);
+        }
 
-        double distance2 = Geolocator.distanceBetween(position.latitude, position.longitude, locations[0].latitude, locations[0].longitude);
+        setState(() {
+          listItems.clear();
+        });
 
-        print("Distance between Home and home : $distance2");
+        for(var b in listForDistanceFilter){
+          print(b.barber.address!);
+          List<Location> locations = await locationFromAddress(b.barber.address!);
+          double distance2 = Geolocator.distanceBetween(position.latitude, position.longitude, locations[0].latitude, locations[0].longitude);
+          distance2 = distance2/1000;
+          print("distance : $distance2, wantedDistance : $distance");
+          if(distance2<=distance!){
+            listItems.add(ListItem(barber: b.barber));
+          }
+        }
 
-        final double meter = Geolocator.distanceBetween(
+        setState(() {
+          listItems = listItems;
+        });
+
+        /*final double meter = Geolocator.distanceBetween(
             position.latitude, position.longitude, salonAsLat, salonAsLong);
 
-        final double km = meter/1000;
-
-        print("Km : $km, Meter : $meter");
+        final double km = meter/1000;*/
       }
       setState(() {
         listItems = listItems;

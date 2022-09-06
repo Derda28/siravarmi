@@ -115,4 +115,9 @@ class AppointmentDatabase {
      if(database==null) await open();
     database!.close();
   }
+
+  deleteTables() async {
+    if(database==null)await open();
+    await database!.delete(appointmentsTableName);
+  }
 }

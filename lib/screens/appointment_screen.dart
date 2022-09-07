@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:siravarmi/cloud_functions/appointments_database.dart';
 import 'package:siravarmi/cloud_functions/assessment_database.dart';
 import 'package:siravarmi/cloud_functions/barbers_database.dart';
@@ -37,7 +38,7 @@ class _AppointmentState extends State {
   EmployeesDatabase empDbHelper = EmployeesDatabase();
 
   List<AppointmentModel> appointments = [];
-  List<AppointmentModel> commingAppointments = [];
+  List<AppointmentModel> comingAppointments = [];
   List<AppointmentModel> lastAppointments = [];
 
   bool isLastAppointment = true;
@@ -84,6 +85,40 @@ class _AppointmentState extends State {
   buildSUP() {
     return areAppointmentsLoaded
         ? SlidingUpPanel(
+            panelSnapping: false,
+            isDraggable: false,
+            backdropOpacity: 0.5,
+            header: Container(
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(50), topRight: Radius.circular(50)),
+              ),
+              height: getSize(50),
+              width: screenWidth,
+              child: Container(
+                margin: EdgeInsets.only(top: getSize(5)),
+                alignment: Alignment.center,
+                child: Text(
+                  isLastAppointment?"Geçmiş Randevu": "Gelecek Randevu",
+                  style: TextStyle(
+                    shadows: [
+                      Shadow(
+                          color: Colors.white,
+                          offset: Offset(0, -6))
+                    ],
+                    color: Colors.transparent,
+                    fontSize: getSize(28),
+                    decoration:
+                    TextDecoration.underline,
+                    decorationColor: secondaryColor,
+                    decorationThickness: 1,
+                    decorationStyle:
+                    TextDecorationStyle.dashed,
+                  ),
+                ),
+              ),
+            ),
             body: ListView(
               children: [
                 //buildComingTxt(),
@@ -96,7 +131,7 @@ class _AppointmentState extends State {
             color: Colors.white,
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(50), topRight: Radius.circular(50)),
-            maxHeight: 650,
+            maxHeight: getSize(500),
             minHeight: 0,
             controller: panelController,
             /*body: _body(),*/
@@ -136,19 +171,19 @@ class _AppointmentState extends State {
         ? SizedBox(
             height: getSize(715),
             child: ListView.builder(
-              physics: PageScrollPhysics(),
-              itemCount: commingAppointments.length+lastAppointments.length+2,
+              physics: BouncingScrollPhysics(),
+              itemCount: comingAppointments.length+lastAppointments.length+2,
               itemBuilder: (context, index) {
                 if(index==0){
                  return buildComingTxt();
                 }
                 int index3 = index-1;
-                if(index<commingAppointments.length+1){
+                if(index<comingAppointments.length+1){
                   return Padding(
                     padding: EdgeInsets.only(top: getSize(5)),
                     child: AppointmentListItem(
-                      date: getDate(commingAppointments[index3].dateTime!),
-                      time: getTime(commingAppointments[index3].dateTime!),
+                      date: getDate(comingAppointments[index3].dateTime!),
+                      time: getTime(comingAppointments[index3].dateTime!),
                       itemClicked: () {
                         setState(() {
                           isLastAppointment = false;
@@ -156,14 +191,14 @@ class _AppointmentState extends State {
                         return itemClicked(index3);
                       },
                       barberModel:
-                      getBarberById(commingAppointments[index3].barberId),
+                      getBarberById(comingAppointments[index3].barberId),
                     ),
                   );
                 }else{
-                  if(index==commingAppointments.length+1){
+                  if(index==comingAppointments.length+1){
 
                   }else{
-                    int index2 = (index-commingAppointments.length-2);
+                    int index2 = (index-comingAppointments.length-2);
                     return Padding(
                       padding: EdgeInsets.only(top: getSize(5)),
                       child: AppointmentListItem(
@@ -209,42 +244,13 @@ class _AppointmentState extends State {
     );
   }
 
-  buildLastAppointments() {
-    return areAppointmentsLoaded
-        ? SizedBox(
-            height: getSize(65 * lastAppointments.length.toDouble()),
-            child: ListView.builder(
-              physics: PageScrollPhysics(),
-              itemCount: lastAppointments.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.only(top: getSize(5)),
-                  child: AppointmentListItem(
-                    date: getDate(lastAppointments[index].dateTime!),
-                    time: getTime(lastAppointments[index].dateTime!),
-                    itemClicked: () {
-                      setState(() {
-                        isLastAppointment = true;
-                      });
-                      return itemClicked(index);
-                    },
-                    barberModel:
-                        getBarberById(lastAppointments[index].barberId),
-                  ),
-                );
-              },
-            ),
-          )
-        : Text("YÜKLENIYOR...");
-  }
-
   Future<void> loadAppointments() async {
     lastAppointments = await appDbHelper.getLastAppointments(user.id!);
-    commingAppointments = await appDbHelper.getCommingAppointments(user.id!);
+    comingAppointments = await appDbHelper.getComingAppointments(user.id!);
 
     setState(() {
       lastAppointments = lastAppointments;
-      commingAppointments = commingAppointments;
+      comingAppointments = comingAppointments;
       areAppointmentsLoaded = true;
     });
   }
@@ -269,18 +275,22 @@ class _AppointmentState extends State {
           barberId: lastAppointments[index].barberId,
           employeeId: lastAppointments[index].employeeId,
           id: lastAppointments[index].id,
-          totalPrice: lastAppointments[index].totalPrice);
+          totalPrice: lastAppointments[index].totalPrice,
+          services: lastAppointments[index].services,
+          assessmentModel: lastAppointments[index].assessmentModel);
       selectedAssessment = await assDbHelper
           .getAssessmentById(selectedAppointment!.assessmentId!);
     } else {
       selectedAppointment = AppointmentModel(
-          userId: commingAppointments[index].userId,
-          dateTime: commingAppointments[index].dateTime,
-          assessmentId: commingAppointments[index].assessmentId,
-          barberId: commingAppointments[index].barberId,
-          employeeId: commingAppointments[index].employeeId,
-          id: commingAppointments[index].id,
-          totalPrice: commingAppointments[index].totalPrice);
+          userId: comingAppointments[index].userId,
+          dateTime: comingAppointments[index].dateTime,
+          assessmentId: comingAppointments[index].assessmentId,
+          barberId: comingAppointments[index].barberId,
+          employeeId: comingAppointments[index].employeeId,
+          id: comingAppointments[index].id,
+          totalPrice: comingAppointments[index].totalPrice,
+          services: comingAppointments[index].services,
+          assessmentModel: comingAppointments[index].assessmentModel);
     }
     selectedBarber =
         await barbersDbHelper.getBarberById(selectedAppointment!.barberId!);

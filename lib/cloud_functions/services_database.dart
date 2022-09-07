@@ -43,6 +43,16 @@ class ServicesDatabase {
     return services;
   }
 
+  Future<ServiceModel> getServiceById(int serviceId) async{
+    if(database==null) await open();
+    String sql = "SELECT * FROM $servicesTableName WHERE id=$serviceId";
+    var result = await database!.rawQuery(sql);
+    if(result.isNotEmpty){
+      return ServiceModel.fromJson(result[0]);
+    }
+    return ServiceModel(barberId: 0, id: 0, gender: false, name: "", price: 0, category: "");
+  }
+
   getEmployeesFromMysql() async{
     if (database == null) await open();
     DbHelperHttp dbHelper = DbHelperHttp();

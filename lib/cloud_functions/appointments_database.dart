@@ -1,7 +1,8 @@
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
+import 'package:siravarmi/cloud_functions/assessment_database.dart';
+import 'package:siravarmi/cloud_functions/services_database.dart';
 import 'package:siravarmi/models/appointment_model.dart';
-import 'package:siravarmi/screens/barber_screen.dart';
+import 'package:siravarmi/models/assessment_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../models/service_model.dart';
@@ -16,6 +17,7 @@ class AppointmentDatabase {
   final String employeeId = "employeeId";
   final String assessmentId = "assessmentId";
   final String totalPrice = "totalPrice";
+  final String serviceId = "serviceId";
 
   final appointmentsDatabaseName = "appointments.db";
   final appointmentsTableName = "appointments";
@@ -32,7 +34,7 @@ class AppointmentDatabase {
 
   Future<void> createTable(Database db) async {
     await db.execute(
-      "CREATE TABLE $appointmentsTableName (id INTEGER PRIMARY KEY,$dateTime DATETIME,$userId INTEGER NOT NULL,$barberId INTEGER NOT NULL, $employeeId INTEGER NOT NULL, $assessmentId INTEGER NOT NULL, $totalPrice INTEGER NOT NULL)",
+      "CREATE TABLE $appointmentsTableName (id INTEGER PRIMARY KEY,$dateTime DATETIME,$userId INTEGER NOT NULL,$barberId INTEGER NOT NULL, $employeeId INTEGER NOT NULL, $assessmentId INTEGER NOT NULL, $totalPrice INTEGER NOT NULL, $serviceId INTEGER NOT NULL)",
     );
   }
 
@@ -41,21 +43,110 @@ class AppointmentDatabase {
 
     var selectResult = await database!.rawQuery("SELECT * FROM $appointmentsTableName where userId=$userId AND $dateTime<CURRENT_DATE ORDER BY date($dateTime) DESC");
 
+    ServicesDatabase servicesDb = ServicesDatabase();
+    AssessmentDatabase assDb = AssessmentDatabase();
+    int lastAppId=0;
     List<AppointmentModel> appointments = [];
-    for(var element in selectResult){
-      appointments.add(AppointmentModel.fromJson(element));
+    for(var i = 0; i<selectResult.length; i++){
+      if(i==0){
+        lastAppId=i;
+        List<ServiceModel> services = [];
+        services.add(await servicesDb.getServiceById(int.tryParse(selectResult[i][serviceId].toString())!));
+        AppointmentModel appointmentModel = AppointmentModel.fromJson(selectResult[i]);
+        appointmentModel.services = services;
+        AssessmentModel assessmentModel = await assDb.getAssessmentById(appointmentModel.assessmentId!);
+        if(assessmentModel.id!!=0){
+          appointmentModel.assessmentModel = assessmentModel;
+        }
+        appointments.add(appointmentModel);
+
+      }else{
+        if(selectResult[i][barberId]==appointments[lastAppId].barberId&&
+            selectResult[i][employeeId]==appointments[lastAppId].employeeId&&
+            DateTime.tryParse(selectResult[i][dateTime].toString())?.year == appointments[lastAppId].dateTime!.year&&
+            DateTime.tryParse(selectResult[i][dateTime].toString())?.month == appointments[lastAppId].dateTime!.month&&
+            DateTime.tryParse(selectResult[i][dateTime].toString())?.day == appointments[lastAppId].dateTime!.day&&
+            DateTime.tryParse(selectResult[i][dateTime].toString())?.hour == appointments[lastAppId].dateTime!.hour&&
+            DateTime.tryParse(selectResult[i][dateTime].toString())?.minute == appointments[lastAppId].dateTime!.minute)
+        {
+
+          ServiceModel serviceModel = await servicesDb.getServiceById(int.tryParse(selectResult[i][serviceId].toString())!);
+          if(serviceModel.id!=0){
+            appointments[lastAppId].services!.add(serviceModel);
+            appointments[lastAppId].totalPrice = appointments[lastAppId].totalPrice! + serviceModel.price!;
+          }
+        }else{
+          lastAppId++;
+          List<ServiceModel> services = [];
+          services.add(await servicesDb.getServiceById(int.tryParse(selectResult[i][serviceId].toString())!));
+          AppointmentModel appointmentModel = AppointmentModel.fromJson(selectResult[i]);
+          appointmentModel.services = services;
+          AssessmentModel assessmentModel = await assDb.getAssessmentById(appointmentModel.assessmentId!);
+          if(assessmentModel.id!!=0){
+            appointmentModel.assessmentModel = assessmentModel;
+          }
+          appointments.add(appointmentModel);
+
+          if(appointments[lastAppId].assessmentModel!=null){
+            print("AppointmentId And DAteTime : ${appointments[lastAppId].id} ${appointments[lastAppId].dateTime}, id: ${appointments[lastAppId].assessmentModel!.id}, stars: ${appointments[lastAppId].assessmentModel!.stars}\n\n");
+          }
+        }
+      }
     }
     return appointments;
   }
 
-  Future<List<AppointmentModel>> getCommingAppointments(int userId) async{
+  Future<List<AppointmentModel>> getComingAppointments(int userId) async{
     if(database==null) await open();
 
     var selectResult = await database!.rawQuery("SELECT * FROM $appointmentsTableName where userId=$userId AND $dateTime>CURRENT_DATE ORDER BY date($dateTime) ASC");
 
+    ServicesDatabase servicesDb = ServicesDatabase();
+    AssessmentDatabase assDb = AssessmentDatabase();
+    int lastAppId=0;
     List<AppointmentModel> appointments = [];
-    for(var element in selectResult){
-      appointments.add(AppointmentModel.fromJson(element));
+    for(var i=0; i<selectResult.length; i++){
+      if(i==0){
+        lastAppId=i;
+        List<ServiceModel> services = [];
+        services.add(await servicesDb.getServiceById(int.tryParse(selectResult[i][serviceId].toString())!));
+        AppointmentModel appointmentModel = AppointmentModel.fromJson(selectResult[i]);
+        appointmentModel.services = services;
+        AssessmentModel assessmentModel = await assDb.getAssessmentById(appointmentModel.assessmentId!);
+        if(assessmentModel.id!!=0){
+          appointmentModel.assessmentModel = assessmentModel;
+        }
+        appointments.add(appointmentModel);
+
+
+      }else{
+        if(selectResult[i][barberId]==selectResult[lastAppId][barberId]&&
+            selectResult[i][employeeId]==selectResult[lastAppId][employeeId]&&
+            DateTime.tryParse(selectResult[i][dateTime].toString())?.year == appointments[lastAppId].dateTime!.year&&
+            DateTime.tryParse(selectResult[i][dateTime].toString())?.month == appointments[lastAppId].dateTime!.month&&
+            DateTime.tryParse(selectResult[i][dateTime].toString())?.day == appointments[lastAppId].dateTime!.day&&
+            DateTime.tryParse(selectResult[i][dateTime].toString())?.hour == appointments[lastAppId].dateTime!.hour&&
+            DateTime.tryParse(selectResult[i][dateTime].toString())?.minute == appointments[lastAppId].dateTime!.minute){
+
+
+          ServiceModel serviceModel = await servicesDb.getServiceById(int.tryParse(selectResult[i][serviceId].toString())!);
+          if(serviceModel.id!=0){
+            appointments[lastAppId].services!.add(serviceModel);
+            appointments[lastAppId].totalPrice = appointments[lastAppId].totalPrice! + serviceModel.price!;
+          }
+        }else{
+          lastAppId++;
+          List<ServiceModel> services = [];
+          services.add(await servicesDb.getServiceById(int.tryParse(selectResult[i][serviceId].toString())!));
+          AppointmentModel appointmentModel = AppointmentModel.fromJson(selectResult[i]);
+          appointmentModel.services = services;
+          AssessmentModel assessmentModel = await assDb.getAssessmentById(appointmentModel.assessmentId!);
+          if(assessmentModel.id!!=0){
+            appointmentModel.assessmentModel = assessmentModel;
+          }
+          appointments.add(appointmentModel);
+        }
+      }
     }
     return appointments;
   }
@@ -85,7 +176,7 @@ class AppointmentDatabase {
      var result = await dbHelper.getAppointmentList(userId);
 
      for (var element in result) {
-       var isExistingData = await database!.rawQuery("SELECT * FROM $appointmentsTableName where id="+element['id']);
+       var isExistingData = await database!.rawQuery("SELECT * FROM $appointmentsTableName where id=${element['id']}");
        if(isExistingData.isEmpty){
          database!.insert(appointmentsTableName, <String, Object>{
            'id' : element['id'],
@@ -95,6 +186,7 @@ class AppointmentDatabase {
            'employeeId' : element['employeeId'],
            'assessmentId' : element['assessmentId'],
            'totalPrice' : element['totalPrice'],
+           'serviceId' : element['serviceId']
          });
        }
      }

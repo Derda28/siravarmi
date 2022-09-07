@@ -162,7 +162,7 @@ class _HomeScreenState extends State{
 
     favorites = await favDb.getFavorites();
 
-    commingAppointments = await appDb.getCommingAppointments(user.id!);
+    commingAppointments = await appDb.getComingAppointments(user.id!);
     barbers = await  barbersDb.getBarbers();
 
     setState((){

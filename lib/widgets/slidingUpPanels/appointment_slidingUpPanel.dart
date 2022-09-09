@@ -2,11 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:http/http.dart';
-import 'package:siravarmi/cloud_functions/assessment_database.dart';
-import 'package:siravarmi/cloud_functions/barbers_database.dart';
-import 'package:siravarmi/cloud_functions/employees_database.dart';
 import 'package:siravarmi/models/assessment_model.dart';
 import 'package:siravarmi/models/barber_model.dart';
 import 'package:siravarmi/models/employee_model.dart';
@@ -17,23 +12,21 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../models/appointment_model.dart';
 
-final String _heroAssessment = "assessment-hero";
-
 class AppointmentSlidingUpPanel extends StatefulWidget {
   final ScrollController scrollController;
-  AppointmentModel? appointment;
-  BarberModel? barber;
-  EmployeeModel? employee;
-  AssessmentModel? assessment;
-  bool isLastAppointment;
+  final AppointmentModel? appointment;
+  final BarberModel? barber;
+  final EmployeeModel? employee;
+  final AssessmentModel? assessment;
+  final bool isLastAppointment;
 
   AppointmentSlidingUpPanel(
-      {required this.scrollController,
+      {Key? key, required this.scrollController,
       this.appointment,
       required this.isLastAppointment,
       required this.barber,
       required this.employee,
-      required this.assessment});
+      required this.assessment}) : super(key: key);
 
   @override
   State<AppointmentSlidingUpPanel> createState() =>
@@ -46,6 +39,7 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
   double ratingIconSize = getSize(55);
 
   final panelController = PanelController();
+
 
   @override
   void initState() {
@@ -314,15 +308,40 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                           color: Colors.grey),
                     ),
                   ),
+                  //Edit Button
+                  Container(
+                    margin: EdgeInsets.only(left: getSize(350), top: getSize(545)),
+                    height: getSize(40),
+                    width: getSize(40),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(getSize(50)))),
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide.none,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(getSize(50)))),
+                        padding: EdgeInsets.only(right: getSize(0)),
+                      ),
+                      child: Icon(
+                        Icons.edit,
+                        size: getSize(25),
+                        color: fontColor,
+                      ),
+                      onPressed: () {
+                        editIconIsPressed();
+                      },
+                    ),
+                  ),
                   //STARS
                   //double.tryParse(widget.appointment!.assessmentModel!.stars!.toString())!
                   Container(
-                    margin: EdgeInsets.only(top: getSize(590), bottom: getSize(20)),
+                    margin: EdgeInsets.only(top: getSize(600), bottom: getSize(20)),
                     alignment: Alignment.center,
                     child: widget.appointment!=null?RatingBar.builder(
                       minRating: 1,
                       maxRating: 5,
-                      initialRating: 0,
+                      initialRating: widget.appointment!.assessmentModel!=null? double.tryParse(widget.appointment!.assessmentModel!.stars!.toString())!:0,
                       ignoreGestures: widget.appointment!.assessmentModel!=null?true:false,
                       glowColor: secondaryColor,
                       glow: widget.appointment!.assessmentModel!=null?true:false,
@@ -339,11 +358,11 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                     ):Text("LOADING..."),
                   ),
                   widget.appointment!.assessmentModel!=null?
-                  Align(
+                      Align(
                     alignment: Alignment.topCenter,
                     child: Container(
                       alignment: Alignment.topLeft,
-                      margin: EdgeInsets.only(top: getSize(650)),
+                      margin: EdgeInsets.only(top: getSize(660), bottom: getSize(10)),
                       width: getSize(250),
                       height: getSize(150),
                       decoration: BoxDecoration(
@@ -369,4 +388,6 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
               initialStars: i,
             )));
   }
+
+  editIconIsPressed() {}
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siravarmi/models/assessment_model.dart';
 import 'package:siravarmi/screens/appointment_screen.dart';
 import 'package:siravarmi/screens/home_screen.dart';
 import 'package:siravarmi/screens/notification_screen.dart';
@@ -34,7 +35,55 @@ class _NavbarState extends State{
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
 
-    return Row(
+    return /*BottomNavigationBar(
+        backgroundColor: bgColor,
+        onTap:(index)=>{
+          buttonPressed(index)
+        },
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: Image.asset(
+                "assets/images/HomeNav.png",
+                height: 28,
+                width: 36.01,
+                color: index==0?primaryColor:fontColor,
+              ),
+            label: "Ana Sayfa",
+
+          ),
+          BottomNavigationBarItem(
+              icon: Image.asset(
+                "assets/images/AppointmentNav.png",
+                height: 28,
+                width: 24.5,
+                color: index==1?primaryColor:fontColor,
+              ),
+              label: "Randevular",
+          ),
+          BottomNavigationBarItem(
+              icon: Image.asset(
+                "assets/images/NotificationNav.png",
+                height: 28,
+                width: 24.5,
+                color: index==2?primaryColor:fontColor,
+              ),
+              label: "Harita",
+          ),
+          BottomNavigationBarItem(
+              icon: Image.asset(
+                "assets/images/MenuNav.png",
+                height: 28,
+                width: 24.5,
+                color: index==3?primaryColor:fontColor,
+              ),
+            label: "Menü",
+          ),
+        ],
+        elevation: 10,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+    );*/
+    Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
@@ -142,7 +191,6 @@ class _NavbarState extends State{
   }
 
   buttonPressed(int whichOne) {
-    print("GirdiAMK");
     if(whichOne!=index){
       switch(whichOne){
         case 0:

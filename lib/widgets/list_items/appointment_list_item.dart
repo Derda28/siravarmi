@@ -27,7 +27,7 @@ class AppointmentListItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
-          height: getSize(155),
+          height: getSize(139),
           width: getSize(350),
           child: OutlinedButton(
             style: ButtonStyle(
@@ -51,7 +51,7 @@ class AppointmentListItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Container(
-                          margin: EdgeInsets.only(top: getSize(15)),
+                          margin: EdgeInsets.only(top: getSize(10)),
                           height: getSize(80),
                           width: getSize(80),
                           decoration: BoxDecoration(
@@ -72,7 +72,7 @@ class AppointmentListItem extends StatelessWidget {
                     Column(
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(left: getSize(10), top: getSize(15)),
+                          padding: EdgeInsets.only(left: getSize(10), top: getSize(10)),
                           child: Row(
                             children: [
                               Container(
@@ -143,7 +143,7 @@ class AppointmentListItem extends StatelessWidget {
                 ),
                 //Price and DateTime
                 Padding(
-                  padding: EdgeInsets.only(bottom: getSize(10)),
+                  padding: EdgeInsets.only(bottom: getSize(5)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -155,7 +155,7 @@ class AppointmentListItem extends StatelessWidget {
                             Text(
                               'Topl. ₺${barberModel.minPrice}',
                               style: TextStyle(
-                                fontSize: getSize(14),
+                                fontSize: getSize(12),
                                 color: primaryColor,
                               ),
                               textHeightBehavior: TextHeightBehavior(
@@ -172,7 +172,7 @@ class AppointmentListItem extends StatelessWidget {
                           Text(
                             '$date\nSaat $time',
                             style: TextStyle(
-                              fontSize: getSize(14),
+                              fontSize: getSize(12),
                               color: primaryColor,
                               fontWeight: FontWeight.w700,
                             ),

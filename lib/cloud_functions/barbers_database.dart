@@ -1,12 +1,11 @@
 import 'package:path/path.dart';
+import 'package:siravarmi/cloud_functions/address_database.dart';
 import 'package:siravarmi/cloud_functions/dbHelperHttp.dart';
 import 'package:siravarmi/models/barber_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class BarbersDatabase {
-  final String id = "id";
   final String name = "name";
-  final String location = "location";
   final String minPrice = "minPrice";
   final String phoneNumber = "phoneNumber";
   final String isOpen = "open";
@@ -29,7 +28,7 @@ class BarbersDatabase {
 
   Future<void> createTable(Database db) async {
     await db.execute(
-      "CREATE TABLE $barbersTableName (id INTEGER PRIMARY KEY,$name VARCHAR(20) ,$location TEXT NOT NULL,$minPrice INTEGER NOT NULL, $phoneNumber VARCHAR(10), $isOpen INTEGER(1) NOT NULL, $profileUrl TEXT NOT NULL, $averageStars REAL NOT NULL, $assessmentCount INTEGER NOT NULL)",
+      "CREATE TABLE $barbersTableName (id INTEGER PRIMARY KEY,$name VARCHAR(20), $minPrice INTEGER NOT NULL, $phoneNumber VARCHAR(10), $isOpen INTEGER(1) NOT NULL, $profileUrl TEXT NOT NULL, $averageStars REAL NOT NULL, $assessmentCount INTEGER NOT NULL)",
     );
   }
 
@@ -55,15 +54,19 @@ class BarbersDatabase {
       return barber;
     }
 
-    return BarberModel(id: 0, name: "", address: "", minPrice: 0, profileURL: "", open: false, averageStars: 0, assessmentCount: 0);
+    return BarberModel(id: 0, name: "", minPrice: 0, profileURL: "", open: false, averageStars: 0, assessmentCount: 0);
   }
 
   Future<List<BarberModel>> getBarberByRawQuery(String sql) async{
     if(database==null) await open();
+    AddressDatabase addressDb = AddressDatabase();
     var result = await database!.rawQuery(sql);
     List<BarberModel> barbers = [];
     for(var r in result){
-      barbers.add(BarberModel.fromJson(r));
+      BarberModel barber = BarberModel.fromJson(r);
+      var address = await addressDb.getAddressFromBarber(barber.id!);
+      barber.setAddress(address);
+      barbers.add(barber);
     }
     return barbers;
   }
@@ -79,7 +82,6 @@ class BarbersDatabase {
         await database!.insert(barbersTableName, <String, Object> {
           'id' : element['id'],
           'name' : element['name'],
-          'location' : element['location'],
           'minPrice' : element['minPrice'],
           'phoneNumber' : element?['phoneNumber'],
           'open' : element['open'],

@@ -130,7 +130,7 @@ class AppointmentListItem extends StatelessWidget {
                           width: getSize(150),
                           child: AutoSizeText(
                             //maxLines: 2,
-                            barberModel.address!,
+                            barberModel.addressModel!.getHalfAddress(),
                             style: TextStyle(
                               fontSize: getSize(10),
                               color: fontColor,

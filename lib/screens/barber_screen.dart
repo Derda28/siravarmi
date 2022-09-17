@@ -610,7 +610,7 @@ class _BarberScreenState extends State<BarberScreen> {
                         width: getSize(292),
                         height: getSize(195),
                         child: AutoSizeText(
-                          widget.barberModel.address!,
+                          widget.barberModel.addressModel!.getFullAddress(),
                           maxLines: 4,
                           style: TextStyle(fontSize: inContainerSize),
                         ),
@@ -1058,40 +1058,40 @@ class _BarberScreenState extends State<BarberScreen> {
   void writingDownWorkingHours() {
     setState(() {
       mondayTime = formateTime(workingHoursInWeek['mon']!.open!.hour,
-              workingHoursInWeek['mon']!.open!.minute, null) +
+              workingHoursInWeek['mon']!.open!.minute) +
           " - " +
           formateTime(workingHoursInWeek['mon']!.close!.hour,
-              workingHoursInWeek['mon']!.open!.minute, null);
+              workingHoursInWeek['mon']!.open!.minute);
       tuesdayTime = formateTime(workingHoursInWeek['tue']!.open!.hour,
-              workingHoursInWeek['tue']!.open!.minute, null) +
+              workingHoursInWeek['tue']!.open!.minute) +
           " - " +
           formateTime(workingHoursInWeek['tue']!.close!.hour,
-              workingHoursInWeek['tue']!.open!.minute, null);
+              workingHoursInWeek['tue']!.open!.minute);
       wednesdayTime = formateTime(workingHoursInWeek['wed']!.open!.hour,
-              workingHoursInWeek['wed']!.open!.minute, null) +
+              workingHoursInWeek['wed']!.open!.minute) +
           " - " +
           formateTime(workingHoursInWeek['wed']!.close!.hour,
-              workingHoursInWeek['wed']!.open!.minute, null);
+              workingHoursInWeek['wed']!.open!.minute);
       thursdayTime = formateTime(workingHoursInWeek['thu']!.open!.hour,
-              workingHoursInWeek['thu']!.open!.minute, null) +
+              workingHoursInWeek['thu']!.open!.minute) +
           " - " +
           formateTime(workingHoursInWeek['thu']!.close!.hour,
-              workingHoursInWeek['thu']!.open!.minute, null);
+              workingHoursInWeek['thu']!.open!.minute);
       fridayTime = formateTime(workingHoursInWeek['fri']!.open!.hour,
-              workingHoursInWeek['fri']!.open!.minute, null) +
+              workingHoursInWeek['fri']!.open!.minute) +
           " - " +
           formateTime(workingHoursInWeek['fri']!.close!.hour,
-              workingHoursInWeek['fri']!.open!.minute, null);
+              workingHoursInWeek['fri']!.open!.minute);
       saturdayTime = formateTime(workingHoursInWeek['sat']!.open!.hour,
-              workingHoursInWeek['sat']!.open!.minute, null) +
+              workingHoursInWeek['sat']!.open!.minute) +
           " - " +
           formateTime(workingHoursInWeek['sat']!.close!.hour,
-              workingHoursInWeek['sat']!.open!.minute, null);
+              workingHoursInWeek['sat']!.open!.minute);
       sundayTime = formateTime(workingHoursInWeek['sun']!.open!.hour,
-              workingHoursInWeek['sun']!.open!.minute, null) +
+              workingHoursInWeek['sun']!.open!.minute) +
           " - " +
           formateTime(workingHoursInWeek['sun']!.close!.hour,
-              workingHoursInWeek['sun']!.open!.minute, null);
+              workingHoursInWeek['sun']!.open!.minute);
     });
   }
 

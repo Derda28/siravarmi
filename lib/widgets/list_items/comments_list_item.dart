@@ -90,7 +90,7 @@ class _CommentsListItemState extends State<CommentsListItem> {
           Container(
             margin: EdgeInsets.only(left: getSize(240)),
             child: Text(
-              getDate(widget.assessment.date!),
+              formateDate(widget.assessment.date!),
             ),
           ),
           //AssessmentComment

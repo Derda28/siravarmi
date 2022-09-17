@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:siravarmi/models/assessment_model.dart';
-import 'package:siravarmi/screens/appointment_screen.dart';
-import 'package:siravarmi/screens/home_screen.dart';
-import 'package:siravarmi/screens/notification_screen.dart';
-import 'package:siravarmi/screens/settings_screen.dart';
+import 'package:siravarmi/screens/main_screens/appointment_screen.dart';
+import 'package:siravarmi/screens/main_screens/home_screen.dart';
+import 'package:siravarmi/screens/main_screens/notification_screen.dart';
+import 'package:siravarmi/screens/main_screens/settings_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/utilities/custom_screen_route.dart';
 
@@ -194,19 +194,19 @@ class _NavbarState extends State{
     if(whichOne!=index){
       switch(whichOne){
         case 0:
-          Navigator.pushReplacement(context2, CustomScreenRoute(
+          Navigator.push(context2, CustomScreenRoute(
               child: HomeScreen()));
           break;
         case 1:
-          Navigator.pushReplacement(context2, CustomScreenRoute(
+          Navigator.push(context2, CustomScreenRoute(
                child: AppointmentScreen()));
           break;
         case 2:
-          Navigator.pushReplacement(context2, CustomScreenRoute(
+          Navigator.push(context2, CustomScreenRoute(
               child: NotificationScreen()));
           break;
         case 3:
-          Navigator.pushReplacement(context2, CustomScreenRoute(
+          Navigator.push(context2, CustomScreenRoute(
               child: SettingsScreen()));
           break;
       }

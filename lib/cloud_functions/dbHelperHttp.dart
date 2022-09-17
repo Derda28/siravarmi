@@ -10,6 +10,12 @@ import 'package:siravarmi/models/working_hours_model.dart';
 import '../utilities/consts.dart';
 
 class DbHelperHttp {
+
+  String usernameDB = "yadetemi_root";
+  String passwordDB = "YaS_DeR28";
+  String host = "localhost";
+  String database = "yadetemi_testDb";
+
   Future<List<dynamic>> getBarberList() async {
     var url =
         Uri.parse('https://yadetemizlik.com/getBarbers.php');
@@ -172,6 +178,20 @@ class DbHelperHttp {
       'totalPrice' : s.price.toString(),
       'serviceId' : s.id.toString(),
     });
+  }
+
+  getAddress() async {
+    var url = Uri.parse('https://yadetemizlik.com/getAddress.php');
+    http.Response response = await http.post(url, body: {
+      'usernameDB' : usernameDB,
+      'passwordDB' : passwordDB,
+      'database' : database,
+      'host' : host,
+    });
+
+    var result = jsonDecode(response.body);
+
+    return result;
   }
 
 }

@@ -67,7 +67,6 @@ class AssessmentDatabase {
     for (var element in result) {
       var isExistingData = await database!.rawQuery("SELECT * FROM $assessmentTableName where id="+element['id']);
       if(isExistingData.isEmpty){
-        print(element['date']);
         database!.insert(assessmentTableName, <String, Object>{
           'id' : element['id'],
           'stars' : element['star'],

@@ -34,7 +34,7 @@ class AppointmentDatabase {
 
   Future<void> createTable(Database db) async {
     await db.execute(
-      "CREATE TABLE $appointmentsTableName (id INTEGER PRIMARY KEY,$dateTime DATETIME,$userId INTEGER NOT NULL,$barberId INTEGER NOT NULL, $employeeId INTEGER NOT NULL, $assessmentId INTEGER NOT NULL, $totalPrice INTEGER NOT NULL, $serviceId INTEGER NOT NULL)",
+      "CREATE TABLE $appointmentsTableName (id INTEGER PRIMARY KEY,$dateTime DATETIME,$userId INTEGER NOT NULL,$barberId INTEGER NOT NULL, $employeeId INTEGER NOT NULL, $assessmentId INTEGER, $totalPrice INTEGER NOT NULL, $serviceId INTEGER NOT NULL)",
     );
   }
 
@@ -54,9 +54,12 @@ class AppointmentDatabase {
         services.add(await servicesDb.getServiceById(int.tryParse(selectResult[i][serviceId].toString())!));
         AppointmentModel appointmentModel = AppointmentModel.fromJson(selectResult[i]);
         appointmentModel.services = services;
-        AssessmentModel assessmentModel = await assDb.getAssessmentById(appointmentModel.assessmentId!);
-        if(assessmentModel.id!!=0){
-          appointmentModel.assessmentModel = assessmentModel;
+        appointmentModel.totalPrice = services[0].price;
+        if(appointmentModel.assessmentId!=null){
+          AssessmentModel assessmentModel = await assDb.getAssessmentById(appointmentModel.assessmentId!);
+          if(assessmentModel.id!!=0){
+            appointmentModel.assessmentModel = assessmentModel;
+          }
         }
         appointments.add(appointmentModel);
 
@@ -81,15 +84,14 @@ class AppointmentDatabase {
           services.add(await servicesDb.getServiceById(int.tryParse(selectResult[i][serviceId].toString())!));
           AppointmentModel appointmentModel = AppointmentModel.fromJson(selectResult[i]);
           appointmentModel.services = services;
-          AssessmentModel assessmentModel = await assDb.getAssessmentById(appointmentModel.assessmentId!);
-          if(assessmentModel.id!!=0){
-            appointmentModel.assessmentModel = assessmentModel;
+          appointmentModel.totalPrice = services[0].price;
+          if(appointmentModel.assessmentId!=null){
+            AssessmentModel assessmentModel = await assDb.getAssessmentById(appointmentModel.assessmentId!);
+            if(assessmentModel.id!!=0){
+              appointmentModel.assessmentModel = assessmentModel;
+            }
           }
           appointments.add(appointmentModel);
-
-          if(appointments[lastAppId].assessmentModel!=null){
-            print("AppointmentId And DAteTime : ${appointments[lastAppId].id} ${appointments[lastAppId].dateTime}, id: ${appointments[lastAppId].assessmentModel!.id}, stars: ${appointments[lastAppId].assessmentModel!.stars}\n\n");
-          }
         }
       }
     }
@@ -108,13 +110,16 @@ class AppointmentDatabase {
     for(var i=0; i<selectResult.length; i++){
       if(i==0){
         lastAppId=i;
+        AppointmentModel appointmentModel = AppointmentModel.fromJson(selectResult[i]);
         List<ServiceModel> services = [];
         services.add(await servicesDb.getServiceById(int.tryParse(selectResult[i][serviceId].toString())!));
-        AppointmentModel appointmentModel = AppointmentModel.fromJson(selectResult[i]);
         appointmentModel.services = services;
-        AssessmentModel assessmentModel = await assDb.getAssessmentById(appointmentModel.assessmentId!);
-        if(assessmentModel.id!!=0){
-          appointmentModel.assessmentModel = assessmentModel;
+        appointmentModel.totalPrice = services[0].price;
+        if(appointmentModel.assessmentId!=null){
+          AssessmentModel assessmentModel = await assDb.getAssessmentById(appointmentModel.assessmentId!);
+          if(assessmentModel.id!!=0){
+            appointmentModel.assessmentModel = assessmentModel;
+          }
         }
         appointments.add(appointmentModel);
 
@@ -140,9 +145,12 @@ class AppointmentDatabase {
           services.add(await servicesDb.getServiceById(int.tryParse(selectResult[i][serviceId].toString())!));
           AppointmentModel appointmentModel = AppointmentModel.fromJson(selectResult[i]);
           appointmentModel.services = services;
-          AssessmentModel assessmentModel = await assDb.getAssessmentById(appointmentModel.assessmentId!);
-          if(assessmentModel.id!!=0){
-            appointmentModel.assessmentModel = assessmentModel;
+          appointmentModel.totalPrice = services[0].price;
+          if(appointmentModel.assessmentId!=null){
+            AssessmentModel assessmentModel = await assDb.getAssessmentById(appointmentModel.assessmentId!);
+            if(assessmentModel.id!!=0){
+              appointmentModel.assessmentModel = assessmentModel;
+            }
           }
           appointments.add(appointmentModel);
         }
@@ -170,6 +178,15 @@ class AppointmentDatabase {
      return appointments;
   }
 
+  getNearestAppointment(int i) async{
+    if(database==null) await open();
+    String sql = "SELECT * FROM $appointmentsTableName WHERE $dateTime > CURRENT_DATE ORDER BY date($dateTime) DESC LIMIT 1";
+
+    var selectResult = await database!.rawQuery(sql);
+
+    return selectResult;
+  }
+
   Future<void> getAppointmentsFromMySql(int userId) async {
      if(database==null) await open();
      DbHelperHttp dbHelper = DbHelperHttp();
@@ -178,7 +195,7 @@ class AppointmentDatabase {
      for (var element in result) {
        var isExistingData = await database!.rawQuery("SELECT * FROM $appointmentsTableName where id=${element['id']}");
        if(isExistingData.isEmpty){
-         database!.insert(appointmentsTableName, <String, Object>{
+         database!.insert(appointmentsTableName, <String, Object?>{
            'id' : element['id'],
            'dateTime' : element['dateTime'],
            'userId' : element['userId'],
@@ -212,4 +229,6 @@ class AppointmentDatabase {
     if(database==null)await open();
     await database!.delete(appointmentsTableName);
   }
+
+
 }

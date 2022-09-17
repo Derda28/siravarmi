@@ -16,7 +16,7 @@ class AppointmentModel {
   AppointmentModel({
       required this.userId,
       required this.dateTime,
-      required this.assessmentId,
+      this.assessmentId,
       required this.barberId,
       required this.employeeId,
       required this.id,
@@ -31,7 +31,7 @@ class AppointmentModel {
     userId = json["userId"]!;
     barberId = json["barberId"]!;
     employeeId = json["employeeId"]!;
-    assessmentId = json["assessmentId"]!;
+    assessmentId = json["assessmentId"];
     totalPrice = json["totalPrice"]!;
   }
 

@@ -66,7 +66,7 @@ class _AppbarState extends State<Appbar> {
                       style: TextStyle(
                         color: primaryColor,
                         fontFamily: primaryFontFamily,
-                        fontSize: screenWidth!/12,
+                        fontSize: getSize(24),
                       )),
                 ],
               ),

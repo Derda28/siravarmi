@@ -4,8 +4,10 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:siravarmi/cloud_functions/favorites_database.dart';
+import 'package:siravarmi/models/address_model.dart';
 import 'package:siravarmi/models/favorite_model.dart';
 
+import '../cloud_functions/address_database.dart';
 import '../models/user_model.dart';
 
 //aa1a45
@@ -24,20 +26,22 @@ const String secondaryFontFamily = "Montserrat-Medium";
 bool isLoggedIn = true;
 UserModel user = UserModel(name: "derda", surname: "savas", isMan: true, id: 1);
 List<FavoriteModel> favorites = [];
+List<AddressModel> addresses = [];
 
 double getSize(double sizeNumber){
   return screenWidth!*(sizeNumber/designWidth);
 }
 
-String getDate(DateTime dateTime) {
+/*String getDate(DateTime dateTime) {
   return formateDate(dateTime.day, dateTime.month, dateTime.year);
-}
+}*/
 
-String getTime(DateTime dateTime) {
+/*String getTime(DateTime dateTime) {
   return formateTime(dateTime.hour , dateTime.minute, null);
-}
+}*/
 
-String formateDate(int day, int month, int year){
+String formateDate(DateTime dateTime){
+  int day=dateTime.day, month=dateTime.month, year=dateTime.year;
   String dayR,monthR,yearR;
   if(day<10){
     dayR = "0$day";
@@ -53,8 +57,9 @@ String formateDate(int day, int month, int year){
   return dayR+"."+monthR+"."+yearR;
 }
 
-formateTime(int hour, int minute, int? second){
-  String hourR,minuteR,secondR;
+formateTimeFromDateTime(DateTime dateTime){
+  int hour=dateTime.hour, minute=dateTime.minute;
+  String hourR,minuteR;
   if(hour<10){
     hourR = "0$hour";
   }else{
@@ -65,16 +70,22 @@ formateTime(int hour, int minute, int? second){
   }else{
     minuteR = "$minute";
   }
-  if(second!=null){
-    if(second<10){
-      secondR = "0$second";
-    }else{
-      secondR = "$second";
-    }
-    return hourR+"."+minuteR+"."+secondR;
+  return "$hourR.$minuteR";
+}
+
+formateTime(int hour, int minute){
+  String hourR,minuteR;
+  if(hour<10){
+    hourR = "0$hour";
   }else{
-    return hourR+"."+minuteR;
+    hourR = "$hour";
   }
+  if(minute<10){
+    minuteR = "0$minute";
+  }else{
+    minuteR = "$minute";
+  }
+  return "$hourR.$minuteR";
 }
 
 isBarberFavorite(int barberId) async {
@@ -114,5 +125,6 @@ Future<Position?> getLocation () async {
 
   return position;
 }
+
 
 

@@ -6,8 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/widgets/popups/sort_popup_btn.dart';
 
-import '../providers/shared_prefs_provider.dart';
-import '../utilities/custom_rect_tween.dart';
+import '../../providers/shared_prefs_provider.dart';
+import '../../utilities/custom_rect_tween.dart';
 
 class SortPopupScreen extends StatelessWidget{
   String sortType;

@@ -252,7 +252,7 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                                   BorderRadius.all(Radius.circular(getSize(10)))),
                           alignment: Alignment.center,
                           child: Text(
-                            getDate(
+                            formateDate(
                                 widget.appointment!.dateTime!), //MUST BE CHANGED!!!
                             style: TextStyle(fontSize: getSize(22)),
                           ),
@@ -282,7 +282,7 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                                   BorderRadius.all(Radius.circular(getSize(10)))),
                           alignment: Alignment.center,
                           child: Text(
-                            getTime(
+                            formateTimeFromDateTime(
                                 widget.appointment!.dateTime!), //MUST BE CHANGED!!!
                             style: TextStyle(fontSize: getSize(22)),
                           ),
@@ -291,7 +291,7 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                     ),
                   ),
                   //FEEDBACK SECTION
-                  Container(
+                  widget.isLastAppointment?Container(
                     height: getSize(30),
                     width: getSize(200),
                     alignment: Alignment.center,
@@ -307,9 +307,9 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                           fontSize: getSize(20),
                           color: Colors.grey),
                     ),
-                  ),
+                  ):SizedBox(),
                   //Edit Button
-                  Container(
+                  widget.isLastAppointment?Container(
                     margin: EdgeInsets.only(left: getSize(350), top: getSize(545)),
                     height: getSize(40),
                     width: getSize(40),
@@ -332,10 +332,10 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                         editIconIsPressed();
                       },
                     ),
-                  ),
+                  ):SizedBox(),
                   //STARS
                   //double.tryParse(widget.appointment!.assessmentModel!.stars!.toString())!
-                  Container(
+                  widget.isLastAppointment?Container(
                     margin: EdgeInsets.only(top: getSize(600), bottom: getSize(20)),
                     alignment: Alignment.center,
                     child: widget.appointment!=null?RatingBar.builder(
@@ -356,7 +356,7 @@ class _AppointmentSlidingUpPanelState extends State<AppointmentSlidingUpPanel> {
                         starIsClicked(rating, context);
                       },
                     ):Text("LOADING..."),
-                  ),
+                  ):SizedBox(),
                   widget.appointment!.assessmentModel!=null?
                       Align(
                     alignment: Alignment.topCenter,

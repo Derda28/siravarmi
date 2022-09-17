@@ -163,7 +163,7 @@ class _BarberSlidingUpPanelState extends State<BarberSlidingUpPanel> {
                         indent: getSize(5),
                         endIndent: getSize(5),
                       ),
-                      Text(date!=null?getDate(date!):"seciniz",
+                      Text(date!=null?formateDate(date!):"seciniz",
                           maxLines: 1,
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -223,7 +223,7 @@ class _BarberSlidingUpPanelState extends State<BarberSlidingUpPanel> {
                         endIndent: getSize(5),
                       ),
                       Text(
-                        time!=null?formateTime(time!.hour, time!.minute, null):"seciniz",
+                        time!=null?formateTime(time!.hour, time!.minute):"seciniz",
                         maxLines: 1,
                         textAlign: TextAlign.center,
                         style: TextStyle(

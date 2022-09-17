@@ -108,7 +108,7 @@ class _ListItemState extends State<ListItem> {
           Padding(
             padding: EdgeInsets.only(top: getSize(210), left: getSize(10)),
             child: Text(
-              widget.barber.address!,
+              widget.barber.addressModel!.getHalfAddress(),
               style: TextStyle(
                 fontSize: getSize(14),
                 color: fontColor,
@@ -225,7 +225,7 @@ class _ListItemState extends State<ListItem> {
           Padding(
             padding: EdgeInsets.only(top: getSize(230), left: getSize(260), bottom: getSize(10)),
             child: Text(
-              earliestDateTime != null ? '${getDate(earliestDateTime!)}\nSaat ${getTime(earliestDateTime!)}':"DOLU",
+              earliestDateTime != null ? '${formateDate(earliestDateTime!)}\nSaat ${formateTimeFromDateTime(earliestDateTime!)}':"DOLU",
               style: TextStyle(
                 fontSize: screenWidth! * 14 / designWidth,
                 color: secondaryColor,

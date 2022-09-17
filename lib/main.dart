@@ -1,23 +1,45 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:siravarmi/cloud_functions/address_database.dart';
 import 'package:siravarmi/cloud_functions/appointments_database.dart';
-import 'package:siravarmi/screens/home_screen.dart';
+import 'package:siravarmi/screens/main_screens/home_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:siravarmi/utilities/customeTheme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'cloud_functions/assessment_database.dart';
+import 'cloud_functions/barbers_database.dart';
+import 'cloud_functions/employees_database.dart';
+import 'cloud_functions/favorites_database.dart';
+import 'cloud_functions/services_database.dart';
+import 'cloud_functions/users_database.dart';
+import 'cloud_functions/working_hours_database.dart';
 
 
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
+
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget{
+class MyApp extends StatefulWidget{
   const MyApp({Key? key}) : super(key: key);
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -39,6 +61,41 @@ class MyApp extends StatelessWidget{
           backgroundColor: primaryColor)
     );
 
+  }
+
+  Future<void> loadData() async {
+    AddressDatabase addDb = AddressDatabase();
+    AppointmentDatabase appDb = AppointmentDatabase();
+    AssessmentDatabase assDb = AssessmentDatabase();
+    BarbersDatabase barbersDb = BarbersDatabase();
+    EmployeesDatabase empDb = EmployeesDatabase();
+    FavoritesDatabase favDb = FavoritesDatabase();
+    ServicesDatabase servicesDb = ServicesDatabase();
+    UsersDatabase usersDb = UsersDatabase();
+    WorkingHoursDatabase wHDb = WorkingHoursDatabase();
+
+    await addDb.deleteTables();
+    await appDb.deleteTables();
+    await assDb.deleteTables();
+    await barbersDb.deleteTables();
+    await empDb.deleteTables();
+    await favDb.deleteTables();
+    await servicesDb.deleteTables();
+    await usersDb.deleteTables();
+    await wHDb.deleteTables();
+
+    await addDb.getAddressFromMySql();
+    await appDb.getAppointmentsFromMySql(user.id!);
+    await assDb.getAssessmentsFromMySql();
+    await barbersDb.getBarbersFromMysql();
+    await empDb.getEmployeesFromMysql();
+    await favDb.getFavoritesFromMysql();
+    await servicesDb.getEmployeesFromMysql();
+    await usersDb.getUsersFromMySql();
+    await wHDb.getWorkingHoursFromMysql();
+
+    favorites = await favDb.getFavorites();
+    addresses = await addDb.getAddress();
   }
 }
 

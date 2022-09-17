@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:siravarmi/cloud_functions/address_database.dart';
 import 'package:siravarmi/cloud_functions/barbers_database.dart';
 import 'package:siravarmi/models/barber_model.dart';
 import 'package:siravarmi/screens/select_address_screen.dart';
-import 'package:siravarmi/screens/sort_popup_screen.dart';
+import 'package:siravarmi/widgets/popups/sort_popup_screen.dart';
 import 'package:siravarmi/utilities/consts.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -39,6 +40,7 @@ class _BarberListState extends State<BarberListScreen> {
   int? maxPrice;
   String? district;
   String? city;
+  bool dataAreLoaded = false;
 
 
   _BarberListState();
@@ -159,7 +161,7 @@ class _BarberListState extends State<BarberListScreen> {
   }
 
   buildList() {
-    return Padding(
+    return dataAreLoaded?Padding(
       padding: EdgeInsets.only(
           top: getSize(150),
           bottom: getSize(10),
@@ -173,21 +175,32 @@ class _BarberListState extends State<BarberListScreen> {
               child: listItems[index],
             );
           }),
-    );
+    ):Text("Loading");
   }
 
   Future<void> loadBarbers() async {
     BarbersDatabase barbersDb = BarbersDatabase();
+    AddressDatabase addressDb = AddressDatabase();
     _barbers = await barbersDb.getBarbers();
+
     for (int i = 0; i < _barbers.length; i++) {
+      var result = await addressDb.getAddressFromBarber(_barbers[i].id!);
+      if(result.id != 0){
+        setState(() {
+          _barbers[i].setAddress(result);
+        });
+      }
       allListItems.add(ListItem(barber: _barbers[i]));
     }
     setState(() {
       _barbers = _barbers;
       listItems = allListItems;
+      dataAreLoaded = true;
     });
 
-    sortTheList();
+    if(dataAreLoaded){
+      sortTheList();
+    }
   }
 
   Future<void> sortBtnClicked(BuildContext context) async {
@@ -200,7 +213,9 @@ class _BarberListState extends State<BarberListScreen> {
       sortType = result as String;
     }
 
-    sortTheList();
+    if(dataAreLoaded){
+      sortTheList();
+    }
   }
 
   void filterBtnClicked() {
@@ -248,6 +263,7 @@ class _BarberListState extends State<BarberListScreen> {
     return ListView(
       physics: NeverScrollableScrollPhysics(),
       children: [
+        //Title
         Text(
           "Secenekler",
           style: TextStyle(
@@ -260,6 +276,7 @@ class _BarberListState extends State<BarberListScreen> {
           color: secondaryColor,
           thickness: 1,
         ),
+        //Near Me Button
         OutlinedButton(
           style: ButtonStyle(
             overlayColor: MaterialStateColor.resolveWith(
@@ -317,6 +334,7 @@ class _BarberListState extends State<BarberListScreen> {
             ],
           ),
         ),
+        //Select Address Button
         OutlinedButton(
           style: ButtonStyle(
             overlayColor: MaterialStateColor.resolveWith(
@@ -372,6 +390,7 @@ class _BarberListState extends State<BarberListScreen> {
             ],
           ),
         ),
+        //Price Button
         OutlinedButton(
           style: ButtonStyle(
             overlayColor: MaterialStateColor.resolveWith(
@@ -436,6 +455,7 @@ class _BarberListState extends State<BarberListScreen> {
         SizedBox(
           height: getSize(20),
         ),
+        //Confirm Button
         ElevatedButton(
           style: ButtonStyle(
               backgroundColor:
@@ -511,80 +531,19 @@ class _BarberListState extends State<BarberListScreen> {
     BarbersDatabase barbersDb = BarbersDatabase();
     String sql = "";
 
-    if (city != null &&
-        district != null &&
-        minPrice == null &&
-        maxPrice == null) {
-      //List all barbers which are in $city AND $district
-      sql =
-          "SELECT * FROM `barbers` WHERE location LIKE '%$city%' AND location LIKE '%$district%'";
-    } else if (city != null &&
-        district == null &&
-        minPrice == null &&
-        maxPrice == null) {
-      //List all barbers which are in $city
-      sql = "SELECT * FROM `barbers` WHERE location LIKE '%$city%'";
-    } else if (city == null &&
-        district == null &&
-        minPrice != null &&
+    if (minPrice != null &&
         maxPrice != null) {
       //List all barbers which minPrices are minimum $minPrice AND maximum $maxPrice
       sql =
           "SELECT * FROM `barbers` WHERE minPrice<=$maxPrice AND minPrice>=$minPrice";
-    } else if (city == null &&
-        district == null &&
-        minPrice != null &&
+    } else if (minPrice != null &&
         maxPrice == null) {
       //List all barbers which minPrices are minimum $minPrice
       sql = "SELECT * FROM `barbers` WHERE minPrice>=$minPrice";
-    } else if (city == null &&
-        district == null &&
-        minPrice == null &&
+    } else if (minPrice == null &&
         maxPrice != null) {
       //List all barbers which minPrices are maximum $maxPrice
       sql = "SELECT * FROM `barbers` WHERE minPrice<=$maxPrice";
-    } else if (city != null &&
-        district == null &&
-        minPrice != null &&
-        maxPrice != null) {
-      //List all barbers which are in $city AND minPrices minimum $minPrice AND maximum $maxPrice
-      sql =
-          "SELECT * FROM `barbers` WHERE location LIKE '%$city%' AND minPrice<=$maxPrice AND minPrice>=$minPrice";
-    } else if (city != null &&
-        district == null &&
-        minPrice != null &&
-        maxPrice == null) {
-      //List all barbers which are in $city AND minPrices minimum $minPrice
-      sql =
-          "SELECT * FROM `barbers` WHERE location LIKE '%$city%' AND minPrice>=$minPrice";
-    } else if (city != null &&
-        district == null &&
-        minPrice == null &&
-        maxPrice != null) {
-      //List all barbers which are in $city AND minPrices maximum $maxPrice
-      sql =
-          "SELECT * FROM `barbers` WHERE location LIKE '%$city%' AND minPrice<=$maxPrice";
-    } else if (city != null &&
-        district != null &&
-        minPrice != null &&
-        maxPrice != null) {
-      //List all barbers which city is $city AND district is $district AND minPrices are minimum $minPrice AND minPrices are maximum $maxPrice
-      sql =
-          "SELECT * FROM `barbers` WHERE location LIKE '%$city%' AND location LIKE '%$district%' AND minPrice<=$maxPrice AND minPrice>=$minPrice";
-    } else if (city != null &&
-        district != null &&
-        minPrice != null &&
-        maxPrice == null) {
-      //List all barbers which city is $city AND district is $district AND minPrices are minimum $minPrice
-      sql =
-          "SELECT * FROM `barbers` WHERE location LIKE '%$city%' AND location LIKE '%$district%' AND minPrice>=$minPrice";
-    } else if (city != null &&
-        district != null &&
-        minPrice == null &&
-        maxPrice != null) {
-      //List all barbers which city is $city AND district is $district AND minPrices are maximum $maxPrice
-      sql =
-          "SELECT * FROM `barbers` WHERE location LIKE '%$city%' AND location LIKE '%$district%' AND minPrice<=$maxPrice";
     } else {
       //List all barbers without filter
       sql = "SELECT * FROM `barbers`";
@@ -596,8 +555,46 @@ class _BarberListState extends State<BarberListScreen> {
       listItems.add(ListItem(barber: r));
     }
 
+    checkIfAddressIsNull();
+  }
+
+  void checkIfAddressIsNull() {
+    List<ListItem> listForAddressFilter = [];
+    for(var item in listItems){
+      listForAddressFilter.add(item);
+    }
+
+    setState(() {
+      listItems.clear();
+    });
+
+    if(city!=null&&district!=null){
+      for(var l in listForAddressFilter){
+        if(l.barber.addressModel!.city!.toUpperCase()==city&&l.barber.addressModel!.district!.toUpperCase()==district){
+          listItems.add(l);
+        }
+      }
+    }else if(city!=null&&district==null){
+      for(var l in listForAddressFilter){
+        print("selectedCity : $city  barberCity : ${l.barber.addressModel!.city}");
+        if(l.barber.addressModel!.city!.toUpperCase()==city){
+          listItems.add(l);
+        }
+      }
+    }else if(city==null&&district!=null){
+      for(var l in listForAddressFilter){
+        if(l.barber.addressModel!.district!.toUpperCase()==district){
+          listItems.add(l);
+        }
+      }
+    }else{
+      for(var l in listForAddressFilter){
+        listItems.add(l);
+      }
+    }
+
+
     checkIfLocationIsNull();
-    //Find a way to notificate the barberlistscreen that confirm btn is clicked in the sliding up panel
   }
 
   Future<void> checkIfLocationIsNull() async {
@@ -621,33 +618,25 @@ class _BarberListState extends State<BarberListScreen> {
         });
 
         for(var b in listForDistanceFilter){
-          print(b.barber.address!);
-          List<Location> locations = await locationFromAddress(b.barber.address!);
+          List<Location> locations = await locationFromAddress(b.barber.addressModel!.getFullAddress());
           double distance2 = Geolocator.distanceBetween(position.latitude, position.longitude, locations[0].latitude, locations[0].longitude);
           distance2 = distance2/1000;
-          print("distance : $distance2, wantedDistance : $distance");
+
           if(distance2<=distance!){
             listItems.add(ListItem(barber: b.barber));
           }
         }
-
-        setState(() {
-          listItems = listItems;
-        });
 
         /*final double meter = Geolocator.distanceBetween(
             position.latitude, position.longitude, salonAsLat, salonAsLong);
 
         final double km = meter/1000;*/
       }
-      setState(() {
-        listItems = listItems;
-      });
-    } else {
-      setState(() {
-        listItems = listItems;
-      });
     }
+
+    setState(() {
+      listItems=listItems;
+    });
     panelController.close();
   }
 
@@ -689,4 +678,6 @@ class _BarberListState extends State<BarberListScreen> {
       focusNode.requestFocus();
     }
   }
+
+
 }
